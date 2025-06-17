@@ -1,0 +1,14 @@
+<!-- 
+  <p-menu styleClass="side-bar-style" [model]="items" /> -->
+
+<!-- <button (click)="toggleSidebar()" class="sidebar-toggle">☰</button>
+
+<p-menu [model]="items" styleClass="side-bar-style" [ngClass]="{'open': sidebarOpen}" /> -->
+<p-menu [model]="items" styleClass="side-bar-style">
+    <ng-template let-item pTemplate="item">
+        <a class="p-menuitem-link" [ngClass]="{'selected': selectedLabel === item.label}">
+            <span class="p-menuitem-icon" [ngClass]="item.icon"></span>
+            <span class="p-menuitem-text">{{item.label}}</span>
+        </a>
+    </ng-template>
+</p-menu>

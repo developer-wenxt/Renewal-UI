@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg p-2">
+  <a class="navbar-brand" href="">
+  </a>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <h5><span style="cursor: pointer;  font-family:'Poppins', sans-serif !important;"
+            *ngIf="this.userDetails?.UserType == 'Opration-Head'"> <i class="bi bi-list"
+              (click)="toggleSidebar.emit()"></i>
+            &nbsp;&nbsp;</span>INSURANCE RENEWAL</h5>
+
+      </li>
+    </ul>
+    <ul class="navbar-nav ms-auto" style="margin-right:7px;gap: 2rem;">
+      <li class="nav-item">
+      </li>
+      <li class="nav-item">
+        <ng-container>
+          <div class="flex  username-section">
+            <p-overlayPanel #op>
+              <p-button *ngFor="let userOption of userOptions" [icon]="userOption.icon" [label]="userOption.label"
+                styleClass="customButton" (click)="userOption.command()" [style]="{'width':'15rem'}"></p-button>
+            </p-overlayPanel>
+            <p-button (click)="op.toggle($event)" [label]="loginId">&nbsp;<i class="pi pi-user"
+                style="font-size: 1rem;margin-right: 5px;"></i>
+            </p-button>
+          </div>&nbsp;
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+</nav>
+<p-menubar [model]="items">
+  <ng-template let-item pTemplate="item">
+    <a class="p-menuitem-link" [ngClass]="{'selected': activeItem === item.label}">
+      <span class="p-menuitem-icon" [ngClass]="item.icon"></span>
+      <span class="p-menuitem-text">{{item.label}}</span>
+    </a>
+  </ng-template>
+</p-menubar>
+<div class="container">
+
+</div>

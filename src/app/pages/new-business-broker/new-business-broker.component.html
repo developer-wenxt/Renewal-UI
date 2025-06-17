@@ -1,0 +1,535 @@
+<div class="container-fluid">
+
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="mt-2 p-2">
+                <div class="row">
+                    <div class="col-md-11">
+
+                        <b *ngIf="customers_list?.length"><i
+                                class="bi bi-building"></i>&nbsp;{{customers_list[0]?.SourceName}} &nbsp; -
+                            {{customers_list[0]?.SourceCode}}</b>
+                    </div>
+                    <div class="col-md-1 text-end">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row mt-2">
+
+                <div class="col-md-5 mt-2 ms-2 col-sm-12 dashboard-buttons">
+
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="top-detail-card">
+                                <div class="row">
+                                    <div class="col-9 text-start">
+                                        <div>Total</div>
+                                        <div><b>{{(totalPolicyCount !== null && totalPolicyCount !== undefined) ?
+                                                totalPolicyCount.toString() : '0'}}</b></div>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        <i class="icon-color bi bi-bar-chart-line"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="top-detail-card">
+
+                                <div class="row">
+                                    <div class="col-9 text-start">
+                                        <div>Penidng</div>
+                                        <div><b>{{(totalPending !== null && totalPending !== undefined) ?
+                                                totalPending.toString() :
+                                                '0'}}</b></div>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        <i class="text-warning bi-card-checklist "></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="top-detail-card">
+                                <div class="row">
+                                    <div class="col-9 text-start">
+                                        <div>Lost</div>
+                                        <div><b>{{(totalLost !== null && totalLost !== undefined) ? totalLost.toString()
+                                                :
+                                                '0'}}</b></div>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        <i class="text-danger bi bi-graph-down-arrow"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-4 mt-2 col-sm-12 dashboard-buttons">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-12 col-md-4">
+                            <div class="top-detail-card card-total text-center">
+                                <div class="d-flex align-items-center justify-content-between px-2">
+                                    <div class="text-start">
+                                        <div class="label">Total</div>
+                                        <div class="value">{{ totalPolicyCount ?? '0' }}</div>
+                                    </div>
+                                    <i class="bi bi-bar-chart-line icon-lg icon-total"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="top-detail-card card-pending text-center">
+                                <div class="d-flex align-items-center justify-content-between px-2">
+                                    <div class="text-start">
+                                        <div class="label">Pending</div>
+                                        <div class="value">{{ totalPending ?? '0' }}</div>
+                                    </div>
+                                    <i class="bi bi-card-checklist icon-lg icon-pending"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="top-detail-card card-lost text-center">
+                                <div class="d-flex align-items-center justify-content-between px-2">
+                                    <div class="text-start">
+                                        <div class="label">Lost</div>
+                                        <div class="value">{{ totalLost ?? '0' }}</div>
+                                    </div>
+                                    <i class="bi bi-graph-down-arrow icon-lg icon-lost"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div *ngIf="this.userDetails.UserType == 'Broker'" class="col-md-6 col-sm-12 text-end ms-5">
+                    <p-calendar [(ngModel)]="from_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
+                        placeholder="From Date" [showIcon]="true" inputId="fromDate"
+                        (onSelect)="onDateChange()"></p-calendar> &nbsp; &nbsp;
+                    <p-calendar [(ngModel)]="to_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
+                        placeholder="To Date" [showIcon]="true" inputId="toDate"
+                        (onSelect)="onDateChange()"></p-calendar>
+                </div>
+            </div>
+
+            <div class="row mt-2 p-2" *ngIf="userDetails.UserType =='Broker'">
+                <div class="col-md-6  p-2">
+                    <div class="card p-2" style="border-radius: 10px;">
+                        <div #chartContainer id="chart-container" style="height: 300px;"></div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6  p-2">
+                    <div class="card p-2" style="height: 310px; border-radius: 10px;">
+                        <p-table #dt2 [value]="ResponseData" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                            [paginator]="true" [globalFilterFields]="['name', 'loss', 'pending', 'total']"
+                            [tableStyle]="{ 'min-width': '100%' ,'max-height': '100%'}">
+
+                            <ng-template pTemplate="caption">
+                                <div class="row text-end">
+                                    <p-iconField iconPosition="left" class="ml-auto">
+                                        <p-inputIcon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputIcon>
+                                        <input pInputText type="text" style="height: 40px;"
+                                            (input)="onGlobalFilter($event)" placeholder="Search keyword" />
+                                    </p-iconField>
+                                </div>
+                            </ng-template>
+
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th *ngIf="this.userDetails.UserType != 'Broker'" pSortableColumn="SourceName"
+                                        style="width:34%;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Broker Name <p-sortIcon field="SourceName"></p-sortIcon>
+                                    </th>
+                                    <th *ngIf="this.userDetails.UserType == 'Broker'" pSortableColumn="ProductName"
+                                        style="width:34%;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Product Name <p-sortIcon field="ProductName"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Lost"
+                                        style="width:16%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Lost <p-sortIcon field="Lost"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Pending"
+                                        style="width:18%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Pending <p-sortIcon field="Pending"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="TotalPolicyCount"
+                                        style="width:16%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Total <p-sortIcon field="TotalPolicyCount"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-customer>
+                                <tr
+                                    style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
+                                    <td *ngIf="this.userDetails.UserType != 'Broker'"
+                                        style="font-size: 11px !important;">{{ customer.SourceName }} {{
+                                        customer.DivisionCode }}</td>
+                                    <td *ngIf="this.userDetails.UserType == 'Broker'"
+                                        style="font-size: 11px !important;">{{ customer.ProductName }} </td>
+                                    <td style="font-size: 11px !important;text-align: center;">{{ customer.Lost }}</td>
+                                    <td style="font-size: 11px !important;text-align: center;">{{ customer.Pending }}
+                                    </td>
+                                    <td style="font-size: 11px !important;text-align: center;">{{ (+customer.Pending) +
+                                        (+customer.Lost) }}
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="5">No data found.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- <div class="row text-start mt-3 mb-3">
+                <h5 class="ms-4">Customer Details</h5>
+                <p-table #dt1 [value]="customers_list" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                    [paginator]="true"
+                    [globalFilterFields]="['CustomerName', 'PolicyNumber', 'InsuredMobile', 'ProductName', 'PolicyEndDate', 'TotalPremium', 'CurrentStatus']"
+                    [tableStyle]="{ 'min-width': '100%' }">
+
+                    <ng-template pTemplate="caption">
+                        <div class="row">
+                            <div class="col-md-4 text-start">
+                                <div *ngIf="this.userDetails.UserType != 'Broker'" class="flex  justify-content-center">
+                                    <div style="margin-left: 15px;"><b><small>Select Broker</small></b></div>
+                                    <p-dropdown styleClass="division-drop"
+                                        (onChange)="filterChange(dashborad_selectted_agent)" [options]="ResponseData"
+                                        [(ngModel)]="dashborad_selectted_agent" optionValue="SourceCode"
+                                        optionLabel="SourceName" placeholder="Broker"></p-dropdown>
+                                </div>
+                                <div *ngIf="this.userDetails.UserType == 'Broker'" class="flex  justify-content-center">
+                                    <div style="margin-left: 15px;"><b><small>Select Product</small></b></div>
+                                    <p-dropdown styleClass="division-drop"
+                                        (onChange)="filterChange(dashborad_selectted_agent)" [options]="ResponseData"
+                                        [(ngModel)]="dashborad_selectted_agent" optionValue="ProductCode"
+                                        optionLabel="ProductName" placeholder="Product"></p-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-end">
+                                <p-iconField iconPosition="left" class="ml-auto">
+                                    <p-inputIcon>
+                                        <i class="pi pi-search"></i>
+                                    </p-inputIcon>
+                                    <input pInputText type="text" style="height: 40px; margin-top: 15px;"
+                                        (input)="onGlobalFilter1($event)" placeholder="Search keyword" />
+                                </p-iconField>
+                            </div>
+
+                        </div>
+                    </ng-template>
+
+                    <ng-template pTemplate="header">
+                        <tr style="background-color: red !important;">
+                            <th pSortableColumn="CustomerName"
+                                style="width:21%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Customer Name <p-sortIcon field="CustomerName"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="PolicyNumber"
+                                style="width:19%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Policy No <p-sortIcon field="PolicyNumber"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="InsuredMobile"
+                                style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Contact <p-sortIcon field="InsuredMobile"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="ProductName"
+                                style="width:17%;font-size:12px;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Product <p-sortIcon field="ProductName"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="PolicyEndDate"
+                                style="width:12%;font-size:12px;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                End Date <p-sortIcon field="PolicyEndDate"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="TotalPremium"
+                                style="width:12%;font-size:12px;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Premium <p-sortIcon field="TotalPremium"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="Status"
+                                style="width:8%;font-size:12px;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Status <p-sortIcon field="Status"></p-sortIcon>
+                            </th>
+                            <th *ngIf="this.userDetails.UserType != 'Opration-Head'"
+                                style="width:15%;font-size:12px;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                Action</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-customer>
+                        <tr
+                            style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important; font-family: 'Poppins', sans-serif !important;">
+                            <td style="font-size: 11px !important;">{{ customer.CustomerName }}</td>
+                            <td style="font-size: 11px !important;">{{ customer.PolicyNumber }}</td>
+                            <td style="font-size: 11px !important;text-align: center;">{{ customer.InsuredMobile }}</td>/
+                            <td style="font-size: 11px !important;text-align: center;">{{ customer.ProductName }}</td>
+                            <td style="font-size: 11px !important;text-align: center;">{{ customer.PolicyEndDate
+                                |date:'dd/MM/yy'}}
+                            </td>
+                            <td style="font-size: 11px !important;text-align: center;">{{ customer.TotalPremium | numberComma}}</td>
+                            <td style="font-size: 11px !important;text-align: center;">
+                                <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus:'RP'"
+                                    [severity]="getSeverity(customer.CurrentStatus)" />
+                            </td>
+                            <td *ngIf="this.userDetails.UserType != 'Opration-Head'"
+                                style="font-size: 11px !important;text-align: center;">
+                                <i class="bi bi-pencil table-icon-btn" (click)="editClick(customer)"></i>
+                                &nbsp;&nbsp;&nbsp;
+                                <i class="bi bi-plus-circle table-icon-btn" (click)="addClick(customer)"></i>
+                                &nbsp;&nbsp;&nbsp;
+                                <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="5">No data found.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div> -->
+
+            <div class="row text-start mt-3 mb-3">
+                <h5 class="ms-4">Customer Details</h5>
+                <div class="desktop-view">
+                    <p-table #dt1 [value]="customers_list" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                        [paginator]="true"
+                        [globalFilterFields]="['CustomerName', 'PolicyNumber', 'InsuredMobile', 'ProductName', 'PolicyEndDate', 'TotalPremium', 'CurrentStatus']"
+                        [tableStyle]="{ 'min-width': '100%' }">
+                        <ng-template pTemplate="caption">
+                            <div class="row">
+                                <div class="col-md-4 text-start"></div>
+                                <div class="col-md-8 text-end">
+                                    <p-iconField iconPosition="left" class="ml-auto">
+                                        <p-inputIcon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputIcon>
+                                        <input pInputText type="text" style="height: 40px; margin-top: 15px"
+                                            (input)="onGlobalFilter1($event)" placeholder="Search keyword" />
+                                    </p-iconField>
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="CustomerName">Customer Name <p-sortIcon
+                                        field="CustomerName"></p-sortIcon></th>
+                                <th pSortableColumn="PolicyNumber">Policy No <p-sortIcon
+                                        field="PolicyNumber"></p-sortIcon></th>
+                                <th pSortableColumn="ProductName">Product <p-sortIcon field="ProductName"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
+                                        field="PolicyEndDate"></p-sortIcon></th>
+                                <th pSortableColumn="TotalPremium">Premium <p-sortIcon
+                                        field="TotalPremium"></p-sortIcon></th>
+                                <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th>
+                                <th *ngIf="userDetails.UserType !== 'Opration-Head'">Action</th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-customer>
+                            <tr>
+                                <td>{{ customer.CustomerName }}</td>
+                                <td>{{ customer.PolicyNumber }}</td>
+                                <td>{{ customer.ProductName }}</td>
+                                <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
+                                <td>{{ customer.TotalPremium | numberComma }}</td>
+                                <td>
+                                    <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
+                                        [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
+                                </td>
+                                <td *ngIf="userDetails.UserType !== 'Opration-Head'">
+                                    <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
+                                    <i class="bi bi-plus-circle table-icon-btn me-2" (click)="addClick(customer)"></i>
+                                    <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="7">No data found.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <!-- 📱 Mobile Responsive Card View -->
+                <div class="mobile-view">
+                    <div *ngIf="customers_list.length > 0">
+                        <div *ngFor="let customer of customers_list" class="customer-card p-3 mb-3">
+                            <div class="field-row"><strong>Customer Name:</strong> {{ customer.CustomerName }}</div>
+                            <div class="field-row"><strong>Policy No:</strong> {{ customer.PolicyNumber }}</div>
+                            <div class="field-row"><strong>Product:</strong> {{ customer.ProductName }}</div>
+                            <div class="field-row"><strong>End Date:</strong> {{ customer.PolicyEndDate | date:
+                                'dd/MM/yy' }}</div>
+                            <div class="field-row"><strong>Premium:</strong> {{ customer.TotalPremium | numberComma }}
+                            </div>
+                            <div class="field-row">
+                                <strong>Status:</strong>
+                                <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
+                                    [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
+                            </div>
+                            <div *ngIf="userDetails.UserType !== 'Opration-Head'" class="text-end mt-2">
+                                <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i>
+                                <i class="bi bi-plus-circle table-icon-btn me-3" (click)="addClick(customer)"></i>
+                                <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="customers_list.length === 0" class="text-center mt-3 text-muted">
+                        No data found.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <p-dialog header="Update Details" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+        <div class="row">
+            <div><label><small>Type</small></label></div>
+            <p-selectButton [options]="stateOptions" [(ngModel)]="Typevalue" optionLabel="label" optionValue="value" />
+        </div>
+        <ng-container *ngIf="Typevalue=='Loss'">
+            <div class="row mt-2">
+                <div><label><small>Lost Insurance Company</small></label></div>
+
+                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="companyList" [(ngModel)]="loss_type"
+                    optionLabel="CodeDesc" optionValue="Code">
+                </p-dropdown>
+
+            </div>
+            <div class="row mt-2">
+
+                <div><label><small>Reason</small></label></div>
+                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="reason_list" [(ngModel)]="reason"
+                    optionLabel="CodeDesc" optionValue="Code" />
+
+            </div>
+            <div class="row mt-2">
+
+                <div><label><small>Lost Date</small></label></div>
+                <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
+                    <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="loss_date"
+                        [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"></p-calendar>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="Typevalue=='Conversion'">
+            <div class="row mt-2">
+
+                <div><label><small>Payment Type</small></label></div>
+                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="payment_type_list"
+                    [(ngModel)]="conversion" optionValue="Code" optionLabel="CodeDesc" />
+
+            </div>
+            <div class="row mt-2">
+                <div><label><small>Conversion Date</small></label></div>
+
+                <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
+                    <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="conversion_date"
+                        [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"></p-calendar>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <div class="row mt-2">
+            <div><label><small>Remark</small></label></div>
+
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <textarea style="width: 100%;" rows="2" cols="30" pInputTextarea [(ngModel)]="remarks"></textarea>
+            </div>
+
+        </div>
+
+        <div class="row text-end mt-5">
+            <div class="col-12">
+                <p-button styleClass="cutomer-btn" label="Close" severity="secondary"
+                    (onClick)="visible = false" />&nbsp;&nbsp;&nbsp;
+                <p-button styleClass="cutomer-btn" label="Submit" (onClick)="UpdateCustomerStatus()" />
+            </div>
+
+        </div>
+
+    </p-dialog>
+    <p-dialog header="Add Details" [modal]="true" [(visible)]="Add_dialog"
+        [style]="{ width: '25rem' , overflow: 'auto !important'}">
+
+        <div class="row mt-2">
+            <div><label><small>Make</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="Make" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Model</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="model" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Body Type</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="body_type" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Vehicle Usage</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="vehicle_usage" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Polciy Type</small></label></div>
+
+            <p-dropdown styleClass="branch-drop" appendTo="body" [options]="Policy_type_list" [(ngModel)]="Policy_type"
+                optionLabel="CodeDesc" optionValue="Code">
+            </p-dropdown>
+
+        </div>
+        <div *ngIf="Policy_type =='1'" class="row mt-2">
+            <div><label><small>SumInsured</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="sumInsured" />
+                </div>
+            </div>
+        </div>
+        <div class="row text-end mt-5">
+            <div class="col-12">
+                <p-button styleClass="cutomer-btn" label="Close" severity="secondary"
+                    (onClick)="Add_dialog = false" />&nbsp;&nbsp;&nbsp;
+                <p-button styleClass="cutomer-btn" label="Submit" (onClick)="saveVehicleInfo()" />
+            </div>
+
+        </div>
+
+    </p-dialog>

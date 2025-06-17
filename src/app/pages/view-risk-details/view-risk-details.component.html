@@ -1,0 +1,352 @@
+<div class="container-fluid">
+
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="mt-2 p-2">
+                <div class="row">
+                    <div class="col-md-11">
+
+                        <b><i class="bi bi-building"></i> &nbsp;&nbsp;
+                            {{SelectedCustomer.SourceName}} >
+                            {{SelectedCustomer.ProductName}} > {{SelectedCustomer.PolicyNumber}}</b>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <p-button styleClass="view-cutomer-btn" (click)="navigatebroker()" label="Back"
+                            severity="info"></p-button>
+                    </div>
+                </div>
+
+            </div>
+            <p-accordion [multiple]="true" [activeIndex]="[0]">
+                <p-accordionTab *ngFor="let item of riskDetails" [header]="'RiskId: ' + item.RiskId">
+                    <div class="row">
+                        <!-- <div class="col-12">
+                           
+                        </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12  mb-2">
+                            <b>
+                                <h6 style="font-weight: 600;">Risk Details</h6>
+                            </b>
+                        </div>
+                        <div class="col-md-6 col-sm-12 text-end mb-2">
+                            <button pButton type="button" label="View Covers"
+                                class="p-button-sm view-covers-btn p-button-text" severity="primary"
+                                (click)="onViewCover(item)"></button> &nbsp;&nbsp; <button pButton type="button"
+                                label="View Sections" class="p-button-sm view-covers-btn p-button-text"
+                                severity="primary" (click)="onViewSection(item)"></button>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-md-2 col-sm-12 mb-2" *ngFor="let risk of item.Risk">
+                            <p-card class="mb-3 shadow-2 border-round">
+                                <div class="text-900 text-sm font-medium mb-1"><b>{{ risk.RiskDetails }}</b></div>
+                                <div class="text-700 text-base font-semibold">
+                                    {{ risk.RiskDetailsData || '—' }}
+                                </div>
+                            </p-card>
+                        </div>
+                    </div> -->
+                    <!-- <div class="container">
+                        <div class="row" *ngFor="let pair of groupRiskInPairs(item.Risk); let rowIndex = index">
+
+                            <div class="col-md-6 mb-2" *ngFor="let risk of pair; let i = index">
+                                <span class="fw-semibold">{{ rowIndex * 2 + i + 1 }}. {{ risk.RiskDetails }}:</span>
+                                <span> {{ risk.RiskDetailsData || '—' }}</span>
+                            </div>
+
+                        </div>
+                    </div> -->
+
+                    <div class="container card p-3 mt-2 ms-4">
+                        <div class="row ms-4"
+                            *ngFor="let group of groupRiskInTriplets(item.Risk); let rowIndex = index">
+                            <div class="col-md-5 mb-2 ms-md-5 me-md-3 ms-0 me-0"
+                                *ngFor="let risk of group; let i = index">
+                                <div class="risk-row">
+                                    <span class="risk-key">
+                                        {{ risk.RiskDetails }}
+                                    </span>
+                                    <span class="risk-value">
+                                        {{ risk.RiskDetailsData || 'NA' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+
+    </div>
+
+    <p-dialog header="Cover Details" [modal]="true" [(visible)]="visible" [style]="{ width: '80%' }">
+        <ng-template pTemplate="header">
+            <div class="inline-flex items-center justify-center gap-2">
+                <span *ngIf="coverList?.length && IsView != 'section'">
+                    <h6 style="font-weight: 700; font-size: 14px;">
+                        Cover Details - (Policy Number: {{ coverList[0]?.PolicyNumber }} - Risk ID: {{
+                        coverList[0]?.RiskId
+                        }})
+                    </h6>
+                </span>
+            </div>
+            <div class="inline-flex items-center justify-center gap-2">
+                <span *ngIf="sectionList?.length && IsView == 'section'">
+                    <h6 style="font-weight: 700; font-size: 14px;">
+                        Section Details - (Policy Number: {{ sectionList[0]?.PolicyNumber }} - Risk ID: {{
+                        sectionList[0]?.RiskId
+                        }})
+                    </h6>
+                </span>
+            </div>
+
+        </ng-template>
+
+        <p-table *ngIf="IsView != 'section'" #dt1 [value]="coverList"  dataKey="SrNo" [rows]="5"
+            [rowsPerPageOptions]="[5, 10]" [paginator]="true" 
+            [globalFilterFields]="['CoverDesc', 'SumInsured', 'Rate', 'RatePer', 'Premium']"
+            [tableStyle]="{ 'min-width': '100%' }" editMode="row" [rowHover]="true">
+
+            <ng-template pTemplate="caption">
+                <div class="row text-end">
+                    <p-iconField iconPosition="left" class="ml-auto">
+                        <p-inputIcon>
+                            <i class="pi pi-search"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" style="height: 40px;" (input)="onGlobalFilter1($event)"
+                            placeholder="Search keyword" />
+                    </p-iconField>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="CoverDesc"
+                        style="width:25%; font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Cover Description
+                        <p-sortIcon field="CoverDesc"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="SumInsured"
+                        style="width:15%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Sum Insured
+                        <p-sortIcon field="SumInsured"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="Rate"
+                        style="width:10%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Rate (%)
+                        <p-sortIcon field="Rate"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="RatePer"
+                        style="width:10%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Rate Per
+                        <p-sortIcon field="RatePer"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="Premium"
+                        style="width:15%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Premium
+                        <p-sortIcon field="Premium"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="SumInsuredModified"
+                        style="width:15%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        SumInsured Modified
+                        <p-sortIcon field="SumInsuredModified"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="RateModified"
+                        style="width:15%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Rate Modified
+                        <p-sortIcon field="RateModified"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="PremiumModified"
+                        style="width:15%; font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Premium Modified
+                        <p-sortIcon field="PremiumModified"></p-sortIcon>
+                    </th>
+                    <th
+                        style="width:10%; font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Action
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-cover let-editing="editing">
+                <tr [pEditableRow]="cover"
+                    style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
+                    <td style="font-size: 11px;">{{ cover.CoverDesc }}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ cover.SumInsured || '—' | numberComma}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ cover.Rate || '—' | numberComma}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ cover.RatePer || '—' | numberComma}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ cover.Premium || '—' | numberComma}}</td>
+
+                    <td pEditableColumn style="text-align: right;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText maxlength="15" [disabled]="!editing"
+                                    [value]="cover.SumInsuredModified | numberComma"
+                                    (keypress)="allowNumberAndCommaOnly($event)"
+                                    (input)="updateModifiedValue($event, cover, 'SumInsuredModified')"
+                                    style="font-size: 11px; text-align: center;" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <span style="font-size: 11px;">{{ cover.SumInsuredModified || '—' | numberComma}}</span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td pEditableColumn style="text-align: right;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText [disabled]="!editing" maxlength="15"
+                                    [value]="cover.RateModified | numberComma"
+                                    (input)="updateModifiedValue($event, cover, 'RateModified')"
+                                    (keypress)="allowNumberAndCommaOnly($event)"
+                                    style="font-size: 11px; text-align: center;" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <span style="font-size: 11px;">{{ cover.RateModified || '—' | numberComma}}</span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td pEditableColumn style="text-align: right;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText [disabled]="!editing" maxlength="15"
+                                    [value]="cover.PremiumModified | numberComma"
+                                    (input)="updateModifiedValue($event, cover, 'PremiumModified')"
+                                    (keypress)="allowNumberAndCommaOnly($event)"
+                                    style="font-size: 11px; text-align: center;" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <span style="font-size: 11px;">{{ cover.PremiumModified || '—' | numberComma}}</span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <button *ngIf="!editing" pButton icon="pi pi-pencil" class="p-button-text p-button-sm"
+                            (click)="dt1.initRowEdit(cover)"></button>
+                        <button *ngIf="editing" pButton icon="pi pi-check"
+                            class="p-button-text p-button-sm text-green-600"
+                            (click)="onupdateCover($event,cover,'cover')"></button>
+                        <button *ngIf="editing" pButton icon="pi pi-times"
+                            class="p-button-text p-button-sm text-red-600" (click)="dt1.cancelRowEdit(cover)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6">No data found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+
+
+        <p-table *ngIf="IsView == 'section'" #dt2 [value]="sectionList" dataKey="SmiCode" [rows]="5"
+            [rowsPerPageOptions]="[5, 10]" [paginator]="true"
+            [globalFilterFields]="['SmiDesc', 'SumInsured', 'Rate', 'RatePer', 'Premium']"
+            [tableStyle]="{ 'min-width': '100%' }">
+
+            <ng-template pTemplate="caption">
+                <div class="row text-end">
+                    <p-iconField iconPosition="left" class="ml-auto">
+                        <p-inputIcon>
+                            <i class="pi pi-search"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" style="height: 40px;" (input)="onGlobalFilter2($event)"
+                            placeholder="Search keyword" />
+                    </p-iconField>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="SmiDesc"
+                        style="width:25%; font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Description
+                        <p-sortIcon field="SmiDesc"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="SumInsured"
+                        style="width:15%; font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Sum Insured
+                        <p-sortIcon field="SumInsured"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="Rate"
+                        style="width:10%; font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Rate (%)
+                        <p-sortIcon field="Rate"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="RatePer"
+                        style="width:10%; font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Rate Per
+                        <p-sortIcon field="RatePer"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="Premium"
+                        style="width:15%; font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif !important;">
+                        Premium
+                        <p-sortIcon field="Premium"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-section>
+                <tr style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
+                    <td style="font-size: 11px;">{{ section.SmiDesc }}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ section.SumInsured || '—' | numberComma}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ section.Rate || '—'}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ section.RatePer || '—'| numberComma}}</td>
+                    <td style="font-size: 11px; text-align: right;">{{ section.Premium || '—'| numberComma}}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5">No data found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </p-dialog>
+
+    <p-dialog header="Add Details" [modal]="true" [(visible)]="AddCover_dialog"
+        [style]="{ width: '25rem' , overflow: 'auto !important'}">
+
+        <div class="row mt-2">
+            <div><label><small>SumInsured Modified</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="SumInsuredModified" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Rate Modified</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="RateModified" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div><label><small>Premium Modified</small></label></div>
+            <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                <div class="card flex justify-content-center">
+                    <input type="text" class="input-text" pInputText [(ngModel)]="PremiumModified" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row text-end mt-5">
+            <div class="col-12">
+                <p-button styleClass="cutomer-btn" label="Close" severity="secondary"
+                    (onClick)="AddCover_dialog = false" />&nbsp;&nbsp;&nbsp;
+                <p-button styleClass="cutomer-btn" label="Submit" (onClick)="updateCoverDetails()" />
+            </div>
+
+        </div>
+
+    </p-dialog>

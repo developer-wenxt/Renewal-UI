@@ -1,0 +1,149 @@
+.custome-card-style {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.icon-color {
+    color: #0c72e6;
+}
+
+.table-icon-btn {
+    cursor: pointer;
+    color: #0c72e6;
+    transition: transform 0.2s;
+}
+
+.table-icon-btn:hover {
+    transform: scale(1.2);
+    color: #084298;
+}
+
+.homeImg {
+    width: 47px;
+}
+
+.product-card {
+    margin: 1rem;
+}
+
+::ng-deep .p-progressbar {
+    height: 10px;
+    background-color: #f0f2f5;
+}
+
+::ng-deep .p-progressbar .p-progressbar-value {
+    background-color: #007ad9;
+}
+
+.card.hilight {
+    background: linear-gradient(to right, #ffffff, #f0f4ff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+}
+
+
+.text-size {
+    font-size: 12px;
+}
+
+.product-text-size {
+    font-size: 14px;
+}
+
+.p-button+.p-button {
+    margin-left: 1rem;
+}
+
+.dashboard-buttons .p-button {
+    margin-bottom: 0.5rem;
+    min-width: 90px;
+}
+
+.dashboard-header h6 {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.top-detail-card {
+    border: solid 1px #f99d23;
+    padding: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+}
+
+.top-detail-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+// -------------------------------------
+// .top-detail-card {
+//     padding: 0.5rem;
+//     border-radius: 12px;
+//     background: #ffffff;
+//     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+//     transition: transform 0.2s ease, box-shadow 0.3s ease;
+// }
+
+// .top-detail-card:hover {
+//     transform: translateY(-4px);
+//     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+//     cursor: pointer;
+// }
+
+// .label {
+//     font-size: 1rem;
+//     color: #888;
+//     font-weight: 500;
+// }
+
+// .value {
+//     font-size: 1.5rem;
+//     font-weight: 600;
+//     color: #333;
+// }
+
+
+// .icon-lg {
+//     font-size: 2.5rem;
+// }
+
+
+// .card-total {
+//     border-left: 5px solid #007bff;
+// }
+
+// .icon-total {
+//     color: #007bff;
+// }
+
+// .card-pending {
+//     border-left: 5px solid #ffc107;
+// }
+
+// .icon-pending {
+//     color: #ffc107;
+// }
+
+// .card-lost {
+//     border-left: 5px solid #dc3545;
+// }
+
+// .icon-lost {
+//     color: #dc3545;
+// }
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+    .top-detail-card {
+        margin-bottom: 1rem;
+    }
+}
+
+
+#chart-container1 {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}

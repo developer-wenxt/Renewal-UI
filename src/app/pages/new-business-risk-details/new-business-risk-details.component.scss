@@ -1,0 +1,41 @@
+.risk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* Allows wrapping on smaller screens */
+  gap: 0.5rem;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.risk-key {
+  font-weight: 700;
+  flex: 1 1 30%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  // white-space: nowrap;
+  word-break: break-all;
+}
+
+.risk-value {
+  flex: 1 1 50%;
+  text-align: right;
+  // white-space: nowrap;
+  word-break: break-all;
+
+}
+
+@media (max-width: 576px) {
+  .risk-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .risk-key,
+  .risk-value {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+}

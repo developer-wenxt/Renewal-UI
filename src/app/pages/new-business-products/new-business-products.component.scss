@@ -1,0 +1,58 @@
+.product-card {
+    margin-left: 12px;
+    margin-top: 20px;
+    margin-right: 12px;
+    // background: linear-gradient(to bottom right,
+    //         rgba(255, 255, 255, 0.1),
+    //         rgba(0, 123, 255, 0.2));
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    // color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+}
+
+::ng-deep .p-progressbar {
+    height: 10px;
+    background-color: #e0e0e0;
+
+    .p-progressbar-value {
+        background-color: #007ad9;
+    }
+}
+
+.text-size {
+    font-size: xx-small;
+}
+
+.product-text-size{
+    color: #000;
+}
+
+.dashboard-header h6 {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.hilight{
+    min-height: 250px;
+}
+
+.top-detail-card {
+    border: solid 1px #f99d23;
+    padding: 3px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+}
+
+.top-detail-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.icon-color {
+    color: #0c72e6;
+}
