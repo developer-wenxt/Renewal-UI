@@ -3,12 +3,12 @@
         <div *ngIf="this.userDetails.UserType != 'Broker'" class="mt-2 p-2">
             <div class="row">
                 <div class="col-md-11">
-                 
+
                 </div>
                 <div class="col-md-1 text-end">
                     <p-button styleClass="view-cutomer-btn" (click)="navigateOprationHeadDasborad()" label="Back"
                         severity="info"></p-button>
-              
+
                 </div>
             </div>
 
@@ -22,9 +22,9 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-md-5 col-sm-12 ms-2">
+            <!-- <div class="col-md-5 col-sm-12 ms-2">
                
-                       <div class="row">
+                       <div class="row ml-5">
                     <div class="col-md-4 text-center">
                         <div class="top-detail-card">
                             <div class="row">
@@ -45,7 +45,7 @@
                            
                             <div class="row">
                                 <div class="col-9 text-start">
-                                    <div>Penidng</div>
+                                    <div>Pending</div>
                                     <div><b>{{(totalPending !== null && totalPending !== undefined) ?
                                             totalPending.toString() :
                                             '0'}}</b></div>
@@ -72,8 +72,56 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
+            <div class="col-md-5 mt-2 ms-2 col-sm-12 dashboard-buttons">
+                <div class="row g-3 justify-content-center">
+                    <div class="col-12 col-md-3">
+                        <div class="top-detail-card card-total text-center">
+                            <div class="d-flex align-items-center justify-content-between px-2">
+                                <div class="text-start">
+                                    <div class="label">Total</div>
+                                    <div class="value">{{ totalPolicyCount ?? '0' }}</div>
+                                </div>
+                                <i class="bi bi-bar-chart-line icon-lg icon-total icon-color"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="top-detail-card card-lost text-center">
+                            <div class="d-flex align-items-center justify-content-between px-2">
+                                <div class="text-start">
+                                    <div class="label">Completed</div>
+                                    <div class="value">{{ totalSuccess ?? '0' }}</div>
+                                </div>
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="top-detail-card card-pending text-center">
+                            <div class="d-flex align-items-center justify-content-between px-2">
+                                <div class="text-start">
+                                    <div class="label">Pending</div>
+                                    <div class="value">{{ totalPending ?? '0' }}</div>
+                                </div>
+                                <i class="bi bi-card-checklist icon-lg icon-pending text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="top-detail-card card-lost text-center">
+                            <div class="d-flex align-items-center justify-content-between px-2">
+                                <div class="text-start">
+                                    <div class="label">Lost</div>
+                                    <div class="value">{{ totalLost ?? '0' }}</div>
+                                </div>
+                                <i class="bi bi-graph-down-arrow icon-lg icon-lost text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div *ngIf="this.userDetails.UserType != 'Issuer'" class="col-md-6 col-sm-12 text-end ms-5">
                 <p-calendar [(ngModel)]="from_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                     placeholder="From Date" [showIcon]="true" inputId="fromDate"
@@ -89,16 +137,16 @@
                     <div class="row">
                         <div class="col-md-8 text-start product-text-size">
                             <b><Small><i class="bi bi-boxes"></i>&nbsp;{{data.ProductName}}</Small></b>
-                           
+
                         </div>
-       
+
                         <div class="col-md-4">
                             <p-tag styleClass="premium-tag" [value]="data.TotalPremium | numberComma"
                                 [severity]="getSeverity(data.TotalPremium)" />
                         </div>
                     </div>
                     <div class="row mt-2">
-          
+
                     </div>
                     <div class="row mt-2">
                         <div class="col-2"></div>

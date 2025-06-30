@@ -1,0 +1,53 @@
+.dashboard-header h6 {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.transaction-card {
+    width: 260px;
+    padding: 24px;
+    margin: 12px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+}
+
+.transaction-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #0c72e6;
+    margin-bottom: 10px;
+}
+.transaction-title1 {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.text-label {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.animate-card {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

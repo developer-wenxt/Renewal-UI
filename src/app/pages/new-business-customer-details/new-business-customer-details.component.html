@@ -31,6 +31,7 @@
                         <b><Small><i class="bi bi-boxes"></i>&nbsp;{{this.ProductData?.ProductName}}</Small></b>
                     </div>
                     <div class="col-md-6 text-end">
+                        <b><Small>Total Policy: &nbsp; {{customers_list?.length | numberComma}}</Small></b> &nbsp;&nbsp;|
                         <b><Small>Total Premium: &nbsp; {{this.ProductData?.TotalPremium | numberComma}}</Small></b>
                     </div>
                 </div>
@@ -42,7 +43,7 @@
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Total"
                         [badge]="(totalPolicyCount !== null && totalPolicyCount !== undefined) ? totalPolicyCount.toString() : '0'" />
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Pending"
-                        (onClick)="viewCustomer('Penidng')"
+                        (onClick)="viewCustomer('Pending')"
                         [badge]="(totalPending !== null && totalPending !== undefined) ? totalPending.toString() : '0'" />
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Lost" (onClick)="viewCustomer('Lost')"
                         [badge]="(totalLost !== null && totalLost !== undefined) ? totalLost.toString() : '0'" />
@@ -261,11 +262,11 @@
                                         field="PolicyNumber"></p-sortIcon></th>
                                 <th pSortableColumn="ProductName">Product <p-sortIcon field="ProductName"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
+                                <th pSortableColumn="PolicyEndDate">Inception Date <p-sortIcon
                                         field="PolicyEndDate"></p-sortIcon></th>
                                 <th pSortableColumn="TotalPremium">Premium <p-sortIcon
                                         field="TotalPremium"></p-sortIcon></th>
-                                <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th>
+                                <!-- <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th> -->
                                 <th *ngIf="userDetails.UserType !== 'Opration-Head'">Action</th>
                             </tr>
                         </ng-template>
@@ -277,14 +278,14 @@
                                 <td>{{ customer.ProductName }}</td>
                                 <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
                                 <td>{{ customer.TotalPremium | numberComma }}</td>
-                                <td>
+                                <!-- <td>
                                     <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
                                         [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
-                                </td>
-                                <td *ngIf="userDetails.UserType !== 'Opration-Head'">
-                                    <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
-                                    <i class="bi bi-plus-circle table-icon-btn me-2" (click)="addClick(customer)"></i>
-                                    <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
+                                </td> -->
+                                <td *ngIf="userDetails.UserType !== 'Opration-Head'" class="text-center">
+                                    <!-- <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i> -->
+                                    <!-- <i  *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-2" (click)="addClick(customer)"></i> -->
+                                    <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer,'view')"></i>
                                 </td>
                             </tr>
                         </ng-template>
@@ -299,29 +300,29 @@
 
                 <!-- 📱 Mobile Responsive Card View -->
                 <div class="mobile-view">
-                    <div *ngIf="customers_list.length > 0">
+                    <div *ngIf="customers_list?.length > 0">
                         <div *ngFor="let customer of customers_list" class="customer-card p-3 mb-3">
                             <div class="field-row"><strong>Customer Name:</strong> {{ customer.CustomerName }}</div>
                             <div class="field-row"><strong>Policy No:</strong> {{ customer.PolicyNumber }}</div>
                             <div class="field-row"><strong>Product:</strong> {{ customer.ProductName }}</div>
-                            <div class="field-row"><strong>End Date:</strong> {{ customer.PolicyEndDate | date:
+                            <div class="field-row"><strong>Inception Date:</strong> {{ customer.PolicyEndDate | date:
                                 'dd/MM/yy' }}</div>
                             <div class="field-row"><strong>Premium:</strong> {{ customer.TotalPremium | numberComma }}
                             </div>
-                            <div class="field-row">
+                            <!-- <div class="field-row">
                                 <strong>Status:</strong>
                                 <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
                                     [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
-                            </div>
+                            </div> -->
                             <div *ngIf="userDetails.UserType !== 'Opration-Head'" class="text-end mt-2">
-                                <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i>
-                                <i class="bi bi-plus-circle table-icon-btn me-3" (click)="addClick(customer)"></i>
+                                <!-- <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i> -->
+                                <!-- <i  *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-3" (click)="addClick(customer)"></i> -->
                                 <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div *ngIf="customers_list.length === 0" class="text-center mt-3 text-muted">
+                    <div *ngIf="customers_list?.length === 0" class="text-center mt-3 text-muted">
                         No data found.
                     </div>
                 </div>

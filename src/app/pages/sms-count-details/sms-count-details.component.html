@@ -1,0 +1,185 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="row container mt-2 mb-2 ms-2 dashboard-header">
+                <div class="col-md-6 text-start">
+                    <h6><i class="bi bi-chat-left-text-fill"></i> &nbsp; &nbsp;Transaction SMS List</h6>
+                </div>
+                <!-- <div *ngIf="PolSrcName" class="col-md-6 text-end">
+                    <h6> <i class="bi bi-building"></i> &nbsp; &nbsp;{{PolSrcName}}</h6>
+                </div> -->
+            </div>
+            <div *ngIf="!showGrid" class="d-flex flex-wrap gap-3 p-3">
+                <div *ngFor="let item of overall_count" class="card transaction-card animate-card">
+                    <h6 class="transaction-title">
+                        <i class="bi bi-hash me-1 icon-color"></i>Transaction ID:
+                        <b>{{ item.transactionId }}</b>
+                    </h6>
+                    <p class="mb-1 text-label">Total Count: <b class="text-dark">{{ item.count }}</b></p>
+                    <p class="mb-1 text-success text-label">SMS Sent: <b>{{ item.smsSentCount }}</b></p>
+                    <p class="mb-2 text-danger text-label">SMS Not Sent: <b>{{ item.smsNotSentCount }}</b></p>
+                    <button class="btn btn-sm btn-primary w-100" (click)="viewList(item)">View List</button>
+                </div>
+            </div>
+
+            <div *ngIf="showGrid" class="card">
+                <div class="row mt-2 me-2 ms-2">
+                    <div class="col-md-11">
+                        <h6 class="transaction-title1">
+                            <!-- <i class="bi bi-hash me-1 icon-color"></i> -->
+                            Transaction ID:
+                            <b>{{transactionId }}</b>
+                        </h6>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <p-button styleClass="view-cutomer-btn" (click)="back()" label="Back"
+                            severity="info"></p-button>
+
+                    </div>
+                </div>
+                <p-tabView (onChange)="onTabChange($event)">
+                    <p-tabPanel header="SMS Send List">
+                        <div>
+                            <p-table #dt2 [value]="smsSendCountList || []" dataKey="id" [rows]="5"
+                                [rowsPerPageOptions]="[5, 10]" [paginator]="true"
+                                [globalFilterFields]="['CustomerName','PolicyNumber','InsuredMobile','ProductName','PolicyEndDate','TotalPremium','CurrentStatus','CompanyName','ClassName','DivisionName','BusinessName','EndorsementNumber', 'RenewalDate', 'CustomerCode','InsuredCivilId','SourceName']"
+                                [tableStyle]="{ 'min-width': '100%' }">
+                                <ng-template pTemplate="caption">
+                                    <div class="row">
+                                        <div class="col-md-4 text-start">
+                                        </div>
+                                        <div class="col-md-8 text-end">
+                                            <p-iconField iconPosition="left" class="ml-auto">
+                                                <p-inputIcon>
+                                                    <i class="pi pi-search"></i>
+                                                </p-inputIcon>
+                                                <input pInputText type="text" style="height: 40px; margin-top: 15px;"
+                                                    (input)="onGlobalFilter2($event)" placeholder="Search keyword" />
+                                            </p-iconField>
+                                        </div>
+
+                                    </div>
+                                </ng-template>
+
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="CustomerName">Customer Name <p-sortIcon
+                                                field="CustomerName"></p-sortIcon></th>
+                                        <th pSortableColumn="PolicyNumber">Policy No <p-sortIcon
+                                                field="PolicyNumber"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="ProductName">Product <p-sortIcon
+                                                field="ProductName"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
+                                                field="PolicyEndDate"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="TotalPremium">Premium <p-sortIcon
+                                                field="TotalPremium"></p-sortIcon>
+                                        </th>
+                                        <!-- <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon>
+                                        </th> -->
+                                        <!-- <th *ngIf="userDetails?.UserType !== 'Opration-Head'">Action</th> -->
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="body" let-customer>
+                                    <tr>
+                                        <td>{{ customer.CustomerName }}</td>
+                                        <td>{{ customer.PolicyNumber }}</td>
+                                        <td>{{ customer.ProductName }}</td>
+                                        <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
+                                        <td>{{ customer.TotalPremium | numberComma }}</td>
+                                        <!-- <td>
+                                            <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
+                                                [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
+                                        </td> -->
+                                        <!-- <td *ngIf="userDetails?.UserType !== 'Opration-Head'">
+                                            <i class="bi bi-eye table-icon-btn ms-4" (click)="ViewRisk(customer)"></i>
+                                        </td> -->
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="7">No data found.</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="SMS Not Send List">
+                        <div>
+                            <p-table #dt1 [value]="smsNotSendCountList || []" dataKey="id" [rows]="5"
+                                [rowsPerPageOptions]="[5, 10]" [paginator]="true"
+                                [globalFilterFields]="['CustomerName','PolicyNumber','InsuredMobile','ProductName','PolicyEndDate','TotalPremium','CurrentStatus','CompanyName','ClassName','DivisionName','BusinessName','EndorsementNumber', 'RenewalDate', 'CustomerCode','InsuredCivilId','SourceName']"
+                                [tableStyle]="{ 'min-width': '100%' }">
+                                <ng-template pTemplate="caption">
+                                    <div class="row">
+                                        <div class="col-md-4 text-start">
+                                        </div>
+                                        <div class="col-md-8 text-end">
+                                            <p-iconField iconPosition="left" class="ml-auto">
+                                                <p-inputIcon>
+                                                    <i class="pi pi-search"></i>
+                                                </p-inputIcon>
+                                                <input pInputText type="text" style="height: 40px; margin-top: 15px;"
+                                                    (input)="onGlobalFilter1($event)" placeholder="Search keyword" />
+                                            </p-iconField>
+                                        </div>
+
+                                    </div>
+                                </ng-template>
+
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th pSortableColumn="CustomerName">Customer Name <p-sortIcon
+                                                field="CustomerName"></p-sortIcon></th>
+                                        <th pSortableColumn="PolicyNumber">Policy No <p-sortIcon
+                                                field="PolicyNumber"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="ProductName">Product <p-sortIcon
+                                                field="ProductName"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
+                                                field="PolicyEndDate"></p-sortIcon>
+                                        </th>
+                                        <th pSortableColumn="TotalPremium">Premium <p-sortIcon
+                                                field="TotalPremium"></p-sortIcon>
+                                        </th>
+                                        <!-- <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon>
+                                        </th> -->
+                                        <!-- <th *ngIf="userDetails?.UserType !== 'Opration-Head'">Action</th> -->
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="body" let-customer>
+                                    <tr>
+                                        <td>{{ customer.CustomerName }}</td>
+                                        <td>{{ customer.PolicyNumber }}</td>
+                                        <td>{{ customer.ProductName }}</td>
+                                        <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
+                                        <td>{{ customer.TotalPremium | numberComma }}</td>
+                                        <!-- <td>
+                                            <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
+                                                [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
+                                        </td> -->
+                                        <!-- <td *ngIf="userDetails?.UserType !== 'Opration-Head'">
+                                            <i class="bi bi-eye table-icon-btn ms-4" (click)="ViewRisk(customer)"></i>
+                                        </td> -->
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="7">No data found.</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+</div>

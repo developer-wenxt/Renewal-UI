@@ -1,0 +1,824 @@
+<nav class="navbar navbar-expand-lg p-2" [ngStyle]="{ 'margin-top': showPolicy ? '-11px' : '0' }">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/phoenixAlt.png" class="img-fluid imgwid me-2 mt-1" alt="Logo" />
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
+            <ul class="navbar-nav d-none d-lg-flex">
+                <li class="nav-item d-flex align-items-center">
+                    <!-- Additional nav items can go here -->
+                </li>
+            </ul>
+
+            <div class="ms-lg-auto d-flex align-items-center mt-2 mt-lg-0">
+                <h5 class="mb-0 text-white mt-1" style="border: 1px solid #fff; padding: 1rem; border-radius: 5px;">
+                    INSURANCE RENEWAL</h5>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<ng-container *ngIf="!showPolicy" class="fontFamily">
+    <div class="topbar  text-white py-2 px-3 px-lg-5">
+        <div class="container-fluid">
+            <div class="row align-items-center" style="margin-top: 5rem !important;">
+                <div class="col-lg-6 text-start text-lg-left mb-2 mb-lg-0">
+                    <div
+                        class="d-flex justify-content-center justify-content-lg-start gap-3 align-items-center topbar-info flex-wrap">
+                        <small class="d-flex align-items-center">
+                            <i class="fas fa-phone me-1"></i> +012 345 6789
+                        </small>
+                        <small class="separator d-none d-sm-inline">|</small>
+                        <small class="d-flex align-items-center">
+                            <i class="fas fa-envelope me-1"></i> info&#64;example.com
+                        </small>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-end text-lg-right">
+                    <div class="d-flex justify-content-center justify-content-lg-end gap-3 flex-wrap">
+                        <a class="text-white social-icon" href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a class="text-white social-icon" href="#"><i class="fab fa-twitter"></i></a>
+                        <a class="text-white social-icon" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="text-white social-icon" href="#"><i class="fab fa-instagram"></i></a>
+                        <a class="text-white social-icon" href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-container>
+        <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom mb-4">
+            <div class="container text-center py-5">
+                <h1 class="text-white display-4 animated-text">Welcome</h1>
+                <h6 class="text-white display-4 animated-text">to</h6>
+                <h6 class="text-white display-4 animated-text">Your Renewal Policy</h6>
+            </div>
+        </div>
+    </ng-container>
+
+
+    <div class="container-fluid">
+        <div class=" overall-card mt-3 p-3">
+
+            <div class="container text-center py-2">
+                <h4 style="font-family: 'Poppins', sans-serif !important;">Enter Your 6 digit Code</h4>
+                <div class="mx-auto mb-4" style="max-width: 400px;">
+                    <div class="d-flex justify-content-center gap-2 otp-input-group">
+                        <input *ngFor="let ctrl of otpControls; let i = index" type="text" maxlength="1"
+                            class="form-control otp-box text-center" [(ngModel)]="otp[i]" (input)="onInput($event, i)"
+                            (keydown)="onKeyDown($event, i)" #otpInput>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary px-4 rounded p-3" (click)="submitOtp()">Get Policy
+                    Details</button>
+            </div>
+            <div class="row mt-4 text-center" style="font-family: 'Poppins', sans-serif !important;">
+                <h3>RENEWING YOUR POLICY ENTITLES YOU TO THE FOLLOWING BENEFITS AND COVERS.</h3>
+            </div>
+            <p-tabView class="mt-5 py-5" style="font-family: 'Poppins', sans-serif !important;">
+                <!-- <p-tabPanel header="Included">
+                    <div class="row ms-5">
+                        <h5 style="font-size: 16px !important; color: black; margin-top:20px !important">Included</h5>
+                        <p>Here’s a summary of what’s included</p>
+                    </div>
+                    <div class="row text-700 mt-0">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6> <i class="bi bi-check2-all text-success"></i>&nbsp;Theft & vandalism</h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel> -->
+                <p-tabPanel header="Included" style="font-family: 'Poppins', sans-serif !important;">
+                    <div class="container py-3">
+                        <div class="row mb-3">
+                            <div class="col-12 ms-3">
+                                <h5 style="font-size: 16px; color: black; margin-top: 20px;">Included</h5>
+                                <p class="text-muted">Here’s a summary of what’s included</p>
+                            </div>
+                        </div>
+                        <div class="row g-4 justify-content-center">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4 col-sm-6">
+                                <div class="p-3 border rounded-4 shadow-sm h-100" style="animation-delay: 0.1s;">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-check2-all  text-success me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.</p>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </p-tabPanel>
+
+                <p-tabPanel header="Not included" style="font-family: 'Poppins', sans-serif !important;">
+                    <div class="row ms-5">
+                        <h5 style="font-size: 16px !important; color: black; margin-top:20px !important">Not included
+                        </h5>
+                        <p>Here’s a summary of what’s Not included</p>
+                    </div>
+                    <div class="row text-700 mt-0">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 p-2 px-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <!-- <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6> -->
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 p-2 px-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 p-2 px-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 p-2 px-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9 p-2 px-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Optional benefits" style="font-family: 'Poppins', sans-serif !important;">
+                    <div class="row ms-5">
+                        <h5 style="font-size: 16px !important; color: black; margin-top:20px !important">Optional
+                            benefits</h5>
+                        <p>Here’s a summary of what’s Optional benefits</p>
+                    </div>
+                    <div class="row text-700 mt-0">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <!--                                      <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6> -->
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-700 mt-3">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>
+                                        <div class="heading-benifit">
+                                            <i class="bi bi-plus-circle text-primary me-2"></i>Theft & vandalism
+                                        </div>
+                                    </h6>
+                                    <p>We cover stolen items and damage from robbery and vandalism, including stolen
+                                        keys.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="showPolicy">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3  p-4" style="font-family: 'Poppins', sans-serif !important;">
+            <div class="row align-items-center policy-details-card mb-3">
+                <div class="col-md-6">
+                    <h4 class="fw-bold text-primary">Your Policy Details</h4>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-outline-primary px-4 rounded" style="min-width: 100px;"
+                        (click)="Back()">Back</button>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 mb-4" *ngFor="let policy of policyData; let i = index">
+                    <!-- <p-card class="shadow-sm rounded" [style]="{ overflow: 'hidden' }">
+                        <ng-template pTemplate="header">
+                            <img src="../../../assets/renewal.jfif" alt="Policy Image"
+                                style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #ccc;" />
+                        </ng-template>
+
+                        <div class="px-3 pt-2 pb-1">
+                            <h5 class="fw-bold text-dark mb-2">{{ policy.PolicyNumber }}</h5>
+                            <p class="text-muted mb-2"><strong>{{ policy.CompanyName }}</strong> - {{ policy.ClassName
+                                }}</p>
+                            <ul class="list-unstyled small mb-2">
+                                <li class="mb-1">
+                                    <strong><i class="pi pi-user me-2 text-primary"></i>Customer:</strong>
+                                    {{ policy.CustomerName }}
+                                </li>
+                                <li class="mb-1">
+                                    <strong><i class="pi pi-calendar me-2 text-primary"></i>End Date:</strong>
+                                    {{ policy.PolicyEndDate }}
+                                </li>
+                                <li>
+                                    <strong><i class="pi pi-map-marker me-2 text-primary"></i>Division:</strong>
+                                    {{ policy.DivisionName }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ng-template pTemplate="footer">
+                            <div class="px-3 pb-3">
+                                <button pButton (click)="ViewRisk(policy)" type="button"
+                                    label="View Risk & Cover Details"
+                                    class="p-button-sm p-button-rounded p-button-primary w-100">
+                                </button>
+                            </div>
+                        </ng-template>
+                    </p-card> -->
+                    <p-card class="shadow-sm rounded" [style]="{ overflow: 'hidden' }">
+
+                        <ng-template pTemplate="header">
+                            <img src="../../../assets/renewal.jfif" alt="Policy Image"
+                                style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #ccc;" />
+                        </ng-template>
+
+                        <div class="px-3 pt-2 pb-1">
+                            <h5 class="fw-bold text-dark mb-2">{{ policy.PolicyNumber }}</h5>
+                            <p class="text-muted mb-2"><strong>{{ policy.CompanyName }}</strong> - {{ policy.ClassName
+                                }}</p>
+                            <ul class="list-unstyled small mb-3">
+                                <li class="mb-1">
+                                    <strong><i class="pi pi-user me-2 text-primary"></i>Customer:</strong>
+                                    {{ policy.CustomerName }}
+                                </li>
+                                <li class="mb-1">
+                                    <strong><i class="pi pi-calendar me-2 text-primary"></i>End Date:</strong>
+                                    {{ policy.PolicyEndDate }}
+                                </li>
+                                <li>
+                                    <strong><i class="pi pi-map-marker me-2 text-primary"></i>Division:</strong>
+                                    {{ policy.DivisionName }}
+                                </li>
+                                <li>
+                                    <strong><i class="pi pi-hourglass me-2 text-primary"></i>Status:</strong>
+                                    {{ policy.Status }}
+                                </li>
+                            </ul>
+                            <div class="flex gap-4">
+                                <div class="flex align-items-center gap-1" style="font-size: 12px;">
+                                    <label class="font-semibold" style="font-size: 13px;"><b>Do you want to modify cover
+                                            &
+                                            section?</b></label>
+                                    <p-radioButton name="YesNo" value="Y" [(ngModel)]="modifyCoverSection"
+                                        inputId="modifyCoverSection1" (onClick)="onmodifyCoverSectionChange('Y')"
+                                        [ngStyle]="{ 'transform': 'scale(0.60)' }" />
+                                    <label for="modifyCoverSection1" class="m-0">Yes</label>&nbsp;&nbsp;
+                                    <p-radioButton name="YesNo" value="N" [(ngModel)]="modifyCoverSection"
+                                        inputId="modifyCoverSection2" (onClick)="onmodifyCoverSectionChange('N')"
+                                        [ngStyle]="{ 'transform': 'scale(0.60)' }" />
+                                    <label for="modifyCoverSection2" class="m-0">No</label>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex align-items-center gap-1" style="font-size: 12px;">
+                                    <label class="font-semibold" style="font-size: 13px;"><b>Do you want to renew this
+                                            policy?</b></label>
+                                    <p-radioButton name="YesNo" value="Y" [(ngModel)]="RenewalYesNo"
+                                        inputId="RenewalYesNo1" (onClick)="onRenewalChange('Y')"
+                                        [ngStyle]="{ 'transform': 'scale(0.60)' }" />
+                                    <label for="RenewalYesNo1" class="m-0">Yes</label>&nbsp;&nbsp;
+                                    <p-radioButton name="YesNo" value="N" [(ngModel)]="RenewalYesNo"
+                                        inputId="RenewalYesNo2" (onClick)="onRenewalChange('N')"
+                                        [ngStyle]="{ 'transform': 'scale(0.60)' }" />
+                                    <label for="RenewalYesNo2" class="m-0">No</label>
+                                </div>
+
+                            </div>
+                            <div *ngIf="modifyCoverSection =='Y'" class="mt-3">
+                                <button pButton (click)="ViewRisk(policy,'modify')" type="button"
+                                    label="Modify Risk & Cover Details"
+                                    class="p-button-sm p-button-rounded p-button-primary w-100">
+                                </button>
+                            </div>
+                            <div *ngIf="modifyCoverSection !='Y'" class="mt-3">
+                                <button pButton (click)="ViewRisk(policy,'view')" type="button"
+                                    label="View Risk & Cover Details"
+                                    class="p-button-sm p-button-rounded p-button-primary w-100">
+                                </button>
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<p-dialog header="Add Details" [modal]="true" styleClass="renewal-dialog" [(visible)]="updateRenewal_dialog"
+    [style]="{ width: '30vw', 'max-height': '75vh' }">
+
+    <ng-template pTemplate="header">
+        <h6 class="m-0">Policy Renewal</h6>
+    </ng-template>
+
+    <div class="p-4">
+        <!-- <div class="row">
+            <div class="col-12">
+                <div class="mb-3">
+                    <label class="font-semibold" style="font-size: 13px;"><b>Do you want to renew this
+                            policy?</b></label>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <div class="flex align-items-center gap-1" style="font-size: 12px;">
+                    <p-radioButton name="YesNo" value="Y" [(ngModel)]="RenewalYesNo" inputId="RenewalYesNo1"
+                        (onClick)="onRenewalChange('Y')" style="transform: scale(0.85);" />
+                    <label for="RenewalYesNo1" class="m-0">Yes</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="flex align-items-center gap-1" style="font-size: 12px;">
+                    <p-radioButton name="YesNo" value="N" [(ngModel)]="RenewalYesNo" inputId="RenewalYesNo2"
+                        (onClick)="onRenewalChange('Y')" style="transform: scale(0.85);" />
+                    <label for="RenewalYesNo2" class="m-0">No</label>
+                </div>
+            </div>
+        </div> -->
+        <ng-container *ngIf="RenewalYesNo=='N'">
+            <div class="row mt-2">
+                <div><label><small>Lost Insurance Company</small></label></div>
+
+                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="companyList" [(ngModel)]="loss_type"
+                    optionLabel="CodeDesc" optionValue="Code">
+                </p-dropdown>
+
+            </div>
+            <div class="row mt-2">
+
+                <div><label><small>Reason</small></label></div>
+                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="reason_list" [(ngModel)]="reason1"
+                    optionLabel="CodeDesc" optionValue="Code" />
+
+            </div>
+            <div class="row mt-2">
+
+                <div><label><small>Lost Date</small></label></div>
+                <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
+                    <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="loss_date"
+                        [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"></p-calendar>
+                </div>
+
+            </div>
+            <div class="row mt-2">
+                <div><label><small>Remark</small></label></div>
+
+                <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                    <textarea style="width: 100%;" rows="2" cols="30" pInputTextarea [(ngModel)]="remarks1"></textarea>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="RenewalYesNo=='Y'">
+            <!-- <div class="row mt-2">
+
+                    <div><label><small>Payment Type</small></label></div>
+                    <p-dropdown styleClass="branch-drop" appendTo="body" [options]="payment_type_list"
+                        [(ngModel)]="conversion" optionValue="Code" optionLabel="CodeDesc" />
+
+                </div>
+                <div class="row mt-2">
+                    <div><label><small>Conversion Date</small></label></div>
+
+                    <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
+                        <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="conversion_date"
+                            [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"></p-calendar>
+                    </div>
+
+                </div> -->
+            <div class="row mt-2">
+                <div><label><small>Remark</small></label></div>
+
+                <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                    <textarea style="width: 100%;" rows="2" cols="30" pInputTextarea [(ngModel)]="remarks1"></textarea>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <!-- <div class="row mt-2">
+                <div><label><small>Remark</small></label></div>
+
+                <div style="margin: 0px 0px 0px -5px; width: 100%;">
+                    <textarea style="width: 100%;" rows="2" cols="30" pInputTextarea [(ngModel)]="remarks"></textarea>
+                </div>
+
+            </div> -->
+        <div class="row text-end mt-5">
+            <div class="col-12">
+                <p-button styleClass="cutomer-btn" label="Close" severity="secondary"
+                    (onClick)="updateRenewal_dialog = false" />&nbsp;&nbsp;&nbsp;
+                <p-button styleClass="cutomer-btn" label="Submit" (onClick)="updatePolicyLossOrConversion()" />
+            </div>
+
+        </div>
+    </div>
+
+</p-dialog>

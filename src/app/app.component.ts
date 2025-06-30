@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CustomLoadingService } from './services/custom-loading.service';
 import { SidebarService } from './services/sidebar.service';
+import { SharedService } from './services/shareService';
+import { config } from '../app/helpers/appconfig';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,29 +17,35 @@ export class AppComponent implements AfterContentChecked {
   title = 'RenewalUI';
   public loading$!: Observable<any>;
   items: MenuItem[] | undefined;
-  showSidebar = true;
+  public CommonApiUrl: any = config.CommonApiUrl;
+  showSidebar = false;
   userDetails: any
+  currentUrl: any
   constructor(private router: Router,
     private cdr: ChangeDetectorRef,
+    private shared: SharedService,
     //  private sessionStorageService: SessionStorageService,
     public customLoder: CustomLoadingService, private sidebarService: SidebarService,
   ) {
 
     this.sidebarService.userType$.subscribe(value => {
 
-      this.userDetails = value
+      let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
+      this.userDetails = d?.Result;
       if (this.userDetails) {
-        if (this.userDetails[0]?.userType != 'Opration-Head') {
+        if (this.userDetails.UserType == 'Issuer') {
           this.showSidebar = false
         }
         else {
-          this.showSidebar = true;
+          this.showSidebar = false;
         }
       }
 
     });
   }
   ngOnInit(): void {
+    this.loading$ = this.customLoder.loader;
+    this.customLoder.loader.subscribe(val => console.log('Loader status:', val));
     this.userTypeCheck();
     this.items = [
       {
@@ -48,50 +57,22 @@ export class AppComponent implements AfterContentChecked {
         label: 'Products',
         icon: 'pi pi-shopping-bag',
         command: () => this.onProductClick()
-      },
-      // {
-      //   label: 'Product',
-      //   icon: 'pi-shopping-cart',
-      //   items: [
-      //     {
-      //       label: 'Components',
-      //       icon: 'pi pi-bolt'
-      //     },
-      //     {
-      //       label: 'Blocks',
-      //       icon: 'pi pi-server'
-      //     },
-      //     {
-      //       label: 'UI Kit',
-      //       icon: 'pi pi-pencil'
-      //     },
-      //     {
-      //       label: 'Templates',
-      //       icon: 'pi pi-palette',
-      //       items: [
-      //         {
-      //           label: 'Apollo',
-      //           icon: 'pi pi-palette'
-      //         },
-      //         {
-      //           label: 'Ultima',
-      //           icon: 'pi pi-palette'
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // },
-      // {
-      //   label: 'Contact',
-      //   icon: 'pi pi-envelope'
-      // }
+      }
     ]
+  }
+  get showNavBar(): boolean {
+    return this.currentUrl !== '/home' && this.currentUrl !== '/view-policy-details' && this.currentUrl !=='/risk-details?status=customer';
   }
   onDashboardClick() {
     this.router.navigate(['/dashboard'])
   }
   onProductClick() {
     this.router.navigate(['/products'])
+  }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.currentUrl = this.router.url;
+    });
   }
 
   ngAfterContentChecked() {
@@ -119,22 +100,47 @@ export class AppComponent implements AfterContentChecked {
 
   userTypeCheck() {
     // this.sidebarService.userType$.subscribe(value => {
-      // let d: any = value
-      // if (d) {
-      //   if (d[0]?.userCode == 'Broker') {
-      //     this.router.navigate(['/branch-dashboard'])
-      //   }
-      //   else if (d[0]?.userCode == 'Issuer') {
-      //     this.router.navigate(['/products'])
-      //   }
-      //   else {
-      //     this.router.navigate(['/dashboard'])
-      //   }
-      // }
-      // else {
-      //   this.router.navigate(['/dashboard'])
-      // }
+    // let d: any = value
+    // if (d) {
+    //   if (d[0]?.userCode == 'Broker') {
+    //     this.router.navigate(['/branch-dashboard'])
+    //   }
+    //   else if (d[0]?.userCode == 'Issuer') {
+    //     this.router.navigate(['/products'])
+    //   }
+    //   else {
+    //     this.router.navigate(['/dashboard'])
+    //   }
+    // }
+    // else {
+    //   this.router.navigate(['/dashboard'])
+    // }
 
     // });
+  }
+  getMenuList() {
+    const urlLink = `${this.CommonApiUrl}admin/getmenulist`;
+    const ReqObj = {
+      LoginId: this.userDetails.LoginId,
+      UserType: this.userDetails.UserType,
+      SubUserType: this.userDetails.SubUserType,
+      InsuranceId: this.userDetails.InsuranceId,
+      ProductId: this.userDetails.productId,
+    };
+    this.shared.onPostMethodBearerSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        console.log(data, "menulist");
+        if (data.Result) {
+          let filteredList = data.Result.filter((ele: { ProductId: any; }) => ele.ProductId == this.userDetails.productId);
+          sessionStorage.setItem('MenuList', JSON.stringify(filteredList))
+          // this.onSelectProduct();
+
+        }
+      },
+
+      (err: any) => {
+        console.log(err);
+      },
+    );
   }
 }

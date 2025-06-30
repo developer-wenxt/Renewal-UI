@@ -1,10 +1,11 @@
 .router-container {
-    transition: margin-left 0.3s ease;
-    padding-top: 100px; 
-    // max-height: 100vh;
-    // overflow: auto;
+  transition: margin-left 0.3s ease;
 }
 
-// .router-container {
-//   transition: margin-left 0.3s ease;
-// }
+.router-container.with-padding {
+  padding-top: 100px;
+}
+
+.router-container.no-padding {
+  padding-top: 0;
+}

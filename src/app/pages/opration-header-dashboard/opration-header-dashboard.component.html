@@ -2,97 +2,57 @@
 <div class="container-fluid">
     <div class="card overall-card mt-3">
         <div class="row mt-2 mb-2 ms-2 dashboard-header">
-            <h6>Dashboard</h6>
+            <h6>Renewal Dashboard</h6>
         </div>
         <div class="row">
-            <!-- <div class="col-md-4 mt-2 ms-2 col-sm-12 dashboard-buttons">
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <div class="top-detail-card">
-                            <div class="row">
-                                <div class="col-9 text-start">
-                                    <div>Total</div>
-                                    <div><b>{{(totalPolicyCount !== null && totalPolicyCount !== undefined) ?
-                                            totalPolicyCount.toString() : '0'}}</b></div>
-                                </div>
-                                <div class="col-3 text-end">
-                                    <i class="icon-color bi bi-bar-chart-line"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <div class="top-detail-card">
-                            <div class="row">
-                                <div class="col-9 text-start">
-                                    <div>Penidng</div>
-                                    <div><b>{{(totalPending !== null && totalPending !== undefined) ?
-                                            totalPending.toString() :
-                                            '0'}}</b></div>
-                                </div>
-                                <div class="col-3 text-end">
-                                    <i class="text-warning bi-card-checklist "></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <div class="top-detail-card">
-                            <div class="row">
-                                <div class="col-9 text-start">
-                                    <div>Lost</div>
-                                    <div><b>{{(totalLost !== null && totalLost !== undefined) ? totalLost.toString() :
-                                            '0'}}</b></div>
-                                </div>
-                                <div class="col-3 text-end">
-                                    <i class="text-danger bi bi-graph-down-arrow"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-             -->
-            <div class="col-md-4 mt-2 col-sm-12 dashboard-buttons">
+            <div class="col-md-5 mt-2 ms-2 col-sm-12 dashboard-buttons">
                 <div class="row g-3 justify-content-center">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-3">
                         <div class="top-detail-card card-total text-center">
                             <div class="d-flex align-items-center justify-content-between px-2">
                                 <div class="text-start">
                                     <div class="label">Total</div>
                                     <div class="value">{{ totalPolicyCount ?? '0' }}</div>
                                 </div>
-                                <i class="bi bi-bar-chart-line icon-lg icon-total"></i>
+                                <i class="bi bi-bar-chart-line icon-lg icon-total icon-color"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-3">
+                        <div class="top-detail-card card-lost text-center">
+                            <div class="d-flex align-items-center justify-content-between px-2">
+                                <div class="text-start">
+                                    <div class="label">Completed</div>
+                                    <div class="value">{{ totalSuccess ?? '0' }}</div>
+                                </div>
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
                         <div class="top-detail-card card-pending text-center">
                             <div class="d-flex align-items-center justify-content-between px-2">
                                 <div class="text-start">
                                     <div class="label">Pending</div>
                                     <div class="value">{{ totalPending ?? '0' }}</div>
                                 </div>
-                                <i class="bi bi-card-checklist icon-lg icon-pending"></i>
+                                <i class="bi bi-card-checklist icon-lg icon-pending text-warning"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-3">
                         <div class="top-detail-card card-lost text-center">
                             <div class="d-flex align-items-center justify-content-between px-2">
                                 <div class="text-start">
                                     <div class="label">Lost</div>
                                     <div class="value">{{ totalLost ?? '0' }}</div>
                                 </div>
-                                <i class="bi bi-graph-down-arrow icon-lg icon-lost"></i>
+                                <i class="bi bi-graph-down-arrow icon-lg icon-lost text-danger"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-1 col-sm-12"></div>
             <div class="col-6 text-end mt-2 ms-5">
                 <p-calendar [(ngModel)]="from_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                     placeholder="From Date" [showIcon]="true" inputId="fromDate"
@@ -103,13 +63,13 @@
         </div>
         <div class="row mt-2 p-2">
             <div class="col-md-6 col-sm-12  ">
-                <div class="card p-2">
+                <div class="card  p-2">
                     <div #chartContainer id="chart-container" style="height: 300px; max-width: 100%;"></div>
                 </div>
             </div>
 
             <div class="col-md-6 col-sm-12">
-                <div class="card p-2">
+                <div class="card  p-2">
                     <p-table #dt2 [value]="ResponseData" dataKey="id" [rows]="10" [rowsPerPageOptions]="[5,10]"
                         [paginator]="true"
                         [globalFilterFields]="['DivisionName', 'Lost', 'Pending', 'TotalPolicyCount']"
@@ -130,7 +90,7 @@
                         <ng-template pTemplate="header">
                             <tr>
                                 <th pSortableColumn="DivisionName"
-                                    style="width:40%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:32%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Division Name <p-sortIcon field="DivisionName"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="Lost"
@@ -141,10 +101,15 @@
                                     style="width:18%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Pending <p-sortIcon field="Pending"></p-sortIcon>
                                 </th>
+                                <th pSortableColumn="Success"
+                                    style="width:20%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    Completed <p-sortIcon field="Success"></p-sortIcon>
+                                </th>
                                 <th pSortableColumn="TotalPolicyCount"
-                                    style="width:15%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:18%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Total <p-sortIcon field="TotalPolicyCount"></p-sortIcon>
                                 </th>
+
                                 <th
                                     style="width:15%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     View
@@ -159,6 +124,8 @@
                                     customer.DivisionCode }}</td>
                                 <td style="font-size: 11px !important; text-align: center;">{{ customer.Lost }}</td>
                                 <td style="font-size: 11px !important; text-align: center;">{{ customer.Pending }}
+                                </td>
+                                <td style="font-size: 11px !important; text-align: center;">{{ customer.Success}}
                                 </td>
 
                                 <td style="font-size: 11px !important; text-align: center;">{{customer.TotalPolicyCount
@@ -186,7 +153,7 @@
 </div>
 
 
-<p-dialog header="Broker List" [modal]="true" [(visible)]="visible" [style]="{ width: '80%' }">
+<p-dialog header="Broker List" [modal]="true" [(visible)]="visible" [style]="{ width: '80%', overflow: 'auto !important' }">
 
 
     <p-table #dt4 [value]="tableList" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]" [paginator]="true"
@@ -213,7 +180,7 @@
                     Broker Code <p-sortIcon field="PolicyNumber"></p-sortIcon>
                 </th>
                 <th pSortableColumn="CustomerName"
-                    style="width:21%;font-size:12px; text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                    style="width:21%;font-size:12px;  background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                     Broker Name <p-sortIcon field="CustomerName"></p-sortIcon>
                 </th>
                 <th pSortableColumn="InsuredMobile"
@@ -222,7 +189,11 @@
                 </th>
                 <th pSortableColumn="ProductName"
                     style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
-                    Penidng <p-sortIcon field="ProductName"></p-sortIcon>
+                    Pending <p-sortIcon field="ProductName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Success"
+                    style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                    Completed <p-sortIcon field="Success"></p-sortIcon>
                 </th>
                 <th pSortableColumn="PolicyEndDate"
                     style="width:9%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
@@ -238,9 +209,10 @@
         <ng-template pTemplate="body" let-customer>
             <tr style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
                 <td style="font-size: 11px !important;">{{ customer.PolSrcCode }}</td>
-                <td style="font-size: 11px !important; text-align: center;">{{ customer.PolSrcName }}</td>
+                <td style="font-size: 11px !important;">{{ customer.PolSrcName }}</td>
                 <td style="font-size: 11px !important;text-align: center;">{{ customer.Lost }}</td>
                 <td style="font-size: 11px !important;text-align: center;">{{ customer.Pending}}</td>
+                <td style="font-size: 11px !important;text-align: center;">{{ customer.Success}}</td>
                 <td style="font-size: 11px !important;text-align: center;">{{ customer.SourceCount }}</td>
                 <td style="font-size: 11px !important;text-align: center;">
                     <i class="bi bi-eye table-icon-btn" (click)="view(customer)"></i>

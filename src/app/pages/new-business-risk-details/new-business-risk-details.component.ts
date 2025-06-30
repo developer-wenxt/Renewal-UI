@@ -12,12 +12,12 @@ import { Pipe, PipeTransform } from '@angular/core';
   styleUrl: './new-business-risk-details.component.scss'
 })
 export class NewBusinessRiskDetailsComponent {
- @Pipe({
+  @Pipe({
     name: 'numberComma'
   })
   @ViewChild('dt1') dt1!: Table;
   @ViewChild('dt2') dt2!: Table;
-  public CommonApiUrl: any = config.CommonApiUrl;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
   PolicyNumber: any;
   visible: boolean = false;
   AddCover_dialog: boolean = false;
@@ -50,7 +50,7 @@ export class NewBusinessRiskDetailsComponent {
     let ReqObj = {
       "PolicyNumber": this.PolicyNumber
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getRiskIdWithPolicyNo`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getRiskIdWithPolicyNo`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Result) {
@@ -68,15 +68,16 @@ export class NewBusinessRiskDetailsComponent {
     this.IsView = 'cover'
     let ReqObj = {
       "PolicyNumber": item.PolicyNumber,
+      "SectionCode": item.SectionCode,
       "RiskId": item.RiskId
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getDueRenewCover`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getDueRenewCover`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Result) {
           this.visible = true;
           this.coverList = data.Result;
-                 this.coverList = data.Result.map((cover: any) => {
+          this.coverList = data.Result.map((cover: any) => {
             return {
               ...cover,
               SumInsured: this.parseToNumber(cover.SumInsured),
@@ -103,7 +104,7 @@ export class NewBusinessRiskDetailsComponent {
       "PolicyNumber": item.PolicyNumber,
       "RiskId": item.RiskId
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getDueRenewSMI`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getDueRenewSMI`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Result) {
@@ -166,9 +167,10 @@ export class NewBusinessRiskDetailsComponent {
         "SrNo": this.udpateCoverSrNo,
         "SumInsuredModified": this.SumInsuredModified,
         "RateModified": this.RateModified,
-        "PremiumModified": this.PremiumModified
+        "PremiumModified": this.PremiumModified,
+        "UpdatedBy": this.userDetails?.UserType
       }
-      let urlLink = `${this.CommonApiUrl}renewaltrack/updateDueRenewCover`;
+      let urlLink = `${this.RenewalApiUrl}renewaltrack/updateDueRenewCover`;
       this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
         (data: any) => {
           if (data.Result) {
@@ -188,7 +190,7 @@ export class NewBusinessRiskDetailsComponent {
         "RateModified": this.RateModified,
         "PremiumModified": this.PremiumModified
       }
-      let urlLink = `${this.CommonApiUrl}renewaltrack/updateDueRenewSmi`;
+      let urlLink = `${this.RenewalApiUrl}renewaltrack/updateDueRenewSmi`;
       this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
         (data: any) => {
           if (data.Result) {
@@ -235,7 +237,7 @@ export class NewBusinessRiskDetailsComponent {
       event.preventDefault();
     }
   }
-    parseToNumber(value: any): number | null {
+  parseToNumber(value: any): number | null {
     if (value === null || value === undefined || value === '') return null;
     const parsed = Number(value);
     return isNaN(parsed) ? null : parsed;

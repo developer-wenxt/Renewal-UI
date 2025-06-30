@@ -69,15 +69,6 @@
     color: white !important;
 }
 
-/* ::ng-deep.p-menubar .p-menuitem-link:hover {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    overflow: hidden;
-    position: relative;
-    background: none;
-} */
 
 .p-menuitem-link.selected {
     background-color: #8bb2ff !important;
@@ -88,7 +79,27 @@
     transition: background 0.3s ease;
 }
 
+::ng-deep .p-menubar .p-submenu-list {
+    min-width: 240px !important;
+    padding: 0.5rem 0 !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+}
 
+/* Submenu item spacing and hover effect */
+::ng-deep .p-menubar .p-submenu-list .p-menuitem-link {
+    padding: 0.3rem 1rem !important;
+    font-size: 14px !important;
+    color: #333 !important;
+}
+
+::ng-deep .p-menubar .p-submenu-list .p-menuitem-link:hover {
+    background-color: #e3f2fd !important;
+    color: #007bff !important;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
 
 
 @media screen and (max-width: 767px) {
@@ -119,4 +130,19 @@
         z-index: 1000;
         background: #fff;
     }
+}
+
+.imgwid {
+    width: 118px !important;
+    height: 43px !important;
+    margin-top: -12px;
+}
+h5 {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  margin-top: -12px;
+}
+
+.text-white {
+  color: #fff !important;
 }

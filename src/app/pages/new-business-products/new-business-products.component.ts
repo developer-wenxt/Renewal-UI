@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 })
 export class NewBusinessProductsComponent {
   totalPolicyCount: number = 0;
+  totalPremium: number = 0;
   totalPending: number = 0;
 
   totalLost: number = 0;
@@ -25,9 +26,10 @@ export class NewBusinessProductsComponent {
   PolSrcName: any[] = [];
   ExpiredCustomers!: any[];
   TopPremiumcustomers: any[] = [];
+  Selected_division:any
   responsiveOptions: any[] = [];
   dashborad_selectted_division: any
-  public CommonApiUrl: any = config.CommonApiUrl; constructor(private shared: SharedService, private sidebarService: SidebarService, private datePipe: DatePipe, private router: Router,) {
+  public RenewalApiUrl: any = config.RenewalApiUrl; constructor(private shared: SharedService, private sidebarService: SidebarService, private datePipe: DatePipe, private router: Router,) {
 
     this.overall_product_list = [];
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
@@ -38,6 +40,7 @@ export class NewBusinessProductsComponent {
       this.to_date = sessionStorage.getItem('to_date_op') as any;
       this.DivisionList = JSON.parse(sessionStorage.getItem('DashboardResponseData') as any);
       let division = JSON.parse(sessionStorage.getItem('division') as any);
+       this.Selected_division = division;
       console.log(division, "divisiondivisiondivision");
       this.PolSrcName = division.PolSrcName;
       this.dashborad_selectted_division = division.PolSrcCode
@@ -120,7 +123,7 @@ export class NewBusinessProductsComponent {
       to_date = this.formatDate(this.to_date);
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+      "DivisionCode": this.Selected_division.DivisionCode,
         // "DivisionCode": '101',
         // "SourceCode": this.userDetails[0].SourceCode,
         "SourceCode": this.dashborad_selectted_division,
@@ -138,8 +141,8 @@ export class NewBusinessProductsComponent {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getproductsbycompanyanddivision`;
-    // let urlLink = `${this.CommonApiUrl}nbtrack/getSourcebyCompanyandDivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getproductsbycompanyanddivision`;
+    // let urlLink = `${this.RenewalApiUrl}nbtrack/getSourcebyCompanyandDivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -149,6 +152,7 @@ export class NewBusinessProductsComponent {
           this.totalPending = data.reduce((sum: number, item: any) => sum + parseInt(item.Pending, 10), 0);
           this.totalLost = data.reduce((sum: number, item: any) => sum + parseInt(item.Lost, 10), 0);
           this.totalPolicyCount = data.reduce((sum: number, item: any) => sum + parseInt(item.ProductCount, 10), 0);
+          this.totalPremium = data.reduce((sum: number, item: any) => sum + parseInt(item.TotalPremium, 10), 0);
           // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
           //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
         }
@@ -212,7 +216,7 @@ export class NewBusinessProductsComponent {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getsourcesbyproduct`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getsourcesbyproduct`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -250,7 +254,7 @@ export class NewBusinessProductsComponent {
   //     }
   //   }
 
-  //   let urlLink = `${this.CommonApiUrl}nbtrack/getdivisionbycompany`;
+  //   let urlLink = `${this.RenewalApiUrl}nbtrack/getdivisionbycompany`;
   //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
   //     (data: any) => {
 
@@ -289,7 +293,7 @@ export class NewBusinessProductsComponent {
       "EndDate": this.to_date
 
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getTopTenPolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getTopTenPolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -306,8 +310,8 @@ export class NewBusinessProductsComponent {
   getExpiredPriumCustomerList() {
 
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getExpiryPolicyDetails/101`;
-    //  let urlLink = `${this.CommonApiUrl}nbtrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getExpiryPolicyDetails/101`;
+    //  let urlLink = `${this.RenewalApiUrl}nbtrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
 

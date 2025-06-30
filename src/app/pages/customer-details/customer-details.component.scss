@@ -66,3 +66,44 @@
         color: #0056b3;
     }
 }
+
+.stacked-bar-container {
+  width: 100%;
+  max-width: 600px;
+  margin: -3px auto;
+  font-family: Arial, sans-serif;
+}
+
+.stacked-bar {
+  display: flex;
+  height: 18px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.bar {
+  height: 100%;
+  font-size: 10px;
+  line-height: 18px;
+  padding-left: 6px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+}
+
+.success {
+  background-color: #0bb767;
+}
+
+.pending {
+  background-color: #ffaa00;
+}
+
+.lost {
+  background-color: #e60000;
+}

@@ -9,13 +9,110 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
   <!-- <div id="google_translate_element"></div> -->
-  <app-root></app-root>
+  <app-root>
+    <div class="overlay"></div>
+    <div class='visionloading'>
+      <div class="loader-box">
+        <div class="spinner-loader-gif">
+          <img src='./assets/loader-2.gif'>
+        </div>
+        <div class="spinner-loader-img">
+          <div class='img-tag'></div>
+        </div>
+      </div>
+    </div>
+  </app-root>
+
+  <style>
+    @-webkit-keyframes spin {
+      0% {
+        transform: rotate(0)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
+
+    @-moz-keyframes spin {
+      0% {
+        -moz-transform: rotate(0)
+      }
+
+      100% {
+        -moz-transform: rotate(360deg)
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0)
+      }
+
+      100% {
+        transform: rotate(360deg)
+      }
+    }
+
+    .spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1003;
+      background: #000000;
+      overflow: hidden
+    }
+
+    .spinner div:first-child {
+      display: block;
+      position: relative;
+      left: 50%;
+      top: 50%;
+      width: 150px;
+      height: 150px;
+      margin: -75px 0 0 -75px;
+      border-radius: 50%;
+      box-shadow: 0 3px 3px 0 rgba(255, 56, 106, 1);
+      transform: translate3d(0, 0, 0);
+      animation: spin 2s linear infinite
+    }
+
+    .spinner div:first-child:after,
+    .spinner div:first-child:before {
+      content: '';
+      position: absolute;
+      border-radius: 50%
+    }
+
+    .spinner div:first-child:before {
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      box-shadow: 0 3px 3px 0 rgb(255, 228, 32);
+      -webkit-animation: spin 3s linear infinite;
+      animation: spin 3s linear infinite
+    }
+
+    .spinner div:first-child:after {
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      box-shadow: 0 3px 3px 0 rgba(61, 175, 255, 1);
+      animation: spin 1.5s linear infinite
+    }
+  </style>
   <!-- <script>
     document.cookie = 'googtrans=/en/en; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
     function googleTranslateElementInit() {

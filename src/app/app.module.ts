@@ -22,7 +22,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthService } from './helpers/auth/Auth/auth.service';
-import { HttpInterceptorService } from './HttpInterceptors/http-interceptor.service';
+// import { HttpInterceptorService } from './HttpInterceptors/http-interceptor.service';
 import { MenubarModule } from 'primeng/menubar';
 import { CustomerDetailsComponent } from './pages/customer-details/customer-details.component';
 import { ProductsComponent } from './pages/products/products.component';
@@ -42,7 +42,19 @@ import { NewBusinessCustomerDetailsComponent } from './pages/new-business-custom
 import { NewBusinessRiskDetailsComponent } from './pages/new-business-risk-details/new-business-risk-details.component';
 import { NumberCommaPipe } from './pages/pipes/number-comma.pipe';
 import { NewBusinessBrokerComponent } from './pages/new-business-broker/new-business-broker.component';
-
+import { HttpInterceptorService } from '../app/HttpInterceptors/http-interceptor.service';
+import { HttpClientModule } from '@angular/common/http';
+import { RenewalApprovalComponent } from './pages/renewal-approval/renewal-approval.component';
+import { HomeComponent } from './pages/home/home.component';
+import { TooltipModule } from 'primeng/tooltip';
+import { CustomerViewPolicyDetailsComponent } from './pages/customer-view-policy-details/customer-view-policy-details.component';
+import { TabViewModule } from 'primeng/tabview';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +73,10 @@ import { NewBusinessBrokerComponent } from './pages/new-business-broker/new-busi
     NewBusinessRiskDetailsComponent,
     NumberCommaPipe,
     NewBusinessBrokerComponent,
+    RenewalApprovalComponent,
+    HomeComponent,
+    CustomerViewPolicyDetailsComponent,
+    SmsCountDetailsComponent,
 
   ],
   imports: [
@@ -68,16 +84,23 @@ import { NewBusinessBrokerComponent } from './pages/new-business-broker/new-busi
     CarouselModule,
     BadgeModule,
     CardModule,
+    ConfirmDialogModule,
+    RadioButtonModule,
     AccordionModule,
     MenubarModule,
     MenuModule,
     DialogModule,
+    ConfirmDialogModule,
+    TabViewModule,
     BrowserAnimationsModule,
     ButtonModule,
+    CheckboxModule,
+    TooltipModule,
     CalendarModule,
     InputIconModule,
     ProgressBarModule,
     OverlayPanelModule,
+    ConfirmPopupModule,
     SelectButtonModule,
     ToastModule,
     FormsModule,
@@ -86,15 +109,17 @@ import { NewBusinessBrokerComponent } from './pages/new-business-broker/new-busi
     TagModule,
     IconFieldModule,
     TableModule,
+    HttpClientModule,
     AppRoutingModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,
-      multi: true,
+      multi: true
     },
     DatePipe,
+    ConfirmationService,MessageService,
     provideAnimations(), provideHttpClient(), AuthService,
     { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],

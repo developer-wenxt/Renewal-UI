@@ -1,0 +1,23 @@
+.topbar {
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topbar-info i {
+  color: #ffc107;
+  margin-right: 6px;
+}
+
+.topbar .separator {
+  padding: 0 8px;
+  color: #ccc;
+}
+
+.social-icon {
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #ffc107;
+}

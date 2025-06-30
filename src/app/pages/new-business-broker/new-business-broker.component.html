@@ -2,6 +2,9 @@
 
     <div class="container-fluid">
         <div class="card overall-card mt-3 p-3">
+            <div class="row mt-2 mb-1 ms-2 dashboard-header">
+                <h6 style="font-weight: bold;font-size: 1.1rem;">New Business Dashboard</h6>
+            </div>
             <div class="mt-2 p-2">
                 <div class="row">
                     <div class="col-md-11">
@@ -38,10 +41,24 @@
                         </div>
                         <div class="col-md-4 text-center">
                             <div class="top-detail-card">
+                                <div class="row">
+                                    <div class="col-9 text-start">
+                                        <div>Total Premium</div>
+                                        <div><b>{{ totalPremium ?? '0' | numberComma }}</b></div>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        <i class="icon-color bi bi-cash text-success"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4 text-center">
+                            <div class="top-detail-card">
 
                                 <div class="row">
                                     <div class="col-9 text-start">
-                                        <div>Penidng</div>
+                                        <div>Pending</div>
                                         <div><b>{{(totalPending !== null && totalPending !== undefined) ?
                                                 totalPending.toString() :
                                                 '0'}}</b></div>
@@ -67,7 +84,7 @@
                                 </div>
 
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- <div class="col-md-4 mt-2 col-sm-12 dashboard-buttons">
@@ -153,17 +170,21 @@
                                         style="width:34%;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
                                         Product Name <p-sortIcon field="ProductName"></p-sortIcon>
                                     </th>
-                                    <th pSortableColumn="Lost"
+                                    <!-- <th pSortableColumn="Lost"
                                         style="width:16%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
                                         Lost <p-sortIcon field="Lost"></p-sortIcon>
                                     </th>
                                     <th pSortableColumn="Pending"
                                         style="width:18%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
                                         Pending <p-sortIcon field="Pending"></p-sortIcon>
-                                    </th>
+                                    </th> -->
                                     <th pSortableColumn="TotalPolicyCount"
                                         style="width:16%;text-align: center;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
                                         Total <p-sortIcon field="TotalPolicyCount"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="TotalPremium"
+                                        style="width:16%;text-align: end;background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important; font-size:12px;">
+                                        Total Premium <p-sortIcon field="TotalPremium"></p-sortIcon>
                                     </th>
                                 </tr>
                             </ng-template>
@@ -176,12 +197,16 @@
                                         customer.DivisionCode }}</td>
                                     <td *ngIf="this.userDetails.UserType == 'Broker'"
                                         style="font-size: 11px !important;">{{ customer.ProductName }} </td>
-                                    <td style="font-size: 11px !important;text-align: center;">{{ customer.Lost }}</td>
+                                    <!-- <td style="font-size: 11px !important;text-align: center;">{{ customer.Lost }}</td>
                                     <td style="font-size: 11px !important;text-align: center;">{{ customer.Pending }}
-                                    </td>
-                                    <td style="font-size: 11px !important;text-align: center;">{{ (+customer.Pending) +
+                                    </td> -->
+                                    <!-- <td style="font-size: 11px !important;text-align: center;">{{ (+customer.Pending) +
                                         (+customer.Lost) }}
-                                    </td>
+                                    </td> -->
+                                    <td style="font-size: 11px !important;text-align: center;">{{ customer.ProductCount
+                                        }}</td>
+                                    <td style="font-size: 11px !important;text-align: end;">{{ customer.TotalPremium
+                                        |numberComma}}</td>
                                 </tr>
                             </ng-template>
 
@@ -313,16 +338,36 @@
                         [tableStyle]="{ 'min-width': '100%' }">
                         <ng-template pTemplate="caption">
                             <div class="row">
-                                <div class="col-md-4 text-start"></div>
+                                <div class="col-md-4 text-start">
+                                    <div *ngIf="this.userDetails.UserType != 'Broker'"
+                                        class="flex  justify-content-center">
+                                        <div style="margin-left: 15px;"><b><small>Select Broker</small></b></div>
+                                        <p-dropdown styleClass="division-drop"
+                                            (onChange)="filterChange(dashborad_selectted_agent)"
+                                            [options]="ResponseData" [(ngModel)]="dashborad_selectted_agent"
+                                            optionValue="SourceCode" optionLabel="SourceName"
+                                            placeholder="Broker"></p-dropdown>
+                                    </div>
+                                    <div *ngIf="this.userDetails.UserType == 'Broker'"
+                                        class="flex  justify-content-center">
+                                        <div style="margin-left: 15px;"><b><small>Select Product</small></b></div>
+                                        <p-dropdown styleClass="division-drop"
+                                            (onChange)="filterChange(dashborad_selectted_agent)"
+                                            [options]="ResponseData" [(ngModel)]="dashborad_selectted_agent"
+                                            optionValue="ProductCode" optionLabel="ProductName"
+                                            placeholder="Product"></p-dropdown>
+                                    </div>
+                                </div>
                                 <div class="col-md-8 text-end">
                                     <p-iconField iconPosition="left" class="ml-auto">
                                         <p-inputIcon>
                                             <i class="pi pi-search"></i>
                                         </p-inputIcon>
-                                        <input pInputText type="text" style="height: 40px; margin-top: 15px"
+                                        <input pInputText type="text" style="height: 40px; margin-top: 15px;"
                                             (input)="onGlobalFilter1($event)" placeholder="Search keyword" />
                                     </p-iconField>
                                 </div>
+
                             </div>
                         </ng-template>
 
@@ -334,11 +379,11 @@
                                         field="PolicyNumber"></p-sortIcon></th>
                                 <th pSortableColumn="ProductName">Product <p-sortIcon field="ProductName"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
+                                <th pSortableColumn="PolicyEndDate">Inception Date <p-sortIcon
                                         field="PolicyEndDate"></p-sortIcon></th>
                                 <th pSortableColumn="TotalPremium">Premium <p-sortIcon
                                         field="TotalPremium"></p-sortIcon></th>
-                                <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th>
+                                <!-- <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th> -->
                                 <th *ngIf="userDetails.UserType !== 'Opration-Head'">Action</th>
                             </tr>
                         </ng-template>
@@ -350,14 +395,15 @@
                                 <td>{{ customer.ProductName }}</td>
                                 <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
                                 <td>{{ customer.TotalPremium | numberComma }}</td>
-                                <td>
+                                <!-- <td>
                                     <p-tag [value]="customer.CurrentStatus ? customer.CurrentStatus : 'RP'"
                                         [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
-                                </td>
+                                </td> -->
                                 <td *ngIf="userDetails.UserType !== 'Opration-Head'">
-                                    <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
-                                    <i class="bi bi-plus-circle table-icon-btn me-2" (click)="addClick(customer)"></i>
-                                    <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
+                                    <!-- <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
+                                    <i *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-2"
+                                        (click)="addClick(customer)"></i> -->
+                                    <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer,'view')"></i>
                                 </td>
                             </tr>
                         </ng-template>
@@ -372,12 +418,18 @@
 
                 <!-- 📱 Mobile Responsive Card View -->
                 <div class="mobile-view">
-                    <div *ngIf="customers_list.length > 0">
+                    <div><b><small>Select Product</small></b>
+                        <p-dropdown styleClass="division-drop-mobile"
+                            (onChange)="filterChange(dashborad_selectted_agent)" [options]="ResponseData"
+                            [(ngModel)]="dashborad_selectted_agent" optionValue="ProductCode" optionLabel="ProductName"
+                            placeholder="Product"></p-dropdown>
+                    </div>
+                    <div *ngIf="customers_list?.length > 0">
                         <div *ngFor="let customer of customers_list" class="customer-card p-3 mb-3">
                             <div class="field-row"><strong>Customer Name:</strong> {{ customer.CustomerName }}</div>
                             <div class="field-row"><strong>Policy No:</strong> {{ customer.PolicyNumber }}</div>
                             <div class="field-row"><strong>Product:</strong> {{ customer.ProductName }}</div>
-                            <div class="field-row"><strong>End Date:</strong> {{ customer.PolicyEndDate | date:
+                            <div class="field-row"><strong>Inception Date:</strong> {{ customer.PolicyEndDate | date:
                                 'dd/MM/yy' }}</div>
                             <div class="field-row"><strong>Premium:</strong> {{ customer.TotalPremium | numberComma }}
                             </div>
@@ -387,14 +439,15 @@
                                     [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
                             </div>
                             <div *ngIf="userDetails.UserType !== 'Opration-Head'" class="text-end mt-2">
-                                <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i>
-                                <i class="bi bi-plus-circle table-icon-btn me-3" (click)="addClick(customer)"></i>
+                                <!-- <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i>
+                                <i *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-3"
+                                    (click)="addClick(customer)"></i> -->
                                 <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div *ngIf="customers_list.length === 0" class="text-center mt-3 text-muted">
+                    <div *ngIf="customers_list?.length === 0" class="text-center mt-3 text-muted">
                         No data found.
                     </div>
                 </div>

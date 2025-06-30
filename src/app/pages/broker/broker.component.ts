@@ -19,6 +19,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
   private chartInstance: echarts.ECharts | null = null;
   private myChart!: echarts.ECharts;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
   public CommonApiUrl: any = config.CommonApiUrl;
   userDetails: any;
   PolSrcCode: any;
@@ -27,6 +28,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
   Add_dialog: boolean = false;
   totalPolicyCount: number = 0;
   totalPending: number = 0;
+  totalSuccess: number = 0;
   visible: boolean = false;
   totalLost: number = 0;
   from_date: any
@@ -56,6 +58,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
   Policy_type: any;
   sumInsured: any;
   checkFlow: any
+  ProductId: any;
 
   constructor(private shared: SharedService, private datePipe: DatePipe, private router: Router, private route: ActivatedRoute,) {
     this.stateOptions = [{ label: 'Lost', value: 'Loss' }, { label: 'Conversion', value: 'Conversion' }];
@@ -72,14 +75,15 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
     this.ProductData = JSON.parse(sessionStorage.getItem('SelecttedProduct') as any);
     this.userDetails = d.Result;
-    if (this.userDetails.UserType == 'Broker') {
-      const now = new Date();
-      now.setMonth(now.getMonth() - 1);
-      this.from_date = new Date(now);
-      const to_now = new Date();
-      this.to_date = new Date(to_now);
-      this.getSouceCode();
-    }
+    // if (this.userDetails.UserType == 'Broker') {
+    //   const now = new Date();
+    //   now.setMonth(now.getMonth() - 1);
+    //   this.from_date = new Date(now);
+    //   const to_now = new Date();
+    //   this.to_date = new Date(to_now);
+    //   // this.getSouceCode();
+    //   this.getDivisiondata();
+    // }
 
 
     this.route.queryParamMap.subscribe((params: any) => {
@@ -96,14 +100,17 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       const formattedFromDate = this.formatDate(this.from_date);
       const date1 = new Date(this.to_date);
       const formattedTodate = this.formatDate(this.to_date);
-      this.getSouceCode();
+      // this.getSouceCode();
+      this.getDivisiondata();
     }
     else {
       let fromdate = sessionStorage.getItem('from_date_op') as any;
       let todate = sessionStorage.getItem('to_date_op') as any;
-      this.getSouceCode();
+      // this.getSouceCode();
+
       this.from_date = new Date(fromdate);
       this.to_date = new Date(todate);
+      this.getDivisiondata();
     }
 
     this.reason_list = [
@@ -123,26 +130,26 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       }
     ]
   }
-  getSouceCode() {
+  // getSouceCode() {
 
-    let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
-    this.userDetails = d.Result;
-    let ReqObj = {
-      "LoginId": this.userDetails.LoginId
-    }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getSourceFromLogin`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
-        if (data) {
-          console.log(data, "LoginIdLoginIdLoginId");
-          if (data.SourceCode) {
-            this.PolSrcCode = data.SourceCode;
-            this.getDivisiondata();
-          }
-        }
+  //   let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
+  //   this.userDetails = d.Result;
+  //   let ReqObj = {
+  //     "LoginId": this.userDetails.LoginId
+  //   }
+  //   let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourceFromLogin`;
+  //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+  //     (data: any) => {
+  //       if (data) {
+  //         console.log(data, "LoginIdLoginIdLoginId");
+  //         if (data.SourceCode) {
+  //           this.PolSrcCode = data.SourceCode;
+  //           this.getDivisiondata();
+  //         }
+  //       }
 
-      })
-  }
+  //     })
+  // }
 
   getDivisiondata() {
     let ReqObj
@@ -163,15 +170,15 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         // "DivisionCode": '101',
-        "DivisionCode": this.userDetails.BranchCode,
-        "SourceCode": this.PolSrcCode,
+        "DivisionCode": this.userDetails.DivisionCode,
+        "SourceCode": this.userDetails.SourceCode,
         "StartDate": FromDate,
         "EndDate": ToDate
       }
     }
 
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -180,12 +187,17 @@ export class BrokerComponent implements OnInit, AfterViewInit {
           console.log(this.ResponseData, "ResponseData");
 
           this.dashborad_selectted_agent = data[0]?.ProductCode
-          this.getCustomerData(this.dashborad_selectted_agent);
+          if (this.dashborad_selectted_agent) {
+            this.getCustomerData(this.dashborad_selectted_agent);
+
+          }
           // this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
           this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
+          this.totalSuccess = data.reduce((sum: any, item: any) => sum + parseInt(item.Success, 10), 0);
           this.totalLost = data.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
-          this.totalPolicyCount = data.reduce((sum: number, item: any) =>
-            sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
+          // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
+          //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
+          this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.ProductCount, 10), 0);
 
           if (this.chartContainer) {
             window.addEventListener('resize', () => this.myChart.resize());
@@ -217,6 +229,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     let totalData: any = 0
     let pendingData: any = 0
     let lossData: any = 0
+    let completedData: any = 0
     if (this.ResponseData) {
 
 
@@ -236,9 +249,11 @@ export class BrokerComponent implements OnInit, AfterViewInit {
 
       pendingData = this.ResponseData.map((item: { Pending: string; }) => parseInt(item.Pending, 10) || 0);
       lossData = this.ResponseData.map((item: { Lost: string; }) => parseInt(item.Lost, 10) || 0);
-      totalData = this.ResponseData.map((item: { Pending: string; Lost: string; }) =>
-        (parseInt(item.Pending, 10) || 0) + (parseInt(item.Lost, 10) || 0)
-      );
+      totalData = this.ResponseData.map((item: { ProductCount: string; }) => parseInt(item.ProductCount, 10) || 0);
+      completedData = this.ResponseData.map((item: { Success: string; }) => parseInt(item.Success, 10) || 0);
+      // totalData = this.ResponseData.map((item: { Pending: string; Lost: string; }) =>
+      //   (parseInt(item.Pending, 10) || 0) + (parseInt(item.Lost, 10) || 0)
+      // );
 
     }
 
@@ -281,7 +296,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
    `
       },
       legend: {
-        data: ['Pending', 'Lost', 'Total']
+        data: ['Completed','Pending', 'Lost', 'Total']
       },
       toolbox: {
         show: true,
@@ -321,6 +336,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
           label: labelOption,
           emphasis: { focus: 'series' },
           itemStyle: {
+            borderRadius: [6, 6, 0, 0],
             color: {
               type: 'linear',
               x: 0,
@@ -336,11 +352,34 @@ export class BrokerComponent implements OnInit, AfterViewInit {
           data: totalData
         },
         {
+          name: 'Completed',
+          type: 'bar',
+          barGap: '20%',
+          label: labelOption,
+          emphasis: { focus: 'series' },
+          itemStyle: {
+            borderRadius: [6, 6, 0, 0],
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                { offset: 0, color: '#0bb767' },
+                { offset: 1, color: '#0bb767' }
+              ]
+            }
+          },
+          data: completedData
+        },
+        {
           name: 'Pending',
           type: 'bar',
           label: labelOption,
           emphasis: { focus: 'series' },
           itemStyle: {
+            borderRadius: [6, 6, 0, 0],
             color: {
               type: 'linear',
               x: 0,
@@ -361,6 +400,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
           label: labelOption,
           emphasis: { focus: 'series' },
           itemStyle: {
+            borderRadius: [6, 6, 0, 0],
             color: {
               type: 'linear',
               x: 0,
@@ -398,10 +438,10 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       ToDate = this.formatDate(this.to_date);
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.userDetails.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": value,
-        "SourceCode": this.PolSrcCode,
+        "SourceCode": this.userDetails.SourceCode,
         "StartDate": FromDate,
         "EndDate": ToDate
       }
@@ -435,7 +475,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getpolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getpolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -489,11 +529,13 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     }
   }
   editClick(data: any) {
+    this.ProductId = null;
     this.getCompanyList();
     this.PolicyNo = null;
     this.CurrentStatus = null;
     this.visible = true;
     this.PolicyNo = data?.PolicyNumber;
+    this.ProductId = data?.ProductCode;
     this.CurrentStatus = data?.CurrentStatus;
     this.getPaymentType();
   }
@@ -561,65 +603,111 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     this.PolicyNo = data?.PolicyNumber
     this.Add_dialog = true;
     this.getInsuranceTypeList();
-    this.getVehicelInfo();
+    // this.getVehicelInfo();
   }
   getCompanyList() {
     let ReqObj = {
-      "InsuranceId": '100020',
+      "InsuranceId": this.userDetails.InsuranceId,
       "ItemType": "CO_INSURURANCE"
     }
-    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
+    let urlLink = `${this.RenewalApiUrl}master/getbyitemvalue`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
         this.companyList = data.Result;
       })
   }
+  getReasonList() {
+    let ReqObj = {
+      "InsuranceId": this.userDetails.InsuranceId,
+      "ItemType": "LAST_REASONS"
+    }
+    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        this.reason_list = data.Result;
+      })
+  }
+
   UpdateCustomerStatus() {
+    let validatain: boolean = false
     let date: any = null;
     let sts: any = null;
     if (this.Typevalue == 'Loss') {
       date = this.loss_date
       sts = 'RR'
+      if (this.loss_type != null && this.loss_type != ''
+        && this.reason != null && this.reason != ''
+        && this.loss_date != null && this.loss_date != '') {
+        validatain = true;
+      }
+      else {
+        validatain = false;
+      }
     }
     else {
       date = this.conversion_date
       sts = 'RC'
-
+      if (this.conversion != null && this.conversion != ''
+        && this.conversion_date != null && this.conversion_date != '') {
+        validatain = true;
+      }
+      else {
+        validatain = false;
+      }
     }
     if (date) {
       date = this.datePipe.transform(date, 'yyyy-MM-dd');
     }
-    let ReqObj = {
-      "PolicyNumber": this.PolicyNo,
-      "RenewalDate": date,
-      "LossReason": this.reason,
-      "LossRemarks": this.remarks,
-      "Competitor": this.loss_type,
-      "CurrentStatus": sts,
-      "PaymentType": this.conversion
-    }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/updaterenewpremiapolicy`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
-        if (data.Message == 'UpdatedSuccessfully') {
-          this.visible = false;
-          if (this.userDetails[0].userType != 'Issuer') {
-            this.getDivisiondata();
+    if (validatain == true) {
+      let ReqObj = {
+        "PolicyNumber": this.PolicyNo,
+        "RenewalDate": date,
+        "LossReason": this.reason,
+        "LossRemarks": this.remarks,
+        "Competitor": this.loss_type,
+        "CurrentStatus": sts,
+        "PaymentType": this.conversion
+      }
+      let urlLink = `${this.RenewalApiUrl}renewaltrack/updaterenewpremiapolicy`;
+      this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+        (data: any) => {
+          if (data.Message == 'UpdatedSuccessfully') {
+            this.visible = false;
+            this.statusUpdateFormReset();
+            Swal.fire({
+              icon: 'info',
+              title: 'Validation',
+              html: 'Updated Successfully'
+            });
+            this.getCustomerData(null)
           }
           else {
-            // this.getBrokerwiseData(this.ProductData.ProductCode);
+            this.visible = false;
+            this.statusUpdateFormReset();
+            Swal.fire({
+              icon: 'error',
+              title: 'Validation',
+              html: data.Message
+            });
           }
-          Swal.fire({
-            icon: 'info',
-            title: 'Validation',
-            html: 'Updated Successfully'
-          });
+        },
+        (err: any) => { },
+      );
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation',
+        html: 'Invalid Form',
+        customClass: {
+          popup: 'my-zindex-alert'
         }
-      },
-      (err: any) => { },
-    );
+      });
+    }
+
   }
+
   getInsuranceTypeList() {
     let ReqObj = null, urlLink = null;
     // ReqObj = {
@@ -662,7 +750,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       "SumInsured": this.sumInsured,
       "CreatedBy": this.userDetails.UserType,
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/insertRenewProductInfo`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/insertRenewProductInfo`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'Success') {
@@ -673,15 +761,22 @@ export class BrokerComponent implements OnInit, AfterViewInit {
             html: 'Vehicle Added Successfully'
           });
         }
+        else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Validation',
+            html: data.Message
+          });
+        }
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
         // this.companyList = data.Result;
       })
   }
   getVehicelInfo() {
 
-    // let urlLink = `${this.CommonApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getRenewProductInfo?policyNo=${this.PolicyNo}`;
-    //  let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getRenewProductInfo?policyNo=${this.PolicyNo}`;
+    //  let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
         console.log(data, "dddddddd");
@@ -696,7 +791,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     let fromDate: any = this.formatDate(this.from_date);
     sessionStorage.setItem('from_date_op', fromDate);
     sessionStorage.setItem('to_date_op', toDate);
-      sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+    sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
     sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
     this.router.navigate(['/risk-details'])
   }
@@ -727,7 +822,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
   //     }
   //   }
 
-  //   let urlLink = `${this.CommonApiUrl}renewaltrack/getsourcesbyproduct`;
+  //   let urlLink = `${this.RenewalApiUrl}renewaltrack/getsourcesbyproduct`;
   //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
   //     (data: any) => {
   //       if (data) {
@@ -753,4 +848,14 @@ export class BrokerComponent implements OnInit, AfterViewInit {
   //     (err: any) => { },
   //   );
   // }
+
+  statusUpdateFormReset() {
+    this.remarks = null;
+    this.conversion_date = null;
+    this.conversion = null;
+    this.loss_date = null;
+    this.reason = null;
+    this.loss_type = null;
+    this.Typevalue = 'Loss'
+  }
 }

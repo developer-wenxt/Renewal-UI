@@ -12,10 +12,14 @@ import { NewBusinessProductsComponent } from './pages/new-business-products/new-
 import { NewBusinessCustomerDetailsComponent } from './pages/new-business-customer-details/new-business-customer-details.component';
 import { NewBusinessBrokerComponent } from './pages/new-business-broker/new-business-broker.component';
 import { NewBusinessRiskDetailsComponent } from './pages/new-business-risk-details/new-business-risk-details.component';
+import { RenewalApprovalComponent } from './pages/renewal-approval/renewal-approval.component';
+import { HomeComponent } from './pages/home/home.component';
+import { CustomerViewPolicyDetailsComponent } from './pages/customer-view-policy-details/customer-view-policy-details.component';
+import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: '', component: OprationHeaderDashboardComponent },
+  { path: '', component: PageNotFoundComponent },
   { path: 'dashboard', component: OprationHeaderDashboardComponent },
   { path: 'branch-dashboard', component: CustomerDetailsComponent },
   { path: 'broker', component: BrokerComponent },
@@ -26,6 +30,10 @@ const routes: Routes = [
   { path: 'new-business-branch-dashboard', component: NewBusinessCustomerDetailsComponent },
   { path: 'new-business-broker', component: NewBusinessBrokerComponent },
   { path: 'new-business-risk-details', component: NewBusinessRiskDetailsComponent },
+  { path: 'renewal/renewal-approval', component: RenewalApprovalComponent },
+  { path: 'view-policy-details', component: CustomerViewPolicyDetailsComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'transaction-sms-list', component: SmsCountDetailsComponent },
   { path: '**', component: PageNotFoundComponent },
 
 ];

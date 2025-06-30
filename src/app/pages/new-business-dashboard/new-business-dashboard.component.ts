@@ -21,7 +21,7 @@ export class NewBusinessDashboardComponent {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
   @ViewChild('dt2') dt2!: Table;
   @ViewChild('dt1') dt1!: Table;
-  public CommonApiUrl: any = config.CommonApiUrl;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
   loading: boolean = true;
   statuses!: any[];
   customers!: any[];
@@ -50,8 +50,10 @@ export class NewBusinessDashboardComponent {
   loss_date: any
   customers_list: any
   totalPolicyCount: any = 0;
+  totalPremium: any = 0;
   totalPending: any = 0;
   totalLost: any = 0;
+  totalSuccess: any = 0;
   userDetails: any
   overall_product_list: any[] = [];
   overall_division_list: any[] = [];
@@ -130,6 +132,222 @@ export class NewBusinessDashboardComponent {
   }
 
 
+  // initChart(): void {
+  //   const dom = this.chartContainer.nativeElement;
+  //   this.myChart = echarts.init(dom, null, {
+  //     renderer: 'canvas',
+  //     useDirtyRect: false
+  //   });
+
+  //   let xAxisData: string[] = [];
+  //   let policyCountData: number[] = [];
+  //   let premiumData: number[] = [];
+
+  //   if (this.ResponseData.length !== 0) {
+  //     xAxisData = this.ResponseData.map((item: { DivisionName: any; DivisionCode: any; }) =>
+  //       (item.DivisionName || `Division ${item.DivisionCode}`).replace(/\s+/g, '\n')
+  //     );
+  //     policyCountData = this.ResponseData.map((item: { TotalPolicyCount: string; }) => parseInt(item.TotalPolicyCount, 10));
+  //     premiumData = this.ResponseData.map((item: { TotalPremium: string; }) => parseFloat(item.TotalPremium));
+  //   }
+
+  //   const isSingleData = this.ResponseData.length === 1;
+
+  //   const option: echarts.EChartsOption = {
+  //     animation: true,
+  //     animationDuration: 1000,
+  //     animationEasing: 'cubicOut',
+  //     title: {
+  //       text: 'Division-wise Policy Count & Premium',
+  //       left: 'center',
+  //       textStyle: {
+  //         fontSize: 16,
+  //         fontWeight: 'bold'
+  //       }
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: { type: 'shadow' },
+  //       backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  //       borderWidth: 1,
+  //       borderColor: '#ccc',
+  //       padding: 12,
+  //       textStyle: {
+  //         color: '#000',
+  //         fontSize: 13,
+  //         fontFamily: 'Segoe UI'
+  //       },
+  //       formatter: (params: any) => {
+  //         return params
+  //           .map(
+  //             (p: any) => `
+  //           <div>
+  //             <span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;background-color:${p.color};"></span>
+  //             ${p.seriesName}: <b>${p.value}</b>
+  //           </div>
+  //         `
+  //           )
+  //           .join('');
+  //       },
+  //       extraCssText: `
+  //       border-radius: 12px;
+  //       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  //       max-width: 250px;
+  //       white-space: normal;
+  //     `
+  //     },
+  //     legend: {
+  //       top: 30,
+  //       data: ['TotalPolicyCount', 'TotalPremium']
+  //     },
+  //     grid: {
+  //       top: 80,
+  //       left: '10%',
+  //       right: '10%',
+  //       bottom: '10%',
+  //       containLabel: true
+  //     },
+  //     xAxis: isSingleData
+  //       ? {
+  //         type: 'value',
+  //         axisLabel: {
+  //           fontSize: 12,
+  //           color: '#333',
+  //           formatter: (val: number): string => {
+  //             if (val >= 1_000_000) return `${val / 1_000_000}M`;
+  //             if (val >= 1_000) return `${val / 1_000}K`;
+  //             return `${val}`;
+  //           }
+  //         },
+  //         axisLine: {
+  //           lineStyle: { color: '#aaa' }
+  //         }
+  //       }
+  //       : [
+  //         {
+  //           type: 'category',
+  //           data: xAxisData,
+  //           axisLabel: {
+  //             rotate: 0,
+  //             fontSize: 11,
+  //             color: '#333',
+  //             formatter: (value: string) => value
+  //           },
+  //           axisLine: {
+  //             lineStyle: { color: '#aaa' }
+  //           }
+  //         }
+  //       ],
+  //     yAxis: isSingleData
+  //       ? {
+  //         type: 'category',
+  //         data: ['TotalPolicyCount', 'TotalPremium'],
+  //         axisLabel: {
+  //           fontSize: 12,
+  //           color: '#333'
+  //         },
+  //         axisLine: {
+  //           lineStyle: { color: '#aaa' }
+  //         }
+  //       }
+  //       : [
+  //         {
+  //           type: 'value',
+  //           name: 'Policy Count',
+  //           axisLine: { lineStyle: { color: '#3399ff' } },
+  //           splitLine: { show: false }
+  //         },
+  //         {
+  //           type: 'value',
+  //           name: 'Premium',
+  //           axisLabel: {
+  //             formatter: (val: number) =>
+  //               val >= 1000000 ? `${val / 1000000}M` : `${val / 1000}K`
+  //           },
+  //           axisLine: { lineStyle: { color: '#66cc00' } },
+  //           splitLine: { show: false }
+  //         }
+  //       ],
+  //     series: isSingleData
+  //       ? [
+  //         {
+  //           name: 'TotalPolicyCount',
+  //           type: 'bar',
+  //           data: [policyCountData[0], 0],
+  //           barWidth: 30,
+  //           itemStyle: {
+  //             color: '#3399ff',
+  //             borderRadius: [6, 6, 6, 6]
+  //           },
+  //           label: {
+  //             show: true,
+  //             position: 'right',
+  //             color: '#000'
+  //           }
+  //         },
+  //         {
+  //           name: 'TotalPremium',
+  //           type: 'bar',
+  //           data: [0, premiumData[0]],
+  //           barWidth: 30,
+  //           itemStyle: {
+  //             color: '#66cc00',
+  //             borderRadius: [6, 6, 6, 6]
+  //           },
+  //           label: {
+  //             show: true,
+  //             position: 'right',
+  //             color: '#000'
+  //           }
+  //         }
+  //       ]
+  //       : [
+  //         {
+  //           name: 'TotalPolicyCount',
+  //           type: 'bar',
+  //           yAxisIndex: 0,
+  //           itemStyle: {
+  //             borderRadius: [8, 8, 0, 0],
+  //             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+  //               { offset: 0, color: '#66aaff' },
+  //               { offset: 1, color: '#0044cc' }
+  //             ])
+  //           },
+  //           label: {
+  //             show: true,
+  //             position: 'top',
+  //             color: '#000',
+  //             fontSize: 10
+  //           },
+  //           data: policyCountData
+  //         },
+  //         {
+  //           name: 'TotalPremium',
+  //           type: 'bar',
+  //           yAxisIndex: 1,
+  //           itemStyle: {
+  //             borderRadius: [8, 8, 0, 0],
+  //             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+  //               { offset: 0, color: '#b3ec57' },
+  //               { offset: 1, color: '#669900' }
+  //             ])
+  //           },
+  //           label: {
+  //             show: true,
+  //             position: 'top',
+  //             color: '#000',
+  //             fontSize: 10,
+  //             formatter: (val: any) =>
+  //               ` ${val.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+  //           },
+  //           data: premiumData
+  //         }
+  //       ]
+  //   };
+
+  //   this.myChart.setOption(option);
+  // }
+
   initChart(): void {
     const dom = this.chartContainer.nativeElement;
     this.myChart = echarts.init(dom, null, {
@@ -137,141 +355,152 @@ export class NewBusinessDashboardComponent {
       useDirtyRect: false
     });
 
-    let xAxisData: any = '';
-    let totalData: any = 0;
-    let pendingData: any = 0;
-    let lossData: any = 0;
+    let xAxisData: string[] = [];
+    let policyCountData: number[] = [];
+    let premiumData: number[] = [];
 
-    if (this.ResponseData.length != 0) {
-
-      xAxisData = this.ResponseData.map((item: { DivisionName: any; DivisionCode: any; }) => {
-        const name = item.DivisionName || `Division ${item.DivisionCode}`;
-        return name.replace(/\s+/g, '\n');
-      });
-      totalData = this.ResponseData.map((item: { TotalPolicyCount: any; }) =>
-        parseInt(item.TotalPolicyCount, 10)
+    if (this.ResponseData.length !== 0) {
+      xAxisData = this.ResponseData.map((item: { DivisionName: any; DivisionCode: any; }) =>
+        (item.DivisionName || `Division ${item.DivisionCode}`).replace(/\s+/g, '\n')
       );
-      pendingData = this.ResponseData.map((item: { Pending: any; }) =>
-        parseInt(item.Pending, 10)
-      );
-      lossData = this.ResponseData.map((item: { Lost: any; }) =>
-        parseInt(item.Lost, 10)
-      );
+      policyCountData = this.ResponseData.map((item: { TotalPolicyCount: string; }) => parseInt(item.TotalPolicyCount, 10));
+      premiumData = this.ResponseData.map((item: { TotalPremium: string; }) => parseFloat(item.TotalPremium));
     }
-    else {
-      xAxisData = '';
-      totalData = 0;
-      pendingData = 0;
-      lossData = 0;
-    }
-
-    const labelOption: NonNullable<BarSeriesOption['label']> = {
-      show: false,
-      position: 'insideBottom',
-      distance: 15,
-      align: 'left',
-      verticalAlign: 'middle',
-      rotate: 90,
-      formatter: '{c}  {name|{a}}',
-      fontSize: 16,
-      rich: {
-        name: {}
-      }
-    };
-
-    const isSingleData = this.ResponseData.length === 1 || this.ResponseData.length === 0;
 
     const option: echarts.EChartsOption = {
       animation: true,
       animationDuration: 1000,
       animationEasing: 'cubicOut',
+      title: {
+        text: 'Division-wise Policy Count & Premium',
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold'
+        }
+      },
       tooltip: {
-        trigger: isSingleData ? 'item' : 'axis',
-        axisPointer: isSingleData ? undefined : { type: 'shadow' },
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        padding: 10,
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 12,
         textStyle: {
           color: '#000',
-          fontSize: 12,
-          fontFamily: 'Arial'
+          fontSize: 13,
+          fontFamily: 'Segoe UI'
+        },
+        formatter: (params: any) => {
+          return params
+            .map(
+              (p: any) => `
+          <div>
+            <span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;background-color:${p.color};"></span>
+            ${p.seriesName}: <b>${p.value}</b>
+          </div>
+        `
+            )
+            .join('');
         },
         extraCssText: `
-      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,200,255,0.9));
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      max-width: 250px;
+      white-space: normal;
     `
       },
       legend: {
-        data: ['Pending', 'Lost', 'Total']
+        top: 30,
+        data: ['TotalPolicyCount', 'TotalPremium']
       },
-      xAxis: isSingleData ? undefined : [
+      grid: {
+        top: 80,
+        left: '10%',
+        right: '10%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
         {
           type: 'category',
-          axisTick: { show: false },
+          data: xAxisData,
           axisLabel: {
             rotate: 0,
-            fontSize: 10,
-            fontFamily: 'Arial',
+            fontSize: 11,
             color: '#333',
-            lineHeight: 14,
             formatter: (value: string) => value
           },
-          data: xAxisData
+          axisLine: {
+            lineStyle: { color: '#aaa' }
+          }
         }
       ],
-      yAxis: isSingleData ? undefined : [{ type: 'value' }],
-      series: isSingleData
-        ? [
-          {
-            name: xAxisData[0],
-            type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-              show: true,
-              position: 'outside'
-            },
-            labelLine: {
-              show: true
-            },
-            data: [
-              { value: pendingData[0], name: 'Pending', itemStyle: { color: '#ffaa00' } },
-              { value: lossData[0], name: 'Lost', itemStyle: { color: '#e60000' } },
-            ]
-          }
-        ]
-        : [
-          {
-            name: 'Total',
-            type: 'line',
-            data: totalData,
-            smooth: true,
-            lineStyle: { color: '#0000e6' },
-            itemStyle: { color: '#0000e6' }
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          axisLine: { lineStyle: { color: '#3399ff' } },
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: (val: number) =>
+              val >= 1000000 ? `${val / 1000000}M` : `${val / 1000}K`
           },
-          {
-            name: 'Pending',
-            type: 'line',
-            data: pendingData,
-            smooth: true,
-            lineStyle: { color: '#ffaa00' },
-            itemStyle: { color: '#ffaa00' }
+          axisLine: { lineStyle: { color: '#66cc00' } },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'TotalPolicyCount',
+          type: 'bar',
+          yAxisIndex: 0,
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#66aaff' },
+              { offset: 1, color: '#0044cc' }
+            ])
           },
-          {
-            name: 'Lost',
-            type: 'line',
-            data: lossData,
-            smooth: true,
-            lineStyle: { color: '#e60000' },
-            itemStyle: { color: '#e60000' }
-          }
-        ]
+          label: {
+            show: true,
+            position: 'top',
+            color: '#000',
+            fontSize: 10
+          },
+          data: policyCountData
+        },
+        {
+          name: 'TotalPremium',
+          type: 'bar',
+          yAxisIndex: 1,
+          itemStyle: {
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#b3ec57' },
+              { offset: 1, color: '#669900' }
+            ])
+          },
+          label: {
+            show: true,
+            position: 'top',
+            color: '#000',
+            fontSize: 10,
+            formatter: (val: any) =>
+              ` ${val.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+          },
+          data: premiumData
+        }
+      ]
     };
 
     this.myChart.setOption(option);
   }
+
 
   getSeverity(status: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
     switch (status) {
@@ -324,7 +553,7 @@ export class NewBusinessDashboardComponent {
     sessionStorage.setItem('to_date_op', todate);
     let branchList: any = [];
     this.userDetails.LoginBranchDetails.forEach((e: any) => {
-      branchList.push(e.BranchCode)
+      branchList.push(e.DivisionCode)
     });
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
@@ -334,7 +563,7 @@ export class NewBusinessDashboardComponent {
       // "DivisionCodelist": ["101"],
 
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getdivisionbycompany`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getdivisionbycompany`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -346,7 +575,9 @@ export class NewBusinessDashboardComponent {
           sessionStorage.setItem('DashboardResponseData', JSON.stringify(this.ResponseData));
           this.totalPending = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
           this.totalLost = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
+          this.totalSuccess = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Success, 10), 0);
           this.totalPolicyCount = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.TotalPolicyCount, 10), 0);
+          this.totalPremium = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.TotalPremium, 10), 0);
         }
         else {
           this.ResponseData = [];
@@ -365,7 +596,7 @@ export class NewBusinessDashboardComponent {
       "StartDate": "2025-05-01",
       "EndDate": "2025-12-05"
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -385,7 +616,7 @@ export class NewBusinessDashboardComponent {
       "StartDate": "2025-05-01",
       "EndDate": "2025-12-05"
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -442,7 +673,7 @@ export class NewBusinessDashboardComponent {
 
 
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getSourcebyCompanyandDivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getSourcebyCompanyandDivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 

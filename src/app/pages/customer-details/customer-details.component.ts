@@ -19,6 +19,7 @@ import { SessionStorageService } from '../../storage/session-storage.service';
 export class CustomerDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
   private chartInstance: echarts.ECharts | null = null;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
   public CommonApiUrl: any = config.CommonApiUrl;
   @ViewChild('dt2') dt2!: Table;
   @ViewChild('dt1') dt1!: Table;
@@ -70,6 +71,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   divisionCode: any;
   PolSrcCode: any
   checkFlow: any
+  SubUserType: any;
   constructor(private shared: SharedService,
     private authService: AuthService,
     private sidebarService: SidebarService,
@@ -102,8 +104,11 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
           this.authService.login(Userdetails);
           this.authService.UserToken(Userdetails.Result.Token);
           this.userType = Userdetails.Result.UserType;
+          this.SubUserType = Userdetails.Result.SubUserType;
           this.sessionStorageService.set('Userdetails', Userdetails);
+          // this.getMenuList();
           this.onSelectProduct();
+
 
         }
       }
@@ -125,16 +130,17 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     if (this.userDetails.UserType == 'Broker') {
       const now = new Date();
       now.setMonth(now.getMonth() - 1);
-      this.from_date = new Date(now); 
+      this.from_date = new Date(now);
       const to_now = new Date();
       this.to_date = new Date(to_now);
-      
+
     }
 
     let division = JSON.parse(sessionStorage.getItem('division') as any);
     this.divisionName = division.PolSrcName
     this.divisionCode = division.PolSrcCode
-    
+
+
   }
   onDateChange(): void {
     const date = new Date(this.from_date);
@@ -157,23 +163,6 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     }, 0);
   }
   ngOnInit() {
-    this.reason_list = [
-      {
-        "Code": "1",
-        "CodeDesc": "Reason 1",
-
-      },
-      {
-        "Code": "3",
-        "CodeDesc": "Reason 3",
-
-      },
-      {
-        "Code": "2",
-        "CodeDesc": "Reason 2",
-      }
-    ]
-
 
     this.DivisionName = sessionStorage.getItem('SelecttedDivision') as any;
     if (this.userDetails.UserType != 'Broker') {
@@ -363,8 +352,8 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   }
 
   filterChange(value: any) {
-  
-   
+
+
     this.getCustomerData(value);
 
   }
@@ -398,6 +387,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
 
   editClick(data: any) {
     this.getCompanyList();
+    this.getReasonList();
     this.PolicyNo = null;
     this.CurrentStatus = null;
     this.visible = true;
@@ -465,7 +455,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     this.PolicyNo = data?.PolicyNumber
     this.Add_dialog = true;
     this.getInsuranceTypeList();
-    this.getVehicelInfo();
+    // this.getVehicelInfo();
   }
   getBrokerwiseData(productCode: any) {
     let ReqObj
@@ -474,18 +464,18 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     if (this.userDetails.UserType != 'Broker') {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.ProductData.DivisionCode,
         "ProductCode": this.ProductData.ProductCode,
         "StartDate": this.from_date,
         "EndDate": this.to_date
       }
     }
     else {
-      
+
       ReqObj = {
-        // "CompanyId": this.userDetails.InsuranceId,
-        "CompanyId": '4',
-        "DivisionCode": "101",
+        "CompanyId": this.userDetails.InsuranceId,
+        // "CompanyId": '4',
+        "DivisionCode": this.divisionCode,
         "ProductCode": productCode,
         "SourceCode": this.userDetails[0].SourceCode,
         "StartDate": this.from_date,
@@ -493,7 +483,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getsourcesbyproduct`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getsourcesbyproduct`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -539,7 +529,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     else if (this.userDetails.UserType == 'Issuer') {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.ProductData.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": this.ProductData.ProductCode,
         "SourceCode": this.ProductData.polSrcCode,
@@ -565,7 +555,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getpolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getpolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -582,49 +572,83 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   }
 
   UpdateCustomerStatus() {
+    let validatain: boolean = false
     let date: any = null;
     let sts: any = null;
     if (this.Typevalue == 'Loss') {
       date = this.loss_date
       sts = 'RR'
+      if (this.loss_type != null && this.loss_type != ''
+        && this.reason != null && this.reason != ''
+        && this.loss_date != null && this.loss_date != '') {
+        validatain = true;
+      }
+      else {
+        validatain = false;
+      }
     }
     else {
       date = this.conversion_date
       sts = 'RC'
-
+      if (this.conversion != null && this.conversion != ''
+        && this.conversion_date != null && this.conversion_date != '') {
+        validatain = true;
+      }
+      else {
+        validatain = false;
+      }
     }
     if (date) {
       date = this.datePipe.transform(date, 'yyyy-MM-dd');
     }
-    let ReqObj = {
-      "PolicyNumber": this.PolicyNo,
-      "RenewalDate": date,
-      "LossReason": this.reason,
-      "LossRemarks": this.remarks,
-      "Competitor": this.loss_type,
-      "CurrentStatus": sts,
-      "PaymentType": this.conversion
-    }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/updaterenewpremiapolicy`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
-        if (data.Message == 'UpdatedSuccessfully') {
-          this.visible = false;
-          if (this.userDetails[0].userType != 'Issuer') {
-            this.getDivisiondata();
+    if (validatain == true) {
+      let ReqObj = {
+        "PolicyNumber": this.PolicyNo,
+        "RenewalDate": date,
+        "LossReason": this.reason,
+        "LossRemarks": this.remarks,
+        "Competitor": this.loss_type,
+        "CurrentStatus": sts,
+        "PaymentType": this.conversion
+      }
+      let urlLink = `${this.RenewalApiUrl}renewaltrack/updaterenewpremiapolicy`;
+      this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+        (data: any) => {
+          if (data.Message == 'UpdatedSuccessfully') {
+            this.visible = false;
+            this.statusUpdateFormReset();
+            Swal.fire({
+              icon: 'info',
+              title: 'Validation',
+              html: 'Updated Successfully'
+            });
+            this.getCustomerData(null)
+            this.getBrokerwiseData(null)
           }
           else {
-            this.getBrokerwiseData(this.ProductData.ProductCode);
+            this.visible = false;
+            this.statusUpdateFormReset();
+            Swal.fire({
+              icon: 'error',
+              title: 'Validation',
+              html: data.Message
+            });
           }
-          Swal.fire({
-            icon: 'info',
-            title: 'Validation',
-            html: 'Updated Successfully'
-          });
+        },
+        (err: any) => { },
+      );
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation',
+        html: 'Invalid Form',
+        customClass: {
+          popup: 'my-zindex-alert'
         }
-      },
-      (err: any) => { },
-    );
+      });
+    }
+
   }
 
   getDivisiondata() {
@@ -654,7 +678,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     }
 
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -686,7 +710,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   }
   getCompanyList() {
     let ReqObj = {
-      "InsuranceId": '100020',
+      "InsuranceId": this.userDetails.InsuranceId,
       "ItemType": "CO_INSURURANCE"
     }
     let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
@@ -694,6 +718,17 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       (data: any) => {
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
         this.companyList = data.Result;
+      })
+  }
+  getReasonList() {
+    let ReqObj = {
+      "InsuranceId": this.userDetails.InsuranceId,
+      "ItemType": "LAST_REASONS"
+    }
+    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        this.reason_list = data.Result;
       })
   }
 
@@ -767,9 +802,9 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       "VehicleUsage": this.vehicle_usage,
       "PolicyType": this.Policy_type,
       "SumInsured": this.sumInsured,
-      "CreatedBy": this.userDetails[0].userType,
+      "CreatedBy": this.userDetails.UserType,
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/insertRenewVehicleInfo`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/insertRenewVehicleInfo`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'Success') {
@@ -778,6 +813,13 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
             icon: 'info',
             title: 'Validation',
             html: 'Vehicle Added Successfully'
+          });
+        }
+        else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Validation',
+            html: data.Message
           });
         }
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
@@ -819,9 +861,9 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
 
   getVehicelInfo() {
 
-    // let urlLink = `${this.CommonApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}`;
-    //  let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}`;
+    //  let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
         console.log(data, "dddddddd");
@@ -851,7 +893,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     let ReqObj = {
       "LoginId": this.userDetails.LoginId
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getSourceFromLogin`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourceFromLogin`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -871,4 +913,44 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/risk-details'])
   }
 
+  getPercentage(value: number): number {
+    const total = +this.ResponseData[0]?.SourceCount;
+    return total ? Math.round((+value / total) * 1000) / 10 : 0; // one decimal
+  }
+
+  statusUpdateFormReset() {
+    this.remarks = null;
+    this.conversion_date = null;
+    this.conversion = null;
+    this.loss_date = null;
+    this.reason = null;
+    this.loss_type = null;
+    this.Typevalue = 'Loss'
+  }
+
+  getMenuList() {
+    const urlLink = `${this.CommonApiUrl}admin/getmenulist`;
+    const ReqObj = {
+      LoginId: this.loginId,
+      UserType: this.userType,
+      SubUserType: this.SubUserType,
+      InsuranceId: this.insuranceId,
+      ProductId: this.productId,  
+    };
+    this.shared.onPostMethodBearerSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        console.log(data, "menulist");
+        if (data.Result) {
+          let filteredList = data.Result.filter((ele: { ProductId:any; }) => ele.ProductId == this.productId);
+          sessionStorage.setItem('MenuList', JSON.stringify(filteredList))
+          this.onSelectProduct();
+
+        }
+      },
+
+      (err: any) => {
+        console.log(err);
+      },
+    );
+  }
 }

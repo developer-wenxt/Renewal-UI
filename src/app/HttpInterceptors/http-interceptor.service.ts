@@ -29,12 +29,12 @@ export class HttpInterceptorService implements HttpInterceptor {
     public router: Router,
     private loader: CustomLoadingService,
     private sharedService: SharedService
-  ) { }
+  ) { 
+    
+  }
 
   intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler,
-  ): Observable<HttpEvent<any>> {
+    req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loader.show();
     this.totalRequests++;
     return next.handle(req).pipe(
@@ -47,10 +47,12 @@ export class HttpInterceptorService implements HttpInterceptor {
       finalize(() => {
         this.completedRequests++;
         if (this.completedRequests === this.totalRequests) {
-          this.loader.hide();
-          this.sharedService.clearTimeOut();
-          this.completedRequests = 0;
-          this.totalRequests = 0;
+          setTimeout(() => {
+            this.loader.hide();
+            this.sharedService.clearTimeOut();
+            this.completedRequests = 0;
+            this.totalRequests = 0;
+          }, 300);
         }
 
       }),
@@ -67,31 +69,31 @@ export class HttpInterceptorService implements HttpInterceptor {
   }
 
   openResponse(res: any) {
-    if (res?.ErrorMessage && res?.ErrorMessage.length > 0 || res?.Result?.ErrorMessage && res?.Result?.ErrorMessage.length > 0) {
-      const errorList: any[] = res.ErrorMessage || res?.Result?.ErrorMessage;
-      let ulList: any = '';
-      for (let index = 0; index < errorList.length; index++) {
-        const element = errorList[index];
-        ulList += `<li class="list-group-item">
-         <div style="color: darkgreen;">Field<span class="mx-2">:</span>${element?.Field}</div>
-         <div style="color: red;">Message<span class="mx-2">:</span>${element?.Message}</div>
-       </li>`
+    // if (res?.ErrorMessage && res?.ErrorMessage.length > 0 || res?.Result?.ErrorMessage && res?.Result?.ErrorMessage.length > 0) {
+    //   const errorList: any[] = res.ErrorMessage || res?.Result?.ErrorMessage;
+    //   let ulList: any = '';
+    //   for (let index = 0; index < errorList.length; index++) {
+    //     const element = errorList[index];
+    //     ulList += `<li class="list-group-item">
+    //      <div style="color: darkgreen;">Field<span class="mx-2">:</span>${element?.Field}</div>
+    //      <div style="color: red;">Message<span class="mx-2">:</span>${element?.Message}</div>
+    //    </li>`
 
-      }
-      Swal.fire({
-        title: '<strong>Form Validation</strong>',
-        icon: 'info',
-        html:
-          `<ul class="list-group errorlist">
-           ${ulList}
-        </ul>`,
-        showCloseButton: true,
-        focusConfirm: false,
-        confirmButtonText:
-          '<i class="fa fa-thumbs-down"></i> Errors!',
-        confirmButtonAriaLabel: 'Thumbs down, Errors!',
-      })
-    }
+    //   }
+    //   Swal.fire({
+    //     title: '<strong>Form Validation</strong>',
+    //     icon: 'info',
+    //     html:
+    //       `<ul class="list-group errorlist">
+    //        ${ulList}
+    //     </ul>`,
+    //     showCloseButton: true,
+    //     focusConfirm: false,
+    //     confirmButtonText:
+    //       '<i class="fa fa-thumbs-down"></i> Errors!',
+    //     confirmButtonAriaLabel: 'Thumbs down, Errors!',
+    //   })
+    // }
   }
 
   openError(res: any) {

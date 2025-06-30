@@ -36,8 +36,15 @@ export class SharedService {
     }
     else return null;
   }
+  onPostMethodBearerSync(UrlLink: string, ReqObj: any): Observable<any[]> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Authorization', 'Bearer ' + this.getToken());
+    return this.http
+      .post<any>(UrlLink, ReqObj, { headers: headers })
+      .pipe(retry(1), catchError(this.handleError));
+  }
   onPostMethodSync(UrlLink: string, ReqObj: any): Observable<any> {
-    
+
     this.cookieService.set("XSRF-TOKEN", this.getToken(), 1, '/', 'localhost', false, "Strict");
     let headers = new HttpHeaders();
     headers = headers.append('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0');

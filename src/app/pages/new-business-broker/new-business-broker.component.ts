@@ -20,7 +20,7 @@ export class NewBusinessBrokerComponent {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
   private chartInstance: echarts.ECharts | null = null;
   private myChart!: echarts.ECharts;
-  public CommonApiUrl: any = config.CommonApiUrl;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
 
   userDetails: any;
   PolSrcCode: any;
@@ -28,6 +28,7 @@ export class NewBusinessBrokerComponent {
   dashborad_selectted_agent: any;
   Add_dialog: boolean = false;
   totalPolicyCount: number = 0;
+  totalPremium: number = 0;
   totalPending: number = 0;
   visible: boolean = false;
   totalLost: number = 0;
@@ -80,7 +81,8 @@ export class NewBusinessBrokerComponent {
       this.from_date = new Date(now);
       const to_now = new Date();
       this.to_date = new Date(to_now);
-      this.getSouceCode();
+      // this.getSouceCode();
+      // this.getDivisiondata();
     }
 
 
@@ -98,14 +100,17 @@ export class NewBusinessBrokerComponent {
       const formattedFromDate = this.formatDate(this.from_date);
       const date1 = new Date(this.to_date);
       const formattedTodate = this.formatDate(this.to_date);
-      this.getSouceCode();
+      // this.getSouceCode();
+      this.getDivisiondata();
     }
     else {
       let fromdate = sessionStorage.getItem('from_date_op') as any;
       let todate = sessionStorage.getItem('to_date_op') as any;
-      this.getSouceCode();
+      // this.getSouceCode();
       this.from_date = new Date(fromdate);
       this.to_date = new Date(todate);
+      this.getDivisiondata();
+
     }
 
     this.reason_list = [
@@ -125,26 +130,26 @@ export class NewBusinessBrokerComponent {
       }
     ]
   }
-  getSouceCode() {
+  // getSouceCode() {
 
-    let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
-    this.userDetails = d.Result;
-    let ReqObj = {
-      "LoginId": this.userDetails.LoginId
-    }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getSourceFromLogin`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
-        if (data) {
-          console.log(data, "LoginIdLoginIdLoginId");
-          if (data.SourceCode) {
-            this.PolSrcCode = data.SourceCode;
-            this.getDivisiondata();
-          }
-        }
+  //   let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
+  //   this.userDetails = d.Result;
+  //   let ReqObj = {
+  //     "LoginId": this.userDetails.LoginId
+  //   }
+  //   let urlLink = `${this.RenewalApiUrl}nbtrack/getSourceFromLogin`;
+  //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+  //     (data: any) => {
+  //       if (data) {
+  //         console.log(data, "LoginIdLoginIdLoginId");
+  //         if (data.SourceCode) {
+  //           this.PolSrcCode = data.SourceCode;
+  //           this.getDivisiondata();
+  //         }
+  //       }
 
-      })
-  }
+  //     })
+  // }
 
   getDivisiondata() {
     let ReqObj
@@ -165,15 +170,15 @@ export class NewBusinessBrokerComponent {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         // "DivisionCode": '101',
-        "DivisionCode": this.userDetails.BranchCode,
-        "SourceCode": this.PolSrcCode,
+        "DivisionCode": this.userDetails.DivisionCode,
+        "SourceCode": this.userDetails.SourceCode,
         "StartDate": FromDate,
         "EndDate": ToDate
       }
     }
 
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -182,12 +187,17 @@ export class NewBusinessBrokerComponent {
           console.log(this.ResponseData, "ResponseData");
 
           this.dashborad_selectted_agent = data[0]?.ProductCode
-          this.getCustomerData(this.dashborad_selectted_agent);
+          if (this.dashborad_selectted_agent) {
+            this.getCustomerData(this.dashborad_selectted_agent);
+
+          }
           // this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalLost = data.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
-          this.totalPolicyCount = data.reduce((sum: number, item: any) =>
-            sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
+          // this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
+          // this.totalLost = data.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
+          this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.ProductCount, 10), 0);
+          this.totalPremium = data.reduce((sum: any, item: any) => sum + parseInt(item.TotalPremium, 10), 0);
+          // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
+          //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
 
           if (this.chartContainer) {
             window.addEventListener('resize', () => this.myChart.resize());
@@ -209,179 +219,341 @@ export class NewBusinessBrokerComponent {
   formatDate(date: any): string | null {
     return this.datePipe.transform(date, 'yyyy-MM-dd');
   }
+  // initChart(): void {
+  //   const dom = this.chartContainer.nativeElement;
+  //   this.myChart = echarts.init(dom, null, {
+  //     renderer: 'canvas',
+  //     useDirtyRect: false
+  //   });
+  //   let xAxisData: any = ''
+  //   let totalData: any = 0
+  //   let pendingData: any = 0
+  //   let lossData: any = 0
+  //   if (this.ResponseData) {
+
+
+  //     if (this.userDetails.UserType != 'Broker') {
+  //       xAxisData = this.ResponseData.map((item: { SourceName: any; SourceCode: any; }) => {
+  //         const name = item.SourceName || `Division ${item.SourceCode}`;
+  //         return name.replace(/\s+/g, '\n');
+  //       });
+  //     }
+  //     else {
+  //       xAxisData = this.ResponseData.map((item: { ProductName: any; ProductCode: any; }) => {
+  //         const name = item.ProductName || `Division ${item.ProductCode}`;
+  //         return name.replace(/\s+/g, '\n');
+  //       });
+
+  //     }
+
+  //     pendingData = this.ResponseData.map((item: { Pending: string; }) => parseInt(item.Pending, 10) || 0);
+  //     lossData = this.ResponseData.map((item: { Lost: string; }) => parseInt(item.Lost, 10) || 0);
+  //     totalData = this.ResponseData.map((item: { Pending: string; Lost: string; }) =>
+  //       (parseInt(item.Pending, 10) || 0) + (parseInt(item.Lost, 10) || 0)
+  //     );
+
+  //   }
+
+  //   const labelOption: NonNullable<BarSeriesOption['label']> = {
+  //     show: false,
+  //     position: 'insideBottom',
+  //     distance: 15,
+  //     align: 'left',
+  //     verticalAlign: 'middle',
+  //     rotate: 90,
+  //     formatter: '{c}  {name|{a}}',
+  //     fontSize: 16,
+  //     rich: {
+  //       name: {}
+  //     }
+  //   };
+
+  //   const option: echarts.EChartsOption = {
+  //     animation: true,
+  //     animationDuration: 1000,
+  //     animationEasing: 'cubicOut',
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: {
+  //         type: 'shadow'
+  //       },
+  //       backgroundColor: 'transparent',
+  //       borderWidth: 0,
+  //       padding: 10,
+  //       textStyle: {
+  //         color: '#000',
+  //         fontSize: 12,
+  //         fontFamily: 'Arial'
+  //       },
+  //       extraCssText: `
+  //    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,200,255,0.9));
+  //    border-radius: 10px;
+  //    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  //    border: 1px solid rgba(255,255,255,0.4);
+  //  `
+  //     },
+  //     legend: {
+  //       data: ['Pending', 'Lost', 'Total']
+  //     },
+  //     toolbox: {
+  //       show: true,
+  //       orient: 'vertical',
+  //       left: 'right',
+  //       top: 'center',
+  //       feature: {
+  //         mark: { show: true },
+  //       }
+  //     },
+  //     xAxis: [
+  //       {
+  //         type: 'category',
+  //         show: true,
+  //         axisTick: { show: false },
+  //         axisLabel: {
+  //           rotate: 0,
+  //           fontSize: 10,
+  //           fontFamily: 'Arial',
+  //           color: '#333',
+  //           lineHeight: 14,
+  //           formatter: (value: string) => value
+  //         },
+  //         data: xAxisData
+  //       }
+  //     ],
+  //     yAxis: [
+  //       {
+  //         type: 'value'
+  //       }
+  //     ],
+  //     series: [
+  //       {
+  //         name: 'Total',
+  //         type: 'bar',
+  //         barGap: '20%',
+  //         label: labelOption,
+  //         emphasis: { focus: 'series' },
+  //         itemStyle: {
+  //           color: {
+  //             type: 'linear',
+  //             x: 0,
+  //             y: 0,
+  //             x2: 0,
+  //             y2: 1,
+  //             colorStops: [
+  //               { offset: 0, color: '#3399ff' },
+  //               { offset: 1, color: '#0040ff' }
+  //             ]
+  //           }
+  //         },
+  //         data: totalData
+  //       },
+  //       {
+  //         name: 'Pending',
+  //         type: 'bar',
+  //         label: labelOption,
+  //         emphasis: { focus: 'series' },
+  //         itemStyle: {
+  //           color: {
+  //             type: 'linear',
+  //             x: 0,
+  //             y: 0,
+  //             x2: 0,
+  //             y2: 1,
+  //             colorStops: [
+  //               { offset: 0, color: '#ff9933' },
+  //               { offset: 1, color: '#cc5200' }
+  //             ]
+  //           }
+  //         },
+  //         data: pendingData
+  //       },
+  //       {
+  //         name: 'Lost',
+  //         type: 'bar',
+  //         label: labelOption,
+  //         emphasis: { focus: 'series' },
+  //         itemStyle: {
+  //           color: {
+  //             type: 'linear',
+  //             x: 0,
+  //             y: 0,
+  //             x2: 0,
+  //             y2: 1,
+  //             colorStops: [
+  //               { offset: 0, color: '#ff6666' },
+  //               { offset: 1, color: '#cc0000' }
+  //             ]
+  //           }
+  //         },
+  //         data: lossData
+  //       }
+  //     ]
+  //   };
+
+  //   this.myChart.setOption(option);
+  // }
   initChart(): void {
     const dom = this.chartContainer.nativeElement;
     this.myChart = echarts.init(dom, null, {
       renderer: 'canvas',
       useDirtyRect: false
     });
-    let xAxisData: any = ''
-    let totalData: any = 0
-    let pendingData: any = 0
-    let lossData: any = 0
+
+    let xAxisData: string[] = [];
+    let policyCountData: number[] = [];
+    let premiumData: number[] = [];
+
     if (this.ResponseData) {
-
-
-      if (this.userDetails.UserType != 'Broker') {
-        xAxisData = this.ResponseData.map((item: { SourceName: any; SourceCode: any; }) => {
+      if (this.userDetails.UserType !== 'Broker') {
+        xAxisData = this.ResponseData.map((item: any) => {
           const name = item.SourceName || `Division ${item.SourceCode}`;
           return name.replace(/\s+/g, '\n');
         });
-      }
-      else {
-        xAxisData = this.ResponseData.map((item: { ProductName: any; ProductCode: any; }) => {
+      } else {
+        xAxisData = this.ResponseData.map((item: any) => {
           const name = item.ProductName || `Division ${item.ProductCode}`;
           return name.replace(/\s+/g, '\n');
         });
-
       }
 
-      pendingData = this.ResponseData.map((item: { Pending: string; }) => parseInt(item.Pending, 10) || 0);
-      lossData = this.ResponseData.map((item: { Lost: string; }) => parseInt(item.Lost, 10) || 0);
-      totalData = this.ResponseData.map((item: { Pending: string; Lost: string; }) =>
-        (parseInt(item.Pending, 10) || 0) + (parseInt(item.Lost, 10) || 0)
-      );
-
+      policyCountData = this.ResponseData.map((item: any) => parseInt(item.ProductCount, 10) || 0);
+      premiumData = this.ResponseData.map((item: any) => parseFloat(item.TotalPremium) || 0);
     }
-
-    const labelOption: NonNullable<BarSeriesOption['label']> = {
-      show: false,
-      position: 'insideBottom',
-      distance: 15,
-      align: 'left',
-      verticalAlign: 'middle',
-      rotate: 90,
-      formatter: '{c}  {name|{a}}',
-      fontSize: 16,
-      rich: {
-        name: {}
-      }
-    };
 
     const option: echarts.EChartsOption = {
       animation: true,
       animationDuration: 1000,
       animationEasing: 'cubicOut',
+      title: {
+        text: 'Division-wise Policy Count & Premium',
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold'
+        }
+      },
       tooltip: {
         trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        },
-        backgroundColor: 'transparent',
-        borderWidth: 0,
-        padding: 10,
+        axisPointer: { type: 'shadow' },
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 12,
         textStyle: {
           color: '#000',
-          fontSize: 12,
-          fontFamily: 'Arial'
+          fontSize: 13,
+          fontFamily: 'Segoe UI'
+        },
+        formatter: (params: any) => {
+          return params
+            .map(
+              (p: any) => `
+            <div>
+              <span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;background-color:${p.color};"></span>
+              ${p.seriesName}: <b>${p.value}</b>
+            </div>
+          `
+            )
+            .join('');
         },
         extraCssText: `
-     background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,200,255,0.9));
-     border-radius: 10px;
-     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-     border: 1px solid rgba(255,255,255,0.4);
-   `
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        max-width: 250px;
+        white-space: normal;
+      `
       },
       legend: {
-        data: ['Pending', 'Lost', 'Total']
+        top: 30,
+        data: ['TotalPolicyCount', 'TotalPremium']
       },
-      toolbox: {
-        show: true,
-        orient: 'vertical',
-        left: 'right',
-        top: 'center',
-        feature: {
-          mark: { show: true },
-        }
+      grid: {
+        top: 80,
+        left: '10%',
+        right: '10%',
+        bottom: '10%',
+        containLabel: true
       },
       xAxis: [
         {
           type: 'category',
-          show: true,
-          axisTick: { show: false },
+          data: xAxisData,
           axisLabel: {
             rotate: 0,
-            fontSize: 10,
-            fontFamily: 'Arial',
+            fontSize: 11,
             color: '#333',
-            lineHeight: 14,
             formatter: (value: string) => value
           },
-          data: xAxisData
+          axisLine: {
+            lineStyle: { color: '#aaa' }
+          }
         }
       ],
       yAxis: [
         {
-          type: 'value'
+          type: 'value',
+          name: 'Policy Count',
+          axisLine: { lineStyle: { color: '#3399ff' } },
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: (val: number) =>
+              val >= 1000000 ? `${val / 1000000}M` : `${val / 1000}K`
+          },
+          axisLine: { lineStyle: { color: '#66cc00' } },
+          splitLine: { show: false }
         }
       ],
       series: [
         {
-          name: 'Total',
+          name: 'TotalPolicyCount',
           type: 'bar',
-          barGap: '20%',
-          label: labelOption,
-          emphasis: { focus: 'series' },
+          yAxisIndex: 0,
           itemStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: '#3399ff' },
-                { offset: 1, color: '#0040ff' }
-              ]
-            }
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#66aaff' },
+              { offset: 1, color: '#0044cc' }
+            ])
           },
-          data: totalData
+          label: {
+            show: true,
+            position: 'top',
+            color: '#000',
+            fontSize: 10
+          },
+          data: policyCountData
         },
         {
-          name: 'Pending',
+          name: 'TotalPremium',
           type: 'bar',
-          label: labelOption,
-          emphasis: { focus: 'series' },
+          yAxisIndex: 1,
           itemStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: '#ff9933' },
-                { offset: 1, color: '#cc5200' }
-              ]
-            }
+            borderRadius: [8, 8, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#b3ec57' },
+              { offset: 1, color: '#669900' }
+            ])
           },
-          data: pendingData
-        },
-        {
-          name: 'Lost',
-          type: 'bar',
-          label: labelOption,
-          emphasis: { focus: 'series' },
-          itemStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: '#ff6666' },
-                { offset: 1, color: '#cc0000' }
-              ]
-            }
+          label: {
+            show: true,
+            position: 'top',
+            color: '#000',
+            fontSize: 10,
+            formatter: (val: any) =>
+              ` ${val.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
           },
-          data: lossData
+          data: premiumData
         }
       ]
     };
 
     this.myChart.setOption(option);
   }
+
   filterChange(value: any) {
     // this.getDivisiondata(value);
     console.log(value);
@@ -400,10 +572,10 @@ export class NewBusinessBrokerComponent {
       ToDate = this.formatDate(this.to_date);
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.userDetails.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": value,
-        "SourceCode": this.PolSrcCode,
+        "SourceCode": this.userDetails.SourceCode,
         "StartDate": FromDate,
         "EndDate": ToDate
       }
@@ -437,7 +609,7 @@ export class NewBusinessBrokerComponent {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getpolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getpolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -563,14 +735,14 @@ export class NewBusinessBrokerComponent {
     this.PolicyNo = data?.PolicyNumber
     this.Add_dialog = true;
     this.getInsuranceTypeList();
-    this.getVehicelInfo();
+    // this.getVehicelInfo();
   }
   getCompanyList() {
     let ReqObj = {
-      "InsuranceId": '100020',
+      "InsuranceId": this.userDetails.InsuranceId,
       "ItemType": "CO_INSURURANCE"
     }
-    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
+    let urlLink = `${this.RenewalApiUrl}master/getbyitemvalue`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
@@ -601,21 +773,30 @@ export class NewBusinessBrokerComponent {
       "CurrentStatus": sts,
       "PaymentType": this.conversion
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/updaterenewpremiapolicy`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/updaterenewpremiapolicy`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'UpdatedSuccessfully') {
           this.visible = false;
-          if (this.userDetails[0].userType != 'Issuer') {
-            this.getDivisiondata();
-          }
-          else {
-            // this.getBrokerwiseData(this.ProductData.ProductCode);
-          }
+          // if (this.userDetails[0].userType != 'Issuer') {
+          //   this.getDivisiondata();
+          // }
+          // else {
+          //   // this.getBrokerwiseData(this.ProductData.ProductCode);
+          // }
           Swal.fire({
             icon: 'info',
             title: 'Validation',
             html: 'Updated Successfully'
+          });
+          this.getCustomerData(null)
+        }
+        else {
+          this.visible = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Validation',
+            html: data.Message
           });
         }
       },
@@ -664,7 +845,7 @@ export class NewBusinessBrokerComponent {
       "SumInsured": this.sumInsured,
       "CreatedBy": this.userDetails.UserType,
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/insertRenewProductInfo`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/insertRenewProductInfo`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'Success') {
@@ -675,15 +856,22 @@ export class NewBusinessBrokerComponent {
             html: 'Vehicle Added Successfully'
           });
         }
+        else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Validation',
+            html: data.Message
+          });
+        }
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
         // this.companyList = data.Result;
       })
   }
   getVehicelInfo() {
 
-    // let urlLink = `${this.CommonApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
-    let urlLink = `${this.CommonApiUrl}nbtrack/getRenewProductInfo?policyNo=${this.PolicyNo}`;
-    //  let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getRenewProductInfo?policyNo=${this.PolicyNo}`;
+    //  let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
         console.log(data, "dddddddd");
@@ -693,14 +881,20 @@ export class NewBusinessBrokerComponent {
     );
   }
 
-  ViewRisk(customer: any) {
+  ViewRisk(customer: any,mode:any) {
     let toDate: any = this.formatDate(this.to_date);
     let fromDate: any = this.formatDate(this.from_date);
     sessionStorage.setItem('from_date_op', fromDate);
     sessionStorage.setItem('to_date_op', toDate);
-    sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
-    sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
-    this.router.navigate(['/new-business-risk-details'])
+    // sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+    // sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+    // this.router.navigate(['/new-business-risk-details'])
+
+      let status = 'newbusiness'
+      let d = mode
+      sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+      sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+      this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
   }
   // getBrokerwiseData(productCode: any) {
   //   let ReqObj
@@ -729,7 +923,7 @@ export class NewBusinessBrokerComponent {
   //     }
   //   }
 
-  //   let urlLink = `${this.CommonApiUrl}renewaltrack/getsourcesbyproduct`;
+  //   let urlLink = `${this.RenewalApiUrl}renewaltrack/getsourcesbyproduct`;
   //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
   //     (data: any) => {
   //       if (data) {

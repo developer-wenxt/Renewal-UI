@@ -3,10 +3,30 @@
         <div class="card overall-card mt-3 p-3">
             <div *ngIf="this.userDetails.UserType != 'Broker'" class="mt-2 p-2">
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-4">
 
                         <b><i class="bi bi-building"></i>&nbsp;{{divisionName}} &nbsp; - {{this.divisionCode}}</b>
                     </div>
+                    <div class="col-md-5 text-start">
+                        <!-- 
+                        <div class="stacked-bar-container" *ngIf="ResponseData">
+                            <div class="stacked-bar">
+                                <div class="bar success"
+                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Success) + '%' }">
+                                    {{ ResponseData[0]?.Success }} (Success)
+                                </div>
+                                <div class="bar pending"
+                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Pending) + '%' }">
+                                    {{ ResponseData[0]?.Pending }} (Pending)
+                                </div>
+                                <div class="bar lost" [ngStyle]="{ width: getPercentage(ResponseData[0]?.Lost) + '%' }">
+                                    {{ ResponseData[0]?.Lost }} (Lost)
+                                </div>
+                            </div>
+                        </div> -->
+
+                    </div>
+                    <div class="col-md-2"></div>
                     <div class="col-md-1 text-end">
                         <p-button styleClass="view-cutomer-btn" (click)="navigateProd()" label="Back"
                             severity="info"></p-button>
@@ -17,10 +37,29 @@
             </div>
             <div *ngIf="this.userDetails.UserType != 'Broker'" class="card mt-2 p-2">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <b><Small><i class="bi bi-boxes"></i>&nbsp;{{this.ProductData?.ProductName}}</Small></b>
                     </div>
-                    <div class="col-md-6 text-end">
+                    <div class="col-md-4 mt-1">
+                        <div class="stacked-bar-container" *ngIf="ResponseData">
+                            <div class="stacked-bar">
+                                <div class="bar success"
+                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Success) + '%' }">
+                                    {{ ResponseData[0]?.Success }} (Success)
+                                </div>
+                                <div class="bar pending"
+                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Pending) + '%' }">
+                                    {{ ResponseData[0]?.Pending }} (Pending)
+                                </div>
+                                <div class="bar lost" [ngStyle]="{ width: getPercentage(ResponseData[0]?.Lost) + '%' }">
+                                    {{ ResponseData[0]?.Lost }} (Lost)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <b><Small>Total Policy: &nbsp; {{customers_list?.length | numberComma}}</Small></b>
+                        &nbsp;&nbsp;|
                         <b><Small>Total Premium: &nbsp; {{this.ProductData?.TotalPremium | numberComma}}</Small></b>
                     </div>
                 </div>
@@ -32,7 +71,7 @@
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Total"
                         [badge]="(totalPolicyCount !== null && totalPolicyCount !== undefined) ? totalPolicyCount.toString() : '0'" />
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Pending"
-                        (onClick)="viewCustomer('Penidng')"
+                        (onClick)="viewCustomer('Pending')"
                         [badge]="(totalPending !== null && totalPending !== undefined) ? totalPending.toString() : '0'" />
                     <p-button *ngIf="userDetails.UserType =='Broker'" label="Lost" (onClick)="viewCustomer('Lost')"
                         [badge]="(totalLost !== null && totalLost !== undefined) ? totalLost.toString() : '0'" />
@@ -155,13 +194,16 @@
                                         field="CustomerName"></p-sortIcon></th>
                                 <th pSortableColumn="PolicyNumber">Policy No <p-sortIcon
                                         field="PolicyNumber"></p-sortIcon></th>
+                                <th pSortableColumn="InsuredMobile">Contact <p-sortIcon
+                                        field="InsuredMobile"></p-sortIcon></th>
                                 <th pSortableColumn="ProductName">Product <p-sortIcon field="ProductName"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="PolicyEndDate">End Date <p-sortIcon
                                         field="PolicyEndDate"></p-sortIcon></th>
                                 <th pSortableColumn="TotalPremium">Premium <p-sortIcon
                                         field="TotalPremium"></p-sortIcon></th>
-                                <th pSortableColumn="Status">Status <p-sortIcon field="Status"></p-sortIcon></th>
+                                <th style="width:5%;" pSortableColumn="Status">Status <p-sortIcon
+                                        field="Status"></p-sortIcon></th>
                                 <th *ngIf="userDetails.UserType !== 'Opration-Head'">Action</th>
                             </tr>
                         </ng-template>
@@ -170,6 +212,7 @@
                             <tr>
                                 <td>{{ customer.CustomerName }}</td>
                                 <td>{{ customer.PolicyNumber }}</td>
+                                <td>{{ customer.InsuredMobile?customer.InsuredMobile:'-'}}</td>
                                 <td>{{ customer.ProductName }}</td>
                                 <td>{{ customer.PolicyEndDate | date: 'dd/MM/yy' }}</td>
                                 <td>{{ customer.TotalPremium | numberComma }}</td>
@@ -179,7 +222,8 @@
                                 </td>
                                 <td *ngIf="userDetails.UserType !== 'Opration-Head'">
                                     <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
-                                    <i class="bi bi-plus-circle table-icon-btn me-2" (click)="addClick(customer)"></i>
+                                    <i *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-2"
+                                        (click)="addClick(customer)"></i>
                                     <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
                                 </td>
                             </tr>
@@ -195,10 +239,11 @@
 
                 <!-- 📱 Mobile Responsive Card View -->
                 <div class="mobile-view">
-                    <div *ngIf="customers_list.length > 0">
+                    <div *ngIf="customers_list?.length > 0">
                         <div *ngFor="let customer of customers_list" class="customer-card p-3 mb-3">
                             <div class="field-row"><strong>Customer Name:</strong> {{ customer.CustomerName }}</div>
                             <div class="field-row"><strong>Policy No:</strong> {{ customer.PolicyNumber }}</div>
+                            <div class="field-row"><strong>Contact</strong> {{ customer.InsuredMobile }}</div>
                             <div class="field-row"><strong>Product:</strong> {{ customer.ProductName }}</div>
                             <div class="field-row"><strong>End Date:</strong> {{ customer.PolicyEndDate | date:
                                 'dd/MM/yy' }}</div>
@@ -211,13 +256,14 @@
                             </div>
                             <div *ngIf="userDetails.UserType !== 'Opration-Head'" class="text-end mt-2">
                                 <i class="bi bi-pencil table-icon-btn me-3" (click)="editClick(customer)"></i>
-                                <i class="bi bi-plus-circle table-icon-btn me-3" (click)="addClick(customer)"></i>
+                                <i *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-3"
+                                    (click)="addClick(customer)"></i>
                                 <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div *ngIf="customers_list.length === 0" class="text-center mt-3 text-muted">
+                    <div *ngIf="customers_list?.length === 0" class="text-center mt-3 text-muted">
                         No data found.
                     </div>
                 </div>
@@ -225,30 +271,31 @@
         </div>
 
     </div>
-    <p-dialog header="Update Details" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+    <p-dialog header="Update Details" [modal]="true" appendTo="body" [(visible)]="visible"
+        [style]="{ width: '25rem', 'z-index': '10 !important' }">
         <div class="row">
-            <div><label><small>Type</small></label></div>
+            <div><label><small>Type</small><span class="text-danger">*</span></label></div>
             <p-selectButton [options]="stateOptions" [(ngModel)]="Typevalue" optionLabel="label" optionValue="value" />
         </div>
         <ng-container *ngIf="Typevalue=='Loss'">
             <div class="row mt-2">
-                <div><label><small>Lost Insurance Company</small></label></div>
+                <div><label><small>Lost Insurance Company</small><span class="text-danger">*</span></label></div>
 
-                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="companyList" [(ngModel)]="loss_type"
-                    optionLabel="CodeDesc" optionValue="Code">
+                <p-dropdown styleClass="branch-drop" appendTo="body" [filter]="true" filterBy="CodeDesc"
+                    [options]="companyList" [(ngModel)]="loss_type" optionLabel="CodeDesc" optionValue="Code">
                 </p-dropdown>
 
             </div>
             <div class="row mt-2">
 
-                <div><label><small>Reason</small></label></div>
-                <p-dropdown styleClass="branch-drop" appendTo="body" [options]="reason_list" [(ngModel)]="reason"
-                    optionLabel="CodeDesc" optionValue="Code" />
+                <div><label><small>Reason</small><span class="text-danger">*</span></label></div>
+                <p-dropdown styleClass="branch-drop" appendTo="body" [filter]="true" filterBy="CodeDesc"
+                    [options]="reason_list" [(ngModel)]="reason" optionLabel="CodeDesc" optionValue="Code" />
 
             </div>
             <div class="row mt-2">
 
-                <div><label><small>Lost Date</small></label></div>
+                <div><label><small>Lost Date</small><span class="text-danger">*</span></label></div>
                 <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
                     <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="loss_date"
                         [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"></p-calendar>
@@ -260,13 +307,13 @@
         <ng-container *ngIf="Typevalue=='Conversion'">
             <div class="row mt-2">
 
-                <div><label><small>Payment Type</small></label></div>
+                <div><label><small>Payment Type</small><span class="text-danger">*</span></label></div>
                 <p-dropdown styleClass="branch-drop" appendTo="body" [options]="payment_type_list"
                     [(ngModel)]="conversion" optionValue="Code" optionLabel="CodeDesc" />
 
             </div>
             <div class="row mt-2">
-                <div><label><small>Conversion Date</small></label></div>
+                <div><label><small>Conversion Date</small><span class="text-danger">*</span></label></div>
 
                 <div style="margin: 0px 0px 0px -5px; border-radius: 10px;">
                     <p-calendar styleClass="conversionDate" appendTo="body" [(ngModel)]="conversion_date"
@@ -277,7 +324,7 @@
         </ng-container>
 
         <div class="row mt-2">
-            <div><label><small>Remark</small></label></div>
+            <div><label><small>Remark</small><span class="text-danger"></span></label></div>
 
             <div style="margin: 0px 0px 0px -5px; width: 100%;">
                 <textarea style="width: 100%;" rows="2" cols="30" pInputTextarea [(ngModel)]="remarks"></textarea>

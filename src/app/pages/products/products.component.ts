@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 export class ProductsComponent implements OnInit {
   totalPolicyCount: number = 0;
   totalPending: number = 0;
-
+  totalSuccess: any = 0;
   totalLost: number = 0;
   from_date: any
   to_date: any
@@ -26,8 +26,9 @@ export class ProductsComponent implements OnInit {
   ExpiredCustomers!: any[];
   TopPremiumcustomers: any[] = [];
   responsiveOptions: any[] = [];
+  Selected_division:any;
   dashborad_selectted_division: any
-  public CommonApiUrl: any = config.CommonApiUrl; constructor(private shared: SharedService, private sidebarService: SidebarService, private datePipe: DatePipe, private router: Router,) {
+  public RenewalApiUrl: any = config.RenewalApiUrl; constructor(private shared: SharedService, private sidebarService: SidebarService, private datePipe: DatePipe, private router: Router,) {
 
     this.overall_product_list = [];
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
@@ -38,6 +39,7 @@ export class ProductsComponent implements OnInit {
       this.to_date = sessionStorage.getItem('to_date_op') as any;
       this.DivisionList = JSON.parse(sessionStorage.getItem('DashboardResponseData') as any);
       let division = JSON.parse(sessionStorage.getItem('division') as any);
+      this.Selected_division = division;
       console.log(division, "divisiondivisiondivision");
       this.PolSrcName = division.PolSrcName;
       this.dashborad_selectted_division = division.PolSrcCode
@@ -46,7 +48,7 @@ export class ProductsComponent implements OnInit {
     else {
       const now = new Date();
       now.setMonth(now.getMonth() - 1);
-      this.from_date = new Date(now); 
+      this.from_date = new Date(now);
 
       const to_now = new Date();
       this.to_date = new Date(to_now);
@@ -120,7 +122,7 @@ export class ProductsComponent implements OnInit {
       to_date = this.formatDate(this.to_date);
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.Selected_division.DivisionCode,
         // "DivisionCode": '101',
         // "SourceCode": this.userDetails[0].SourceCode,
         "SourceCode": this.dashborad_selectted_division,
@@ -129,7 +131,7 @@ export class ProductsComponent implements OnInit {
       }
     }
     else {
-  
+
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         "DivisionCode": division,
@@ -138,8 +140,8 @@ export class ProductsComponent implements OnInit {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getproductsbycompanyanddivision`;
-    // let urlLink = `${this.CommonApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -148,6 +150,7 @@ export class ProductsComponent implements OnInit {
 
           this.totalPending = data.reduce((sum: number, item: any) => sum + parseInt(item.Pending, 10), 0);
           this.totalLost = data.reduce((sum: number, item: any) => sum + parseInt(item.Lost, 10), 0);
+          this.totalSuccess = data.reduce((sum: number, item: any) => sum + parseInt(item.Success, 10), 0);
           this.totalPolicyCount = data.reduce((sum: number, item: any) => sum + parseInt(item.ProductCount, 10), 0);
           // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
           //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
@@ -211,7 +214,7 @@ export class ProductsComponent implements OnInit {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getsourcesbyproduct`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getsourcesbyproduct`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -249,7 +252,7 @@ export class ProductsComponent implements OnInit {
   //     }
   //   }
 
-  //   let urlLink = `${this.CommonApiUrl}renewaltrack/getdivisionbycompany`;
+  //   let urlLink = `${this.RenewalApiUrl}renewaltrack/getdivisionbycompany`;
   //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
   //     (data: any) => {
 
@@ -282,13 +285,13 @@ export class ProductsComponent implements OnInit {
     // to_date = this.formatDate(this.to_date);
     let ReqObj = {
 
-      "DivisionCode": this.userDetails.BranchCode,
+      "DivisionCode":  this.Selected_division.DivisionCode,
       // "DivisionCode": '101',
       "StartDate": this.from_date,
       "EndDate": this.to_date
 
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getTopTenPolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getTopTenPolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -303,10 +306,10 @@ export class ProductsComponent implements OnInit {
   }
 
   getExpiredPriumCustomerList() {
-   
 
-    // let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/this.userDetails.BranchCode,`;
-     let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/${this.userDetails.BranchCode}`;
+
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/this.userDetails.BranchCode,`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/${ this.Selected_division.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
 

@@ -1,41 +1,53 @@
-<!-- <app-nav-bar></app-nav-bar>
+<!-- <app-nav-bar *ngIf="this.currentUrl!='/home' || this.currentUrl!='view-policy-details'" (toggleSidebar)="showSidebar = !showSidebar"></app-nav-bar>
 <div class="row">
-    <div class="col-2 col-md-2 router-container">
-
+    <div class="col-2 col-md-2 router-container" *ngIf="showSidebar">
         <app-side-menu></app-side-menu>
-
     </div>
-    <div class="col-10 col-md-10">
-        <div class="router-container">
+    <div [class.col-md-10]="showSidebar" [class.col-md-12]="!showSidebar" class="col-md-10">
+        <div class="router-container"
+            [ngClass]="{ 'with-padding': currentUrl !== '/home', 'no-padding': currentUrl === '/home' }">
             <router-outlet></router-outlet>
+            <ng-container *ngIf="loading$ | async">
+                <div class="overlay"></div>
+                <div class='visionloading'>
+                    <div class="loader-box">
+                        <div class="spinner-loader-gif">
+                            <img src='./assets/loader-2.gif'>
+                        </div>
+                        <div class="spinner-loader-img">
+                            <div class='img-tag'></div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
 </div> -->
-<app-nav-bar (toggleSidebar)="showSidebar = !showSidebar"></app-nav-bar>
+
+<app-nav-bar *ngIf="showNavBar" (toggleSidebar)="showSidebar = !showSidebar"></app-nav-bar>
 
 <div class="row">
     <div class="col-2 col-md-2 router-container" *ngIf="showSidebar">
         <app-side-menu></app-side-menu>
     </div>
-    <!-- <div class="container"> -->
-        <div [class.col-md-10]="showSidebar" [class.col-md-12]="!showSidebar" class="col-md-10">
-            <div class="router-container">
-                <router-outlet></router-outlet>
-            </div>
-        <!-- </div> -->
-    </div>
-</div>
-<ng-container *ngIf="loading$ | async">
-    <div class="overlay"></div>
-    <div class='visionloading'>
-        <div class="loader-box">
-            <div class="spinner-loader-gif">
-                <!-- <img src='./assets/images/loader-1.gif'> -->
-                <img src='../assets/loader-1.gif'>
-            </div>
-            <div class="spinner-loader-img">
-                <div class='img-tag'></div>
-            </div>
+
+    <div [class.col-md-10]="showSidebar" [class.col-md-12]="!showSidebar" class="col-md-10">
+        <div class="router-container" [ngClass]="!showNavBar ? 'no-padding' : 'with-padding'">
+            <router-outlet></router-outlet>
+
+            <ng-container *ngIf="loading$ | async">
+                <div class="overlay"></div>
+                <div class="visionloading">
+                    <div class="loader-box">
+                        <div class="spinner-loader-gif">
+                            <img src="./assets/loader-2.gif" />
+                        </div>
+                        <div class="spinner-loader-img">
+                            <div class="img-tag"></div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
-</ng-container>
+</div>

@@ -1,18 +1,14 @@
-.product-card {
-    margin-left: 12px;
-    margin-top: 20px;
-    margin-right: 12px;
-    // background: linear-gradient(to bottom right,
-    //         rgba(255, 255, 255, 0.1),
-    //         rgba(0, 123, 255, 0.2));
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    // color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+// .product-card {
+//     margin-left: 12px;
+//     margin-top: 20px;
+//     margin-right: 12px;
 
-}
+//     backdrop-filter: blur(10px);
+//     border-radius: 16px;
+//     padding: 20px;
+//     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+//     border: 1px solid rgba(255, 255, 255, 0.2);
+// }
 
 ::ng-deep .p-progressbar {
     height: 10px;
@@ -23,11 +19,15 @@
     }
 }
 
-.text-size {
-    font-size: xx-small;
+// .text-size {
+//     font-size: xx-small;
+// }
+
+.icon-color {
+    color: #0c72e6;
 }
 
-.product-text-size{
+.product-text-size {
     color: #000;
 }
 
@@ -36,23 +36,85 @@
     font-size: 1.1rem;
 }
 
-.hilight{
+.hilight {
     min-height: 250px;
 }
 
-.top-detail-card {
-    border: solid 1px #f99d23;
-    padding: 3px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
-    background-color: #fff;
-    transition: box-shadow 0.3s ease;
+// .top-detail-card {
+//     border: solid 1px #f99d23;
+//     padding: 3px;
+//     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+//     border-radius: 6px;
+//     background-color: #fff;
+//     transition: box-shadow 0.3s ease;
+// }
+.product-card {
+    margin-left: 12px;
+    margin-top: 20px;
+    margin-right: 12px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 24px;
+    border: 1px solid #e0e0e0;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
 }
 
-.top-detail-card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-.icon-color {
+.product-title {
+    font-weight: 600;
+    font-size: 1.2rem;
     color: #0c72e6;
+    text-transform: capitalize;
+}
+
+.product-label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.product-value {
+    font-weight: bold;
+    color: #000;
+}
+
+// .view-customer-btn {
+//     width: 100%;
+//     border-radius: 20px;
+//     font-weight: 600;
+//     background-color: #0c72e6 !important;
+//     border: none !important;
+//     color: #fff !important;
+// }
+
+// .view-customer-btn:hover {
+//     background-color: #0a5cb4 !important;
+//     box-shadow: 0 0 10px rgba(12, 114, 230, 0.4);
+// }
+
+.animate-card {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.p-ripple {
+    border-radius: 50px;
+    margin-left: 13px;
+    width: 100px;
+    height: 25px;
 }

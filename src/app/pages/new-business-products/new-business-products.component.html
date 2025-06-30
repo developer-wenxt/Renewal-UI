@@ -3,12 +3,12 @@
         <div *ngIf="this.userDetails.UserType != 'Broker'" class="mt-2 p-2">
             <div class="row">
                 <div class="col-md-11">
-                 
+
                 </div>
                 <div class="col-md-1 text-end">
                     <p-button styleClass="view-cutomer-btn" (click)="navigateOprationHeadDasborad()" label="Back"
                         severity="info"></p-button>
-              
+
                 </div>
             </div>
 
@@ -23,8 +23,8 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-5 col-sm-12 ms-2">
-               
-                       <div class="row">
+
+                <div class="row">
                     <div class="col-md-4 text-center">
                         <div class="top-detail-card">
                             <div class="row">
@@ -42,10 +42,25 @@
                     </div>
                     <div class="col-md-4 text-center">
                         <div class="top-detail-card">
+                            <div class="row">
+                                <div class="col-9 text-start">
+                                    <div>Total Premium</div>
+                                    <div><b>{{ totalPremium ?? '0' | numberComma }}</b></div>
+                                </div>
+                                <div class="col-3 text-end">
+                                    <!-- <i class="icon-color bi bi-bar-chart-line"></i> -->
+                                    <i class="bi bi-cash text-success"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-4 text-center">
+                        <div class="top-detail-card">
                            
                             <div class="row">
                                 <div class="col-9 text-start">
-                                    <div>Penidng</div>
+                                    <div>Pending</div>
                                     <div><b>{{(totalPending !== null && totalPending !== undefined) ?
                                             totalPending.toString() :
                                             '0'}}</b></div>
@@ -70,7 +85,7 @@
                             </div>
                            
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -83,22 +98,22 @@
             </div>
         </div>
 
-        <div *ngIf="dashborad_selectted_division || overall_product_list.length !=0" class="row mb-3">
+        <!-- <div *ngIf="dashborad_selectted_division || overall_product_list.length !=0" class="row mb-3">
             <div class="col-md-3 col-sm-12" *ngFor="let data of overall_product_list">
                 <div class="card product-card p-3">
                     <div class="row">
                         <div class="col-md-8 text-start product-text-size">
                             <b><Small><i class="bi bi-boxes"></i>&nbsp;{{data.ProductName}}</Small></b>
-                           
+
                         </div>
-       
+
                         <div class="col-md-4">
                             <p-tag styleClass="premium-tag" [value]="data.TotalPremium | numberComma"
                                 [severity]="getSeverity(data.TotalPremium)" />
                         </div>
                     </div>
                     <div class="row mt-2">
-          
+
                     </div>
                     <div class="row mt-2">
                         <div class="col-2"></div>
@@ -131,96 +146,66 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- <div *ngIf="this.userDetails.UserType == 'Issuer'" class="row p-2">
-            <div class="col-md-6 col-sm-12">
-                <div class="card hilight">
-                    <div class="row text-center mt-2">
-                        <h5>Top Premium Customers</h5>
-                    </div>
-                    <p-carousel [value]="TopPremiumcustomers" [numVisible]="2" [numScroll]="2" [circular]="true"
-                        [responsiveOptions]="responsiveOptions" autoplayInterval="3000">
-                        <ng-template let-product pTemplate="item">
-                            <div class="border-1 surface-border border-round card m-2 p-3">
-                                <div class="row">
-                                    <div class="col-12 text-end">
-                                        Premium:<b>{{product.TotalPremium}}</b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i
-                                            class="bi bi-person-circle"></i>&nbsp;&nbsp;<b><small>{{product.CustomerName}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i
-                                            class="bi bi-telephone"></i>&nbsp;&nbsp;<b><small>{{product.InsuredMobile}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i class="bi bi-calendar-event"></i>&nbsp;&nbsp;<b><small>{{product.PolicyEndDate
-                                                |date:'dd/MM/yy'}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-12 text-end">
-                                        <p-tag [value]="product.ProductName"
-                                            [severity]="getSeverity(product.ProductName)" />
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-carousel>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <div class="card hilight">
-                    <div class="row text-center mt-2">
-                        <h5>3 Days to Go expired policy customer list</h5>
-                    </div>
-                    <p-carousel [value]="ExpiredCustomers" [numVisible]="2" [numScroll]="2" [circular]="true"
-                        [responsiveOptions]="responsiveOptions" autoplayInterval="3000">
+        </div> -->
 
-                        <ng-template let-product pTemplate="item">
-                            <div class="border-1 surface-border border-round card m-2 p-3">
-                                <div class="row">
+        <!-- <div *ngIf="dashborad_selectted_division || overall_product_list.length != 0" class="row mb-3">
+            <div class="col-md-3 col-sm-12" *ngFor="let data of overall_product_list">
+                <div class="card product-card p-3">
 
-                                    <div class="col-12 text-end">
-                                        Premium:<b>{{product.TotalPremium}}</b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i
-                                            class="bi bi-person-circle"></i>&nbsp;&nbsp;<b><small>{{product.CustomerName}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i
-                                            class="bi bi-telephone"></i>&nbsp;&nbsp;<b><small>{{product.InsuredMobile}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <i class="bi bi-calendar-event"></i>&nbsp;&nbsp;<b><small>{{product.PolicyEndDate
-                                                |date:'dd/MM/yy'}}</small></b>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-12 text-end">
-                                        <p-tag [value]="product.ProductName"
-                                            [severity]="getSeverity(product.ProductName)" />
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-carousel>
+                    <div class="row">
+                        <div class="col-12 text-center product-text-size">
+                            <b><i class="bi bi-boxes"></i> {{ data.ProductName }}</b>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-4 text-start">
+                            <small><span>Count: <b>{{ data.ProductCount }}</b></span></small>
+                        </div>
+                        <div class="col-8 text-end">
+                            <small> <span>Premium: <b>₹{{ data.TotalPremium | number:'1.2-2' }}</b></span></small>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-3"></div>
+                        <div class="col-6 text-center">
+                            <p-button styleClass="view-cutomer-btn" (click)="ProductBasedCustomers(data)" label="View"
+                                severity="secondary">
+                            </p-button>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
                 </div>
             </div>
         </div> -->
+
+        <div *ngIf="dashborad_selectted_division || overall_product_list.length != 0" class="row mb-3">
+            <div class="col-md-3 col-sm-4 mb-4" *ngFor="let data of overall_product_list">
+                <div class="card product-card p-3 animate-card">
+                    <div class="text-center mb-3">
+                        <h6 class="product-title">
+                            <i class="bi bi-boxes icon-color me-2"></i>{{ data.ProductName }}
+                        </h6>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="product-label">Count:</span>
+                        <span class="product-value">{{ data.ProductCount }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="product-label">Premium:</span>
+                        <span class="product-value">{{ data.TotalPremium | number: '1.2-2' }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <p-button styleClass="view-customer-btn"  (click)="ProductBasedCustomers(data)" label="View"
+                            severity="secondary">
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

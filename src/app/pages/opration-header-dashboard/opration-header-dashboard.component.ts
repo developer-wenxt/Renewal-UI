@@ -23,7 +23,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
   @ViewChild('dt1') dt1!: Table;
   @ViewChild('dt4') dt4!: Table;
 
-  public CommonApiUrl: any = config.CommonApiUrl;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
 
   loading: boolean = true;
   statuses!: any[];
@@ -54,6 +54,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
   customers_list: any
   totalPolicyCount: any = 0;
   totalPending: any = 0;
+  totalSuccess: any = 0;
   totalLost: any = 0;
   userDetails: any
   overall_product_list: any[] = [];
@@ -98,9 +99,9 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
     else {
       this.from_date = sessionStorage.getItem('from_date_op') as any;
       this.to_date = sessionStorage.getItem('to_date_op') as any;
-       this.getdata(this.from_date, this.to_date)
-       this.from_date = new Date(this.from_date);
-       this.to_date = new Date(this.to_date);
+      this.getdata(this.from_date, this.to_date)
+      this.from_date = new Date(this.from_date);
+      this.to_date = new Date(this.to_date);
     }
 
 
@@ -142,6 +143,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
     let totalData: any = 0;
     let pendingData: any = 0;
     let lossData: any = 0;
+    let completedData: any = 0;
 
     if (this.ResponseData.length != 0) {
 
@@ -158,12 +160,16 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
       lossData = this.ResponseData.map((item: { Lost: any; }) =>
         parseInt(item.Lost, 10)
       );
+      completedData = this.ResponseData.map((item: { Success: any; }) =>
+        parseInt(item.Success, 10)
+      );
     }
     else {
       xAxisData = '';
       totalData = 0;
       pendingData = 0;
       lossData = 0;
+      completedData = 0;
     }
 
     const labelOption: NonNullable<BarSeriesOption['label']> = {
@@ -179,165 +185,6 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
         name: {}
       }
     };
-
-    //   const option: echarts.EChartsOption = {
-    //     animation: true,
-    //     animationDuration: 1000,
-    //     animationEasing: 'cubicOut',
-    //     tooltip: {
-    //       trigger: 'axis',
-    //       axisPointer: {
-    //         type: 'shadow'
-    //       },
-    //       backgroundColor: 'transparent', // Make default background transparent
-    //       borderWidth: 0, // Remove border
-    //       padding: 10,
-    //       textStyle: {
-    //         color: '#000',
-    //         fontSize: 12,
-    //         fontFamily: 'Arial'
-    //       },
-    //       extraCssText: `
-    //   background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,200,255,0.9));
-    //   border-radius: 10px;
-    //   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    //   border: 1px solid rgba(255,255,255,0.4);
-    // `
-    //     },
-    //     legend: {
-    //       data: ['Pending', 'Lost', 'Total']
-    //     },
-    //     toolbox: {
-    //       show: true,
-    //       orient: 'vertical',
-    //       left: 'right',
-    //       top: 'center',
-    //       feature: {
-    //         mark: { show: true },
-    //       }
-    //     },
-    //     xAxis: [
-    //       {
-    //         type: 'category',
-    //         axisTick: { show: false },
-    //         axisLabel: {
-    //           rotate: 0,
-    //           fontSize: 10,
-    //           fontFamily: 'Arial',
-    //           color: '#333',
-    //           lineHeight: 14,
-    //           formatter: (value: string) => value
-    //         },
-    //         data: xAxisData
-    //       }
-    //     ],
-    //     yAxis: [
-    //       {
-    //         type: 'value'
-    //       }
-    //     ],
-    //     // series: [
-    //     //   {
-    //     //     name: 'Total',
-    //     //     type: 'bar',
-    //     //     barGap: '20%',
-    //     //     label: labelOption,
-    //     //     emphasis: { focus: 'series' },
-    //     //     itemStyle: {
-    //     //       color: {
-    //     //         type: 'linear',
-    //     //         x: 0,
-    //     //         y: 0,
-    //     //         x2: 0,
-    //     //         y2: 1,
-    //     //         colorStops: [
-    //     //           { offset: 0, color: '#3399ff' },
-    //     //           { offset: 1, color: '#0040ff' }
-    //     //         ]
-    //     //       }
-    //     //     },
-    //     //     data: totalData
-    //     //   },
-    //     //   {
-    //     //     name: 'Pending',
-    //     //     type: 'bar',
-    //     //     label: labelOption,
-    //     //     emphasis: { focus: 'series' },
-    //     //     itemStyle: {
-    //     //       color: {
-    //     //         type: 'linear',
-    //     //         x: 0,
-    //     //         y: 0,
-    //     //         x2: 0,
-    //     //         y2: 1,
-    //     //         colorStops: [
-    //     //           { offset: 0, color: '#ff9933' },
-    //     //           { offset: 1, color: '#cc5200' }
-    //     //         ]
-    //     //       }
-    //     //     },
-    //     //     data: pendingData
-    //     //   },
-    //     //   {
-    //     //     name: 'Lost',
-    //     //     type: 'bar',
-    //     //     label: labelOption,
-    //     //     emphasis: { focus: 'series' },
-    //     //     itemStyle: {
-    //     //       color: {
-    //     //         type: 'linear',
-    //     //         x: 0,
-    //     //         y: 0,
-    //     //         x2: 0,
-    //     //         y2: 1,
-    //     //         colorStops: [
-    //     //           { offset: 0, color: '#ff6666' },
-    //     //           { offset: 1, color: '#cc0000' }
-    //     //         ]
-    //     //       }
-    //     //     },
-    //     //     data: lossData
-    //     //   }
-    //     // ]
-    //     series: [
-    //       {
-    //         name: 'Total',
-    //         type: 'line',
-    //         data: totalData,
-    //         smooth: true,
-    //         lineStyle: {
-    //           color: ' #0000e6'
-    //         },
-    //         itemStyle: {
-    //           color: ' #0000e6'
-    //         }
-    //       },
-    //       {
-    //         name: 'Pending',
-    //         type: 'line',
-    //         data: pendingData,
-    //         smooth: true,
-    //         lineStyle: {
-    //           color: ' #ffaa00'
-    //         },
-    //         itemStyle: {
-    //           color: ' #ffaa00'
-    //         }
-    //       },
-    //       {
-    //         name: 'Lost',
-    //         type: 'line',
-    //         data: lossData,
-    //         smooth: true,
-    //         lineStyle: {
-    //           color: ' #e60000'
-    //         },
-    //         itemStyle: {
-    //           color: ' #e60000'
-    //         }
-    //       }
-    //     ]
-    //   };
 
     const isSingleData = this.ResponseData.length === 1;
 
@@ -364,7 +211,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
     `
       },
       legend: {
-        data: ['Pending', 'Lost', 'Total']
+        data: ['Completed', 'Pending', 'Lost', 'Total',]
       },
       xAxis: isSingleData ? undefined : [
         {
@@ -399,6 +246,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
             data: [
               { value: pendingData[0], name: 'Pending', itemStyle: { color: '#ffaa00' } },
               { value: lossData[0], name: 'Lost', itemStyle: { color: '#e60000' } },
+              { value: completedData[0], name: 'Completed', itemStyle: { color: '#0bb767' } },
               // {
               //   value: totalData[0] - (pendingData[0] + lossData[0]),
               //   name: 'Total',
@@ -408,29 +256,123 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
           }
         ]
         : [
+          // {
+          //   name: 'Total',
+          //   type: 'line',
+          //   data: totalData,
+          //   smooth: true,
+          //   lineStyle: { color: '#0000e6' },
+          //   itemStyle: { color: '#0000e6' }
+          // },
+          // {
+          //   name: 'Completed',
+          //   type: 'line',
+          //   data: completedData,
+          //   smooth: true,
+          //   lineStyle: { color: '#0bb767' },
+          //   itemStyle: { color: '#0bb767' }
+          // },
+          // {
+          //   name: 'Pending',
+          //   type: 'line',
+          //   data: pendingData,
+          //   smooth: true,
+          //   lineStyle: { color: '#ffaa00' },
+          //   itemStyle: { color: '#ffaa00' }
+          // },
+          // {
+          //   name: 'Lost',
+          //   type: 'line',
+          //   data: lossData,
+          //   smooth: true,
+          //   lineStyle: { color: '#e60000' },
+          //   itemStyle: { color: '#e60000' }
+          // }
           {
             name: 'Total',
-            type: 'line',
-            data: totalData,
-            smooth: true,
-            lineStyle: { color: '#0000e6' },
-            itemStyle: { color: '#0000e6' }
+            type: 'bar',
+            barGap: '20%',
+            label: labelOption,
+            emphasis: { focus: 'series' },
+            itemStyle: {
+              borderRadius: [6, 6, 0, 0],
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: '#3399ff' },
+                  { offset: 1, color: '#0040ff' }
+                ]
+              }
+            },
+            data: totalData
+          },
+          {
+            name: 'Completed',
+            type: 'bar',
+            barGap: '20%',
+            label: labelOption,
+            emphasis: { focus: 'series' },
+            itemStyle: {
+              borderRadius: [6, 6, 0, 0],
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: '#0bb767' },
+                  { offset: 1, color: '#0bb767' }
+                ]
+              }
+            },
+            data: completedData
           },
           {
             name: 'Pending',
-            type: 'line',
-            data: pendingData,
-            smooth: true,
-            lineStyle: { color: '#ffaa00' },
-            itemStyle: { color: '#ffaa00' }
+            type: 'bar',
+            label: labelOption,
+            emphasis: { focus: 'series' },
+            itemStyle: {
+              borderRadius: [6, 6, 0, 0],
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: '#ff9933' },
+                  { offset: 1, color: '#cc5200' }
+                ]
+              }
+            },
+            data: pendingData
           },
           {
             name: 'Lost',
-            type: 'line',
-            data: lossData,
-            smooth: true,
-            lineStyle: { color: '#e60000' },
-            itemStyle: { color: '#e60000' }
+            type: 'bar',
+            label: labelOption,
+            emphasis: { focus: 'series' },
+            itemStyle: {
+              borderRadius: [6, 6, 0, 0],
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: '#ff6666' },
+                  { offset: 1, color: '#cc0000' }
+                ]
+              }
+            },
+            data: lossData
           }
         ]
     };
@@ -487,23 +429,24 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
   getdata(fromdate: any, todate: any) {
     this.ResponseData = [];
     this.totalPending = 0;
+    this.totalSuccess = 0;
     this.totalLost = 0;
     this.totalPolicyCount = 0;
     sessionStorage.setItem('from_date_op', fromdate);
     sessionStorage.setItem('to_date_op', todate);
     let branchList: any = [];
     this.userDetails.LoginBranchDetails.forEach((e: any) => {
-      branchList.push(e.BranchCode)
+      branchList.push(e.DivisionCode)
     });
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
       "StartDate": fromdate,
       "EndDate": todate,
-      "DivisionCodelist":branchList,
+      "DivisionCodelist": branchList,
       // "DivisionCodelist":["101"],
 
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getdivisionbycompany`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getdivisionbycompany`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -515,6 +458,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
           sessionStorage.setItem('DashboardResponseData', JSON.stringify(this.ResponseData));
           // this.totalPolicyCount = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.TotalPolicyCount, 10), 0);
           this.totalPending = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
+          this.totalSuccess = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Success, 10), 0);
           this.totalLost = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
           this.totalPolicyCount = data.divisionDetails.reduce((sum: any, item: any) => sum + parseInt(item.TotalPolicyCount, 10), 0);
           // this.totalPolicyCount = data.divisionDetails.reduce((sum: number, item: any) =>
@@ -538,7 +482,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
       "StartDate": "2025-05-01",
       "EndDate": "2025-12-05"
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -558,7 +502,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
       "StartDate": "2025-05-01",
       "EndDate": "2025-12-05"
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -594,7 +538,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
       "EndDate": "2025-05-21"
 
     }
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getTopTenPolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getTopTenPolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -614,8 +558,8 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
 
 
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/100`;
-    //  let urlLink = `${this.CommonApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/100`;
+    //  let urlLink = `${this.RenewalApiUrl}renewaltrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
 
@@ -654,7 +598,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
 
 
 
-    let urlLink = `${this.CommonApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 

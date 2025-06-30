@@ -20,7 +20,7 @@ import { SessionStorageService } from '../../storage/session-storage.service';
 export class NewBusinessCustomerDetailsComponent {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
   private chartInstance: echarts.ECharts | null = null;
-  public CommonApiUrl: any = config.CommonApiUrl;
+  public RenewalApiUrl: any = config.RenewalApiUrl;
   @ViewChild('dt2') dt2!: Table;
   @ViewChild('dt1') dt1!: Table;
   totalPolicyCount: number = 0;
@@ -393,6 +393,7 @@ export class NewBusinessCustomerDetailsComponent {
   }
 
   getSeverity(status: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined {
+
     switch (status) {
       case 'RL':
         return 'secondary';
@@ -484,7 +485,7 @@ export class NewBusinessCustomerDetailsComponent {
     this.PolicyNo = data?.PolicyNumber
     this.Add_dialog = true;
     this.getInsuranceTypeList();
-    this.getVehicelInfo();
+    // this.getVehicelInfo();
   }
   getBrokerwiseData(productCode: any) {
     let ReqObj
@@ -494,7 +495,7 @@ export class NewBusinessCustomerDetailsComponent {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         // "DivisionCode": "100",
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.userDetails.DivisionCode,
         "ProductCode": this.ProductData.ProductCode,
         "StartDate": this.from_date,
         "EndDate": this.to_date
@@ -504,9 +505,9 @@ export class NewBusinessCustomerDetailsComponent {
       // FromDate = this.formatDate(this.from_date);
       // ToDate = this.formatDate(this.to_date);
       ReqObj = {
-        // "CompanyId": this.userDetails.InsuranceId,
-        "CompanyId": '4',
-        "DivisionCode": "101",
+        "CompanyId": this.userDetails.InsuranceId,
+        // "CompanyId": '4',
+        "DivisionCode": this.divisionCode,
         "ProductCode": productCode,
         "SourceCode": this.userDetails[0].SourceCode,
         "StartDate": this.from_date,
@@ -514,7 +515,7 @@ export class NewBusinessCustomerDetailsComponent {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getsourcesbyproduct`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getsourcesbyproduct`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -560,7 +561,7 @@ export class NewBusinessCustomerDetailsComponent {
     else if (this.userDetails.UserType == 'Issuer') {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails.BranchCode,
+        "DivisionCode": this.ProductData.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": this.ProductData.ProductCode,
         "SourceCode": this.ProductData.polSrcCode,
@@ -586,7 +587,7 @@ export class NewBusinessCustomerDetailsComponent {
       }
     }
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getpolicydetails`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getpolicydetails`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -626,21 +627,30 @@ export class NewBusinessCustomerDetailsComponent {
       "CurrentStatus": sts,
       "PaymentType": this.conversion
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/updaterenewpremiapolicy`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/updaterenewpremiapolicy`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'UpdatedSuccessfully') {
           this.visible = false;
-          if (this.userDetails[0].userType != 'Issuer') {
-            this.getDivisiondata();
-          }
-          else {
-            this.getBrokerwiseData(this.ProductData.ProductCode);
-          }
+          // if (this.userDetails[0].userType != 'Issuer') {
+          //   this.getDivisiondata();
+          // }
+          // else {
+
+          // }
           Swal.fire({
             icon: 'info',
             title: 'Validation',
             html: 'Updated Successfully'
+          });
+          this.getCustomerData(null);
+        }
+        else {
+          this.visible = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Validation',
+            html: data.Message
           });
         }
       },
@@ -675,7 +685,7 @@ export class NewBusinessCustomerDetailsComponent {
     }
 
 
-    let urlLink = `${this.CommonApiUrl}nbtrack/getproductsbycompanyanddivision`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getproductsbycompanyanddivision`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
@@ -707,10 +717,10 @@ export class NewBusinessCustomerDetailsComponent {
   }
   getCompanyList() {
     let ReqObj = {
-      "InsuranceId": '100020',
+      "InsuranceId": this.userDetails.InsuranceId,
       "ItemType": "CO_INSURURANCE"
     }
-    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
+    let urlLink = `${this.RenewalApiUrl}master/getbyitemvalue`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
@@ -788,9 +798,9 @@ export class NewBusinessCustomerDetailsComponent {
       "VehicleUsage": this.vehicle_usage,
       "PolicyType": this.Policy_type,
       "SumInsured": this.sumInsured,
-      "CreatedBy": this.userDetails[0].userType,
+      "CreatedBy": this.userDetails.UserType,
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/insertRenewVehicleInfo`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/insertRenewVehicleInfo`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data.Message == 'Success') {
@@ -799,6 +809,13 @@ export class NewBusinessCustomerDetailsComponent {
             icon: 'info',
             title: 'Validation',
             html: 'Vehicle Added Successfully'
+          });
+        }
+        else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Validation',
+            html: data.Message
           });
         }
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
@@ -840,9 +857,9 @@ export class NewBusinessCustomerDetailsComponent {
 
   getVehicelInfo() {
 
-    // let urlLink = `${this.CommonApiUrl}nbtrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
-    let urlLink = `${this.CommonApiUrl}nbtrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}`;
-    //  let urlLink = `${this.CommonApiUrl}nbtrack/getExpiryPolicyDetails/${this.DivisionCode}`;
+    // let urlLink = `${this.RenewalApiUrl}nbtrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}&riskId=${this.RiksId}`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getRenewVehicleInfo?policyNo=${this.PolicyNo}`;
+    //  let urlLink = `${this.RenewalApiUrl}nbtrack/getExpiryPolicyDetails/${this.DivisionCode}`;
     this.shared.onGetMethodSync(urlLink).subscribe(
       (data: any) => {
         console.log(data, "dddddddd");
@@ -873,7 +890,7 @@ export class NewBusinessCustomerDetailsComponent {
     let ReqObj = {
       "LoginId": this.userDetails.LoginId
     }
-    let urlLink = `${this.CommonApiUrl}nbtrack/getSourceFromLogin`;
+    let urlLink = `${this.RenewalApiUrl}nbtrack/getSourceFromLogin`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         if (data) {
@@ -887,13 +904,19 @@ export class NewBusinessCustomerDetailsComponent {
       })
   }
 
-  ViewRisk(customer: any) {
+  ViewRisk(customer: any,mode: any) {
     // let toDate: any = this.formatDate(this.to_date);
     // let fromDate: any = this.formatDate(this.from_date);
     // sessionStorage.setItem('from_date_op', fromDate);
     // sessionStorage.setItem('to_date_op', toDate);
-    sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
-        sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
-    this.router.navigate(['/new-business-risk-details'])
+    // sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+    // sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+    // this.router.navigate(['/new-business-risk-details'])
+      let status = 'newbusiness'
+      let d = mode
+      sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+      sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+      this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
+    
   }
 }

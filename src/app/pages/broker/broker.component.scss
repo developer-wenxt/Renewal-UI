@@ -23,13 +23,17 @@
     font-size: 12px;
 }
 
-.top-detail-card {
-    border: solid 1px #f99d23;
-    padding: 3px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
-    background-color: #fff;
-    transition: box-shadow 0.3s ease;
+// .top-detail-card {
+//     border: solid 1px #f99d23;
+//     padding: 3px;
+//     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+//     border-radius: 6px;
+//     background-color: #fff;
+//     transition: box-shadow 0.3s ease;
+// }
+
+.icon-color {
+    color: #0c72e6;
 }
 
 .top-detail-card:hover {
