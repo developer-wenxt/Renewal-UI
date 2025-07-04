@@ -153,10 +153,11 @@
 </div>
 
 
-<p-dialog header="Broker List" [modal]="true" [(visible)]="visible" [style]="{ width: '80%', overflow: 'auto !important' }">
+<p-dialog header="Broker List" [modal]="true" [(visible)]="visible"
+    [style]="{ width: '80%', overflow: 'auto !important' }">
 
 
-    <p-table #dt4 [value]="tableList" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]" [paginator]="true"
+    <!-- <p-table #dt4 [value]="tableList" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]" [paginator]="true"
         [globalFilterFields]="['PolSrcCode', 'PolSrcName', 'Pending', 'SourceCount','Lost']"
         [tableStyle]="{ 'min-width': '100%' }">
 
@@ -225,5 +226,80 @@
                 <td colspan="5">No data found.</td>
             </tr>
         </ng-template>
+    </p-table> -->
+    <p-table #dt4 [value]="tableList" dataKey="ProductCode" [rows]="5" [rowsPerPageOptions]="[5, 10]" [paginator]="true"
+        [globalFilterFields]="['ProductCode', 'ProductName', 'ProductCount', 'TotalPremium', 'Success', 'Pending', 'Lost']"
+        [tableStyle]="{ 'min-width': '100%' }">
+
+        <ng-template pTemplate="caption">
+            <div class="row text-end">
+                <p-iconField iconPosition="left" class="ml-auto">
+                    <p-inputIcon>
+                        <i class="pi pi-search"></i>
+                    </p-inputIcon>
+                    <input pInputText type="text" style="height: 40px;" (input)="onGlobalFilterBroker($event)"
+                        placeholder="Search keyword" />
+                </p-iconField>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="ProductCode"
+                    style="font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Product Code <p-sortIcon field="ProductCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ProductName"
+                    style="font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Product Name <p-sortIcon field="ProductName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ProductCount"
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Count <p-sortIcon field="ProductCount"></p-sortIcon>
+                </th>
+                <th pSortableColumn="TotalPremium"
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Premium <p-sortIcon field="TotalPremium"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Success"
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Success <p-sortIcon field="Success"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Pending"
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Pending <p-sortIcon field="Pending"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Lost"
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Lost <p-sortIcon field="Lost"></p-sortIcon>
+                </th>
+                <th
+                    style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                    Action
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row>
+            <tr style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif;">
+                <td style="font-size: 11px;">{{ row.ProductCode }}</td>
+                <td style="font-size: 11px;">{{ row.ProductName }}</td>
+                <td style="font-size: 11px; text-align: center;">{{ row.ProductCount }}</td>
+                <td style="font-size: 11px; text-align: center;">{{ row.TotalPremium }}</td>
+                <td style="font-size: 11px; text-align: center;">{{ row.Success }}</td>
+                <td style="font-size: 11px; text-align: center;">{{ row.Pending }}</td>
+                <td style="font-size: 11px; text-align: center;">{{ row.Lost }}</td>
+                <td style="font-size: 11px; text-align: center;">
+                    <i class="bi bi-eye table-icon-btn" (click)="view(row)"></i>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">No data found.</td>
+            </tr>
+        </ng-template>
     </p-table>
+
 </p-dialog>

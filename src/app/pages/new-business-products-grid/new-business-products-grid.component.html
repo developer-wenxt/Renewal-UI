@@ -1,0 +1,201 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="row mb-5">
+                <div class="col-md-11">
+                    <h5 *ngIf="!visible"><b>Product List</b></h5>
+                    <h5 *ngIf="visible"><b>Broker List</b></h5>
+                </div>
+                <div class="col-md-1 text-end">
+                    <p-button *ngIf="!visible" styleClass="view-cutomer-btn" (click)="navigateOprationHeadDasborad()"
+                        label="Back" severity="info"></p-button>
+                    <p-button *ngIf="visible" styleClass="view-cutomer-btn" (click)="visibleBack()" label="Back"
+                        severity="info"></p-button>
+
+                </div>
+            </div>
+            <p-table #dt4 [value]="tableList" *ngIf="!visible" dataKey="ProductCode" [rows]="10"
+                [rowsPerPageOptions]="[10, 15]" [paginator]="true"
+                [globalFilterFields]="['ProductCode', 'ProductName', 'ProductCount', 'TotalPremium', 'Success', 'Pending', 'Lost']"
+                [tableStyle]="{ 'min-width': '100%' }">
+
+                <ng-template pTemplate="caption">
+                    <div class="row mb-2 justify-content-end">
+                        <!-- <button pButton type="button" label="Export PDF" icon="pi pi-file-pdf"
+                        class="p-button-sm p-button-danger me-2"
+                        (click)="dt4.exportCSV({ selectionOnly: false })"></button>
+                    <button pButton type="button" label="Export Excel" icon="pi pi-file-excel"
+                        class="p-button-sm p-button-success" (click)="exportExcel()"></button> -->
+                    </div>
+                    <div class="row text-end">
+                        <div class="col-md-12">
+                            <button pButton type="button" styleClass="exportbtn" label="Export PDF"
+                                icon="pi pi-file-pdf" class="p-button-sm p-button-danger" (click)="exportPdf()">
+                            </button>
+                            <button pButton type="button" label="Export Excel" icon="pi pi-file-excel"
+                                class="p-button-sm p-button-success ms-2" (click)="exportExcel()"></button>
+
+                            <p-iconField iconPosition="left" class="ml-auto ms-2 mb-1">
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input pInputText type="text" style="height: 33px;"
+                                    (input)="onGlobalFilterBroker($event)" placeholder="Search keyword" />
+                            </p-iconField>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="ProductCode"
+                            style="font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            S.No <p-sortIcon field="ProductCode"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="ProductCode"
+                            style="font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Product Code <p-sortIcon field="ProductCode"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="ProductName"
+                            style="font-size:12px; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Product Name <p-sortIcon field="ProductName"></p-sortIcon>
+                        </th>
+
+
+                        <!-- <th pSortableColumn="Success"
+                            style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Success <p-sortIcon field="Success"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Pending"
+                            style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Pending <p-sortIcon field="Pending"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Lost"
+                            style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Lost <p-sortIcon field="Lost"></p-sortIcon>
+                        </th> -->
+                        <th pSortableColumn="ProductCount"
+                            style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Total <p-sortIcon field="ProductCount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="TotalPremium"
+                            style="font-size:12px; text-align: right; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Premium <p-sortIcon field="TotalPremium"></p-sortIcon>
+                        </th>
+                        <th
+                            style="font-size:12px; text-align: center; background-color: rgb(221 221 221); font-family: 'Poppins', sans-serif;">
+                            Action
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                    <tr style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif;">
+                        <td style="font-size: 11px;">{{ i +1 }}</td>
+                        <td style="font-size: 11px;">{{ row.ProductCode }}</td>
+                        <td style="font-size: 11px;">{{ row.ProductName }}</td>
+                        <!-- <td style="font-size: 11px; text-align: center;">{{ row.Success }}</td>
+                        <td style="font-size: 11px; text-align: center;">{{ row.Pending }}</td>
+                        <td style="font-size: 11px; text-align: center;">{{ row.Lost }}</td> -->
+                        <td style="font-size: 11px; text-align: center;">{{ row.ProductCount }}</td>
+                        <td style="font-size: 11px; text-align: right;">{{ row.TotalPremium | numberComma }}</td>
+                        <td style="font-size: 11px; text-align: center;">
+                            <i class="bi bi-eye table-icon-btn" (click)="view(row)"></i>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No data found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <p-table *ngIf="visible" #dt5 [value]="brokerList" dataKey="id" [rows]="5" [rowsPerPageOptions]="[5, 10]"
+                [paginator]="true" [globalFilterFields]="['PolSrcCode', 'PolSrcName', 'Pending', 'SourceCount','Lost']"
+                [tableStyle]="{ 'min-width': '100%' }">
+
+                <ng-template pTemplate="caption">
+                    <div class="row text-end">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text" style="height: 40px;" (input)="onGlobalFilterBroker1($event)"
+                                placeholder="Search keyword" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+
+                        <th pSortableColumn="PolicyNumber"
+                            style="width:12%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Broker Code <p-sortIcon field="PolicyNumber"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="CustomerName"
+                            style="width:21%;font-size:12px;  background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Broker Name <p-sortIcon field="CustomerName"></p-sortIcon>
+                        </th>
+                        <!-- <th pSortableColumn="InsuredMobile"
+                            style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Lost <p-sortIcon field="InsuredMobile"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="ProductName"
+                            style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Pending <p-sortIcon field="ProductName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Success"
+                            style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Completed <p-sortIcon field="Success"></p-sortIcon>
+                        </th> -->
+                        <th pSortableColumn="PolicyEndDate"
+                            style="width:9%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Total <p-sortIcon field="PolicyEndDate"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="TotalPremium"
+                            style="width:9%;font-size:12px;text-align: right; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Total Premium <p-sortIcon field="TotalPremium"></p-sortIcon>
+                        </th>
+                        <th
+                            style="width:12%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                            Action
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-customer>
+                    <tr
+                        style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
+                        <td style="font-size: 11px !important;">{{ customer.PolSrcCode }}</td>
+                        <td style="font-size: 11px !important;">{{ customer.PolSrcName }}</td>
+                        <!-- <td style="font-size: 11px !important;text-align: center;">{{ customer.Lost }}</td>
+                        <td style="font-size: 11px !important;text-align: center;">{{ customer.Pending}}</td>
+                        <td style="font-size: 11px !important;text-align: center;">{{ customer.Success}}</td> -->
+                        <td style="font-size: 11px !important;text-align: center;">{{ customer.SourceCount }}</td>
+                        <td style="font-size: 11px !important;text-align: right;">{{ customer.TotalPremium |numberComma }}</td>
+                        <td style="font-size: 11px !important;text-align: center;">
+                            <i class="bi bi-eye table-icon-btn" (click)="viewCustomer(customer)"></i>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7">No data found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- <p-dialog header="Broker List" [modal]="true" [(visible)]="visible"
+    [style]="{ width: '80%', overflow: 'auto !important' }"> -->
+
+
+
+
+
+<!-- </p-dialog> -->

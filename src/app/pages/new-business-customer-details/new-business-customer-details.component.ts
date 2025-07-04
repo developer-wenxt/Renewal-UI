@@ -60,6 +60,7 @@ export class NewBusinessCustomerDetailsComponent {
   body_type: any;
   vehicle_usage: any;
   Policy_type: any;
+  divisionData: any;
   sumInsured: any;
   encryptedValue: any;
   loginId: any;
@@ -71,6 +72,7 @@ export class NewBusinessCustomerDetailsComponent {
   divisionCode: any;
   PolSrcCode: any
   checkFlow: any
+  dashborad_selectted_agent_name: any;
   constructor(private shared: SharedService,
     private authService: AuthService,
     private sidebarService: SidebarService,
@@ -135,6 +137,8 @@ export class NewBusinessCustomerDetailsComponent {
     }
 
     let division = JSON.parse(sessionStorage.getItem('division') as any);
+    this.divisionData = division
+    console.log(this.divisionData, "divisionData");
     this.divisionName = division.PolSrcName
     this.divisionCode = division.PolSrcCode
     console.log(division, "divisiondivisiondivision");
@@ -495,7 +499,7 @@ export class NewBusinessCustomerDetailsComponent {
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         // "DivisionCode": "100",
-        "DivisionCode": this.userDetails.DivisionCode,
+        "DivisionCode": this.ProductData.DivisionCode,
         "ProductCode": this.ProductData.ProductCode,
         "StartDate": this.from_date,
         "EndDate": this.to_date
@@ -522,7 +526,9 @@ export class NewBusinessCustomerDetailsComponent {
 
           this.ResponseData = data;
 
-          this.dashborad_selectted_agent = data[0]?.SourceCode
+
+          this.dashborad_selectted_agent = this.ResponseData[0]?.PolSrcCode
+          this.dashborad_selectted_agent_name = this.ResponseData[0]?.PolSrcName
           this.getCustomerData(this.dashborad_selectted_agent);
           // this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
           this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
@@ -559,12 +565,13 @@ export class NewBusinessCustomerDetailsComponent {
       }
     }
     else if (this.userDetails.UserType == 'Issuer') {
+
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
         "DivisionCode": this.ProductData.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": this.ProductData.ProductCode,
-        "SourceCode": this.ProductData.polSrcCode,
+        "SourceCode": this.divisionCode,
         // "SourceCode": "2000023",
         "StartDate": this.from_date,
         "EndDate": this.to_date
@@ -786,7 +793,9 @@ export class NewBusinessCustomerDetailsComponent {
     ]
   }
   navigateProd() {
-    this.router.navigate(['/new-business-products'])
+    let value = 'back'
+    this.router.navigate(['/new-business-products-list'], { queryParams: { value } })
+    // this.router.navigate(['/new-business-products'])
   }
 
   saveVehicleInfo() {
@@ -904,7 +913,7 @@ export class NewBusinessCustomerDetailsComponent {
       })
   }
 
-  ViewRisk(customer: any,mode: any) {
+  ViewRisk(customer: any, mode: any) {
     // let toDate: any = this.formatDate(this.to_date);
     // let fromDate: any = this.formatDate(this.from_date);
     // sessionStorage.setItem('from_date_op', fromDate);
@@ -912,11 +921,11 @@ export class NewBusinessCustomerDetailsComponent {
     // sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
     // sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
     // this.router.navigate(['/new-business-risk-details'])
-      let status = 'newbusiness'
-      let d = mode
-      sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
-      sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
-      this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
-    
+    let status = 'newbusiness'
+    let d = mode
+    sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+    sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+    this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
+
   }
 }

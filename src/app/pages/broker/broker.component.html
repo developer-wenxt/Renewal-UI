@@ -113,7 +113,7 @@
                             [tableStyle]="{ 'min-width': '100%' ,'max-height': '100%'}">
 
                             <ng-template pTemplate="caption">
-                                <div class="row text-end">
+                                <!-- <div class="row text-end">
                                     <p-iconField iconPosition="left" class="ml-auto">
                                         <p-inputIcon>
                                             <i class="pi pi-search"></i>
@@ -121,6 +121,24 @@
                                         <input pInputText type="text" style="height: 40px;"
                                             (input)="onGlobalFilter($event)" placeholder="Search keyword" />
                                     </p-iconField>
+                                </div> -->
+                                <div class="row text-end">
+                                    <div class="col-md-12">
+                                        <button pButton type="button" styleClass="exportbtn" label="Export PDF"
+                                            icon="pi pi-file-pdf" class="p-button-sm p-button-danger"
+                                            (click)="exportPdf()">
+                                        </button>
+                                        <button pButton type="button" label="Export Excel" icon="pi pi-file-excel"
+                                            class="p-button-sm p-button-success ms-2" (click)="exportExcel()"></button>
+
+                                        <p-iconField iconPosition="left" class="ml-auto ms-2 mb-1">
+                                            <p-inputIcon>
+                                                <i class="pi pi-search"></i>
+                                            </p-inputIcon>
+                                            <input pInputText type="text" style="height: 33px;"
+                                                (input)="onGlobalFilter($event)" placeholder="Search keyword" />
+                                        </p-iconField>
+                                    </div>
                                 </div>
                             </ng-template>
 

@@ -654,36 +654,39 @@ export class NewBusinessDashboardComponent {
   getSourcebyCompanyandDivision(value: any) {
     console.log(value, "valuevalue");
 
-    this.visible = true;
-    let division
-    let from_date
-    let to_date
-    this.overall_product_list = [];
+    // this.visible = true;
+    // let division
+    // let from_date
+    // let to_date
+    // this.overall_product_list = [];
 
-    let ReqObj
-    from_date = this.formatDate(this.from_date);
-    to_date = this.formatDate(this.to_date);
-    ReqObj = {
-      "CompanyId": this.userDetails.InsuranceId,
-      "DivisionCode": value.DivisionCode,
-      "StartDate": from_date,
-      "EndDate": to_date
-    }
-
-
+    // let ReqObj
+    // from_date = this.formatDate(this.from_date);
+    // to_date = this.formatDate(this.to_date);
+    // ReqObj = {
+    //   "CompanyId": this.userDetails.InsuranceId,
+    //   "DivisionCode": value.DivisionCode,
+    //   "StartDate": from_date,
+    //   "EndDate": to_date
+    // }
 
 
-    let urlLink = `${this.RenewalApiUrl}nbtrack/getSourcebyCompanyandDivision`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
 
-        if (data) {
-          this.tableList = data
-        }
-      },
-      (err: any) => { },
-    );
 
+    // let urlLink = `${this.RenewalApiUrl}nbtrack/getSourcebyCompanyandDivision`;
+    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+    //   (data: any) => {
+
+    //     if (data) {
+    //       this.tableList = data
+    //     }
+    //   },
+    //   (err: any) => { },
+    // );
+    console.log(value, "valuevalue");
+    sessionStorage.setItem('DivistionDetails', JSON.stringify(value));
+    // this.router.navigate(['/products-list'])
+    this.router.navigate(['/new-business-products-list'])
 
   }
   formatDate(date: any): string | null {

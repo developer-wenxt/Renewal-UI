@@ -41,26 +41,26 @@
                         <b><Small><i class="bi bi-boxes"></i>&nbsp;{{this.ProductData?.ProductName}}</Small></b>
                     </div>
                     <div class="col-md-4 mt-1">
-                        <div class="stacked-bar-container" *ngIf="ResponseData">
+                        <!-- <div class="stacked-bar-container" *ngIf="divisionData">
                             <div class="stacked-bar">
                                 <div class="bar success"
-                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Success) + '%' }">
-                                    {{ ResponseData[0]?.Success }} (Success)
+                                    [ngStyle]="{ width: getPercentage(divisionData?.Success) + '%' }">
+                                    {{ divisionData?.Success }} (Success)
                                 </div>
                                 <div class="bar pending"
-                                    [ngStyle]="{ width: getPercentage(ResponseData[0]?.Pending) + '%' }">
-                                    {{ ResponseData[0]?.Pending }} (Pending)
+                                    [ngStyle]="{ width: getPercentage(divisionData?.Pending) + '%' }">
+                                    {{ divisionData?.Pending }} (Pending)
                                 </div>
-                                <div class="bar lost" [ngStyle]="{ width: getPercentage(ResponseData[0]?.Lost) + '%' }">
-                                    {{ ResponseData[0]?.Lost }} (Lost)
+                                <div class="bar lost" [ngStyle]="{ width: getPercentage(divisionData?.Lost) + '%' }">
+                                    {{ divisionData?.Lost }} (Lost)
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4 text-end">
                         <b><Small>Total Policy: &nbsp; {{customers_list?.length | numberComma}}</Small></b>
                         &nbsp;&nbsp;|
-                        <b><Small>Total Premium: &nbsp; {{this.ProductData?.TotalPremium | numberComma}}</Small></b>
+                        <b><Small>Total Premium: &nbsp; {{this.divisionData?.TotalPremium | numberComma}}</Small></b>
                     </div>
                 </div>
 
@@ -175,7 +175,12 @@
                         [tableStyle]="{ 'min-width': '100%' }">
                         <ng-template pTemplate="caption">
                             <div class="row">
-                                <div class="col-md-4 text-start"></div>
+                                <div class="col-md-4 text-start">
+                                    <!-- <p-dropdown styleClass="division-drop"
+                                        (onChange)="filterChange(dashborad_selectted_agent)" [options]="ResponseData"
+                                        [(ngModel)]="dashborad_selectted_agent" optionValue="PolSrcCode"
+                                        optionLabel="PolSrcName" placeholder="Broker"></p-dropdown> -->
+                                </div>
                                 <div class="col-md-8 text-end">
                                     <p-iconField iconPosition="left" class="ml-auto">
                                         <p-inputIcon>

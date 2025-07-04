@@ -7,6 +7,10 @@ import { Table } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-new-business-broker',
@@ -881,7 +885,7 @@ export class NewBusinessBrokerComponent {
     );
   }
 
-  ViewRisk(customer: any,mode:any) {
+  ViewRisk(customer: any, mode: any) {
     let toDate: any = this.formatDate(this.to_date);
     let fromDate: any = this.formatDate(this.from_date);
     sessionStorage.setItem('from_date_op', fromDate);
@@ -890,11 +894,11 @@ export class NewBusinessBrokerComponent {
     // sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
     // this.router.navigate(['/new-business-risk-details'])
 
-      let status = 'newbusiness'
-      let d = mode
-      sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
-      sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
-      this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
+    let status = 'newbusiness'
+    let d = mode
+    sessionStorage.setItem('PolicyNumber', JSON.stringify(customer.PolicyNumber))
+    sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
+    this.router.navigate(['/risk-details'], { queryParams: { status, mode: d } })
   }
   // getBrokerwiseData(productCode: any) {
   //   let ReqObj
@@ -949,4 +953,49 @@ export class NewBusinessBrokerComponent {
   //     (err: any) => { },
   //   );
   // }
+  exportExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.ResponseData);
+    const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    this.saveAsExcelFile(excelBuffer, 'product_report');
+  }
+
+  exportPdf() {
+    const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
+
+    // Define table headers (same order as your p-table)
+    const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
+
+    // Prepare data rows from tableList
+    const data = this.ResponseData.map((row: { ProductCode: any; ProductName: any; TotalPremium: any; Success: any; Pending: any; Lost: any; ProductCount: any; }) => [
+      row.ProductCode,
+      row.ProductName,
+      row.TotalPremium,
+      row.Success,
+      row.Pending,
+      row.Lost,
+      row.ProductCount
+    ]);
+
+    // Generate the table
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [40, 40, 40] },
+      margin: { top: 20 }
+    });
+
+    // Save PDF
+    doc.save(`product-report-${new Date().getTime()}.pdf`);
+  }
+
+
+  saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], {
+      type:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    });
+    saveAs(data, fileName + '_export_' + new Date().getTime() + '.xlsx');
+  }
 }

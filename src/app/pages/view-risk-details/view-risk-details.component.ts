@@ -388,14 +388,14 @@ export class ViewRiskDetailsComponent implements OnInit {
       }
       else {
         let policyDeatils = JSON.parse(sessionStorage.getItem('CustomerDeatils') as any);
-          let sts 
-        if(policyDeatils?.Status =='CP'){
-          sts ='CA'
+        let sts
+        if (policyDeatils?.Status == 'CP') {
+          sts = 'CA'
         }
-        else{
-          sts ='BA'
+        else {
+          sts = 'BA'
         }
-      
+
         ReqObj = {
           "PolicyNumber": this.udpateCoverPlcNo,
           "RiskId": this.udpateCoverRiskId,
@@ -466,12 +466,13 @@ export class ViewRiskDetailsComponent implements OnInit {
     }
 
     if (this.updateType == 'cover-reject') {
-      let sts = null;
-      if (this.userDetails.UserType == 'Issuer') {
-        sts = 'BR'
+      let policyDeatils = JSON.parse(sessionStorage.getItem('CustomerDeatils') as any);
+      let sts
+      if (policyDeatils?.Status == 'CP' || policyDeatils?.Status == 'CA') {
+        sts = 'CR'
       }
       else {
-        sts = 'CR'
+        sts = 'BR'
       }
       let ReqObj = {
         "PolicyNumber": this.udpateCoverPlcNo,
@@ -558,7 +559,7 @@ export class ViewRiskDetailsComponent implements OnInit {
     let ReqObj = {
       "PolicyNumber": this.selectedRik?.PolicyNumber,
       "RiskId": this.selectedRik?.RiskId,
-      "Sectioncode": this.selectedRik?.SectionCode,
+      "SectionCode": this.selectedRik?.SectionCode,
       "Reason": this.reason,
       "Remark": this.remarks,
       "Status": sts
@@ -574,6 +575,7 @@ export class ViewRiskDetailsComponent implements OnInit {
             title: 'Validation',
             html: 'Updated Successfully'
           });
+          this.updateRiks_dialog = false;
         }
 
       })

@@ -55,6 +55,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
+import { ProductGridComponent } from './pages/product-grid/product-grid.component';
+import { NewBusinessProductsGridComponent } from './pages/new-business-products-grid/new-business-products-grid.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-de
     HomeComponent,
     CustomerViewPolicyDetailsComponent,
     SmsCountDetailsComponent,
+    ProductGridComponent,
+    NewBusinessProductsGridComponent,
 
   ],
   imports: [

@@ -7,6 +7,10 @@ import { Table } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-broker',
   standalone: false,
@@ -183,21 +187,21 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       (data: any) => {
 
         if (data) {
-          this.ResponseData = data;
+          this.ResponseData = data?.Result;
           console.log(this.ResponseData, "ResponseData");
 
-          this.dashborad_selectted_agent = data[0]?.ProductCode
+          this.dashborad_selectted_agent = data?.Result[0].ProductCode
           if (this.dashborad_selectted_agent) {
             this.getCustomerData(this.dashborad_selectted_agent);
 
           }
           // this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalSuccess = data.reduce((sum: any, item: any) => sum + parseInt(item.Success, 10), 0);
-          this.totalLost = data.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
+          this.totalPending = data?.Result.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
+          this.totalSuccess = data?.Result.reduce((sum: any, item: any) => sum + parseInt(item.Success, 10), 0);
+          this.totalLost = data?.Result.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
           // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
           //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
-          this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.ProductCount, 10), 0);
+          this.totalPolicyCount = data?.Result.reduce((sum: any, item: any) => sum + parseInt(item.ProductCount, 10), 0);
 
           if (this.chartContainer) {
             window.addEventListener('resize', () => this.myChart.resize());
@@ -858,4 +862,50 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     this.loss_type = null;
     this.Typevalue = 'Loss'
   }
+
+   exportExcel() {
+      const worksheet = XLSX.utils.json_to_sheet(this.ResponseData);
+      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+      const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      this.saveAsExcelFile(excelBuffer, 'product_report');
+    }
+  
+    exportPdf() {
+      const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
+  
+      // Define table headers (same order as your p-table)
+      const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
+  
+      // Prepare data rows from tableList
+      const data = this.ResponseData.map((row: { ProductCode: any; ProductName: any; TotalPremium: any; Success: any; Pending: any; Lost: any; ProductCount: any; }) => [
+        row.ProductCode,
+        row.ProductName,
+        row.TotalPremium,
+        row.Success,
+        row.Pending,
+        row.Lost,
+        row.ProductCount
+      ]);
+  
+      // Generate the table
+      autoTable(doc, {
+        head: headers,
+        body: data,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [40, 40, 40] },
+        margin: { top: 20 }
+      });
+  
+      // Save PDF
+      doc.save(`product-report-${new Date().getTime()}.pdf`);
+    }
+  
+  
+    saveAsExcelFile(buffer: any, fileName: string): void {
+      const data: Blob = new Blob([buffer], {
+        type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+      });
+      saveAs(data, fileName + '_export_' + new Date().getTime() + '.xlsx');
+    }
 }

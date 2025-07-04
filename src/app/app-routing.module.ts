@@ -16,6 +16,8 @@ import { RenewalApprovalComponent } from './pages/renewal-approval/renewal-appro
 import { HomeComponent } from './pages/home/home.component';
 import { CustomerViewPolicyDetailsComponent } from './pages/customer-view-policy-details/customer-view-policy-details.component';
 import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
+import { ProductGridComponent } from './pages/product-grid/product-grid.component';
+import { NewBusinessProductsGridComponent } from './pages/new-business-products-grid/new-business-products-grid.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -34,6 +36,8 @@ const routes: Routes = [
   { path: 'view-policy-details', component: CustomerViewPolicyDetailsComponent },
   { path: 'home', component: HomeComponent },
   { path: 'transaction-sms-list', component: SmsCountDetailsComponent },
+  { path: 'products-list', component: ProductGridComponent },
+  { path: 'new-business-products-list', component: NewBusinessProductsGridComponent },
   { path: '**', component: PageNotFoundComponent },
 
 ];

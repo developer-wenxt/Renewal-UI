@@ -46,6 +46,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   conversion: any;
   conversion_date: any;
   DivisionName: any
+  dashborad_selectted_agent_name: any;
   userDetails: any;
   remarks: any;
   companyList: any[] = [];
@@ -66,8 +67,10 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   insuranceId: any;
   branchcode: any;
   productId: any;
+  brokerList: any[] = [];
   userType: any;
   divisionName: any;
+  divisionData: any;
   divisionCode: any;
   PolSrcCode: any
   checkFlow: any
@@ -115,6 +118,8 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       else {
         let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
         this.userDetails = d.Result;
+        this.brokerList = JSON.parse(sessionStorage.getItem('brokerList') as any);
+
         if (this.userDetails.UserType == 'Broker') {
           this.getSouceCode();
         }
@@ -137,8 +142,11 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     }
 
     let division = JSON.parse(sessionStorage.getItem('division') as any);
-    this.divisionName = division.PolSrcName
-    this.divisionCode = division.PolSrcCode
+    this.divisionData = division
+    console.log(this.divisionData, "divisionData");
+
+    this.divisionName = division?.PolSrcName
+    this.divisionCode = division?.PolSrcCode
 
 
   }
@@ -488,16 +496,17 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       (data: any) => {
         if (data) {
 
-          this.ResponseData = data;
+          this.ResponseData = data.Result;
 
-          this.dashborad_selectted_agent = data[0]?.SourceCode
+          this.dashborad_selectted_agent = this.ResponseData[0]?.PolSrcCode
+          this.dashborad_selectted_agent_name = this.ResponseData[0]?.PolSrcName
           this.getCustomerData(this.dashborad_selectted_agent);
           // this.totalPolicyCount = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalPending = data.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
-          this.totalLost = data.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
-          this.totalPolicyCount = data.reduce((sum: number, item: any) =>
+          this.totalPending = data?.reduce((sum: any, item: any) => sum + parseInt(item.Pending, 10), 0);
+          this.totalLost = data?.reduce((sum: any, item: any) => sum + parseInt(item.Lost, 10), 0);
+          this.totalPolicyCount = data?.reduce((sum: number, item: any) =>
             sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
-          this.totalpremium = data.reduce((sum: any, item: any) => sum + parseInt(item.TotalPremium, 10), 0);
+          this.totalpremium = data?.reduce((sum: any, item: any) => sum + parseInt(item.TotalPremium, 10), 0);
           if (this.userDetails.UserType == 'Broker') {
             window.addEventListener('resize', () => this.myChart?.resize());
             setTimeout(() => this.initChart(), 0);
@@ -532,7 +541,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
         "DivisionCode": this.ProductData.DivisionCode,
         // "DivisionCode": '101',
         "ProductCode": this.ProductData.ProductCode,
-        "SourceCode": this.ProductData.polSrcCode,
+        "SourceCode": this.divisionCode,
         // "SourceCode": "2000023",
         "StartDate": this.from_date,
         "EndDate": this.to_date
@@ -790,7 +799,8 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
     ]
   }
   navigateProd() {
-    this.router.navigate(['/products'])
+    let value = 'back'
+    this.router.navigate(['/products-list'], { queryParams: { value } })
   }
 
   saveVehicleInfo() {
@@ -914,7 +924,7 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   }
 
   getPercentage(value: number): number {
-    const total = +this.ResponseData[0]?.SourceCount;
+    const total = this.divisionData?.SourceCount;
     return total ? Math.round((+value / total) * 1000) / 10 : 0; // one decimal
   }
 
@@ -935,13 +945,13 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
       UserType: this.userType,
       SubUserType: this.SubUserType,
       InsuranceId: this.insuranceId,
-      ProductId: this.productId,  
+      ProductId: this.productId,
     };
     this.shared.onPostMethodBearerSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         console.log(data, "menulist");
         if (data.Result) {
-          let filteredList = data.Result.filter((ele: { ProductId:any; }) => ele.ProductId == this.productId);
+          let filteredList = data.Result.filter((ele: { ProductId: any; }) => ele.ProductId == this.productId);
           sessionStorage.setItem('MenuList', JSON.stringify(filteredList))
           this.onSelectProduct();
 

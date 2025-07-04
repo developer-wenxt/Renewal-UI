@@ -576,43 +576,51 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
 
   getSourcebyCompanyandDivision(value: any) {
     console.log(value, "valuevalue");
+    sessionStorage.setItem('DivistionDetails', JSON.stringify(value));
+    this.router.navigate(['/products-list'])
+    // this.visible = true;
+    // let division
+    // let from_date
+    // let to_date
+    // this.overall_product_list = [];
 
-    this.visible = true;
-    let division
-    let from_date
-    let to_date
-    this.overall_product_list = [];
+    // let ReqObj
+    // from_date = this.formatDate(this.from_date);
+    // to_date = this.formatDate(this.to_date);
+    // ReqObj = {
+    //   "CompanyId": this.userDetails.InsuranceId,
+    //   "DivisionCode": value.DivisionCode,
+    //   "StartDate": from_date,
+    //   "EndDate": to_date
+    // }
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
+    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+    //   (data: any) => {
 
-    let ReqObj
-    from_date = this.formatDate(this.from_date);
-    to_date = this.formatDate(this.to_date);
-    ReqObj = {
-      "CompanyId": this.userDetails.InsuranceId,
-      // "DivisionCode": this.userDetails.BranchCode,
-      "DivisionCode": value.DivisionCode,
-      // "SourceCode": this.userDetails[0].SourceCode,
-      "StartDate": from_date,
-      "EndDate": to_date
-    }
+    //     if (data) {
+    //       this.tableList = data
+    //     }
+    //   },
+    //   (err: any) => { },
+    // );
+    // ReqObj = {
+    //   "CompanyId": this.userDetails.InsuranceId,
+    //   "DivisionCode": value.DivisionCode,
+    //   "StartDate": from_date,
+    //   "EndDate": to_date
+    // }
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
+    // let urlLink = `${this.RenewalApiUrl}renewaltrack/getproductsbycompanyanddivision`;
 
+    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+    //   (data: any) => {
 
-
-
-    let urlLink = `${this.RenewalApiUrl}renewaltrack/getSourcebyCompanyandDivision`;
-    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-      (data: any) => {
-
-        if (data) {
-          this.tableList = data
-
-          // this.totalPending = data.reduce((sum: number, item: any) => sum + parseInt(item.Pending, 10), 0);
-          // this.totalLost = data.reduce((sum: number, item: any) => sum + parseInt(item.Lost, 10), 0);
-          // this.totalPolicyCount = data.reduce((sum: number, item: any) =>
-          //   sum + parseInt(item.Pending, 10) + parseInt(item.Lost, 10), 0);
-        }
-      },
-      (err: any) => { },
-    );
+    //     if (data) {
+    //       this.tableList = data?.Result
+    //     }
+    //   },
+    //   (err: any) => { },
+    // );
 
 
   }
