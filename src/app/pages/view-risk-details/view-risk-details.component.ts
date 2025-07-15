@@ -63,6 +63,8 @@ export class ViewRiskDetailsComponent implements OnInit {
   selectedSections: any[] = [];
   updateRenewal_dialog: boolean = false;
   RenewalYesNo: any;
+  editedCoverData: any = null;
+
   constructor(private shared: SharedService, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private messageService: MessageService) {
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
     this.userDetails = d.Result;
@@ -117,7 +119,8 @@ export class ViewRiskDetailsComponent implements OnInit {
 
   getRiskList() {
     let ReqObj = {
-      "PolicyNumber": this.PolicyNumber
+      "PolicyNumber": this.PolicyNumber,
+      "InsuranceId": this.userDetails.InsuranceId
     }
     let urlLink
     if (this.checkFlow == 'newbusiness') {
@@ -342,6 +345,12 @@ export class ViewRiskDetailsComponent implements OnInit {
     // this.router.navigate(['/broker'])
   }
 
+  onEditRowInit(rowData: any, dtRef: Table) {
+    this.editedCoverData = null;
+    this.editedCoverData = { ...rowData };
+    dtRef.initRowEdit(rowData);
+  }
+
   onupdateCover(event: any, data: any, type: any) {
     if (type != 'cover-reject') {
       event.stopPropagation();
@@ -375,14 +384,32 @@ export class ViewRiskDetailsComponent implements OnInit {
   updateCoverDetails() {
     if (this.updateType == 'cover') {
       let ReqObj: any
+      let ratemodified = null
+      let premiummodifed = null
+      if (this.userDetails?.UserType != 'Issuer') {
+        if (this.editedCoverData.SumInsuredModified != '') {
+          if (this.editedCoverData.SumInsuredModified == this.SumInsuredModified) {
+            ratemodified = this.editedCoverData?.RateModified;
+            premiummodifed = this.editedCoverData?.PremiumModified;
+          }
+          else {
+            ratemodified = 0;
+            premiummodifed = 0;
+          }
+        }
+      }
+      else {
+        ratemodified = this.RateModified;
+        premiummodifed = this.PremiumModified;
+      }
       if (this.checkFlow == 'customer') {
         ReqObj = {
           "PolicyNumber": this.udpateCoverPlcNo,
           "RiskId": this.udpateCoverRiskId,
           "SrNo": this.udpateCoverSrNo,
           "SumInsuredModified": this.SumInsuredModified,
-          "RateModified": this.RateModified,
-          "PremiumModified": this.PremiumModified,
+          "RateModified": ratemodified,
+          "PremiumModified": premiummodifed,
           "UpdatedBy": 'user'
         }
       }
@@ -393,7 +420,13 @@ export class ViewRiskDetailsComponent implements OnInit {
           sts = 'CA'
         }
         else {
-          sts = 'BA'
+          if (this.userDetails?.UserType == 'Issuer') {
+            sts = 'BA'
+
+          }
+          else {
+            sts = 'BP'
+          }
         }
 
         ReqObj = {
@@ -401,8 +434,8 @@ export class ViewRiskDetailsComponent implements OnInit {
           "RiskId": this.udpateCoverRiskId,
           "SrNo": this.udpateCoverSrNo,
           "SumInsuredModified": this.SumInsuredModified,
-          "RateModified": this.RateModified,
-          "PremiumModified": this.PremiumModified,
+          "RateModified": ratemodified,
+          "PremiumModified": premiummodifed,
           "UpdatedBy": this.userDetails?.UserType,
           "Status": sts
         }
@@ -412,7 +445,8 @@ export class ViewRiskDetailsComponent implements OnInit {
       this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
         (data: any) => {
           if (data.Result) {
-            this.visible = false;
+            // this.visible = false;
+            this.dt1.cancelRowEdit(this.editedCoverData)
             Swal.fire({
               icon: 'info',
               title: 'Validation',
@@ -560,7 +594,7 @@ export class ViewRiskDetailsComponent implements OnInit {
       "PolicyNumber": this.selectedRik?.PolicyNumber,
       "RiskId": this.selectedRik?.RiskId,
       "SectionCode": this.selectedRik?.SectionCode,
-      "Reason": this.reason,
+      "Reason": this.reason ?this.reason:null,
       "Remark": this.remarks,
       "Status": sts
     }
@@ -576,6 +610,7 @@ export class ViewRiskDetailsComponent implements OnInit {
             html: 'Updated Successfully'
           });
           this.updateRiks_dialog = false;
+          this.getRiskList();
         }
 
       })
@@ -808,6 +843,12 @@ export class ViewRiskDetailsComponent implements OnInit {
           });
         }
       })
+  }
+
+  onModify(data: any) {
+    this.Typevalue = 'Modify'
+    this.updateRiks_dialog = true;
+     this.selectedRik = data;
   }
 }
 

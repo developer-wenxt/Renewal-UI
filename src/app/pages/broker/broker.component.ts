@@ -117,22 +117,22 @@ export class BrokerComponent implements OnInit, AfterViewInit {
       this.getDivisiondata();
     }
 
-    this.reason_list = [
-      {
-        "Code": "1",
-        "CodeDesc": "Reason 1",
+    // this.reason_list = [
+    //   {
+    //     "Code": "1",
+    //     "CodeDesc": "Reason 1",
 
-      },
-      {
-        "Code": "3",
-        "CodeDesc": "Reason 3",
+    //   },
+    //   {
+    //     "Code": "3",
+    //     "CodeDesc": "Reason 3",
 
-      },
-      {
-        "Code": "2",
-        "CodeDesc": "Reason 2",
-      }
-    ]
+    //   },
+    //   {
+    //     "Code": "2",
+    //     "CodeDesc": "Reason 2",
+    //   }
+    // ]
   }
   // getSouceCode() {
 
@@ -300,7 +300,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
    `
       },
       legend: {
-        data: ['Completed','Pending', 'Lost', 'Total']
+        data: ['Completed', 'Pending', 'Lost', 'Total']
       },
       toolbox: {
         show: true,
@@ -542,6 +542,7 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     this.ProductId = data?.ProductCode;
     this.CurrentStatus = data?.CurrentStatus;
     this.getPaymentType();
+    this.getReasonList();
   }
 
   getPaymentType() {
@@ -610,11 +611,11 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     // this.getVehicelInfo();
   }
   getCompanyList() {
-    let ReqObj = {
+     let ReqObj = {
       "InsuranceId": this.userDetails.InsuranceId,
       "ItemType": "CO_INSURURANCE"
     }
-    let urlLink = `${this.RenewalApiUrl}master/getbyitemvalue`;
+    let urlLink = `${this.CommonApiUrl}master/getbyitemvalue`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
         // let defaultObj = [{ "Code": null, "CodeDesc": "--Select--" }]
@@ -863,49 +864,49 @@ export class BrokerComponent implements OnInit, AfterViewInit {
     this.Typevalue = 'Loss'
   }
 
-   exportExcel() {
-      const worksheet = XLSX.utils.json_to_sheet(this.ResponseData);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, 'product_report');
-    }
-  
-    exportPdf() {
-      const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
-  
-      // Define table headers (same order as your p-table)
-      const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
-  
-      // Prepare data rows from tableList
-      const data = this.ResponseData.map((row: { ProductCode: any; ProductName: any; TotalPremium: any; Success: any; Pending: any; Lost: any; ProductCount: any; }) => [
-        row.ProductCode,
-        row.ProductName,
-        row.TotalPremium,
-        row.Success,
-        row.Pending,
-        row.Lost,
-        row.ProductCount
-      ]);
-  
-      // Generate the table
-      autoTable(doc, {
-        head: headers,
-        body: data,
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [40, 40, 40] },
-        margin: { top: 20 }
-      });
-  
-      // Save PDF
-      doc.save(`product-report-${new Date().getTime()}.pdf`);
-    }
-  
-  
-    saveAsExcelFile(buffer: any, fileName: string): void {
-      const data: Blob = new Blob([buffer], {
-        type:
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
-      });
-      saveAs(data, fileName + '_export_' + new Date().getTime() + '.xlsx');
-    }
+  exportExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.ResponseData);
+    const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    this.saveAsExcelFile(excelBuffer, 'product_report');
+  }
+
+  exportPdf() {
+    const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
+
+    // Define table headers (same order as your p-table)
+    const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
+
+    // Prepare data rows from tableList
+    const data = this.ResponseData.map((row: { ProductCode: any; ProductName: any; TotalPremium: any; Success: any; Pending: any; Lost: any; ProductCount: any; }) => [
+      row.ProductCode,
+      row.ProductName,
+      row.TotalPremium,
+      row.Success,
+      row.Pending,
+      row.Lost,
+      row.ProductCount
+    ]);
+
+    // Generate the table
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [40, 40, 40] },
+      margin: { top: 20 }
+    });
+
+    // Save PDF
+    doc.save(`product-report-${new Date().getTime()}.pdf`);
+  }
+
+
+  saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], {
+      type:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    });
+    saveAs(data, fileName + '_export_' + new Date().getTime() + '.xlsx');
+  }
 }

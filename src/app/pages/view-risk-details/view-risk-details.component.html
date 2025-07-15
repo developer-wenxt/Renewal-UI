@@ -73,8 +73,12 @@
                                 <th pSortableColumn="RiskId">Risk ID <p-sortIcon field="RiskId"></p-sortIcon></th>
                                 <th pSortableColumn="SectionDesc">Section <p-sortIcon field="SectionDesc"></p-sortIcon>
                                 </th>
+                                <th pSortableColumn="DeletedModifiedFlag">Remark <p-sortIcon
+                                        field="Remark"></p-sortIcon></th>
                                 <th pSortableColumn="DeletedModifiedFlag">Status <p-sortIcon
                                         field="DeletedModifiedFlag"></p-sortIcon></th>
+                                <th pSortableColumn="DeletedModifiedFlag">Reason <p-sortIcon
+                                        field="Reason"></p-sortIcon></th>
                                 <th>Action</th>
                             </tr>
                         </ng-template>
@@ -85,7 +89,9 @@
                                 <td>{{ row.PolicyNumber }}</td>
                                 <td>{{ row.RiskId }}</td>
                                 <td>{{ row.SectionDesc }}</td>
+                                <td>{{ row.Remark || '-' }}</td>
                                 <td>{{ row.DeletedModifiedFlag || '-' }}</td>
+                                <td>{{ row.Reason || '-' }}</td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Action buttons">
                                         <button type="button" class="btn btn-outline-primary" title="View Risk Deatils"
@@ -113,8 +119,12 @@
                                             (click)="onReject($event, row, rejectBtn)">
                                             <i class="bi bi-x-circle"></i>
                                         </button>
-
+                                        <button *ngIf="row.DeletedModifiedFlag =='Rejected'" type="button"
+                                            class="btn btn-outline-primary" title="Modify" (click)="onModify(row)">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
                                     </div>
+
                                 </td>
                             </tr>
                         </ng-template>
@@ -144,7 +154,9 @@
                             <div class="field-row"><strong>Policy No:</strong> {{ row.PolicyNumber }}</div>
                             <div class="field-row"><strong>Risk ID:</strong> {{ row.RiskId }}</div>
                             <div class="field-row"><strong>Section:</strong> {{ row.SectionDesc }}</div>
+                            <div class="field-row"><strong>Remark:</strong> {{ row.Remark || '-' }}</div>
                             <div class="field-row"><strong>Status:</strong> {{ row.DeletedModifiedFlag || '-' }}</div>
+                            <div class="field-row"><strong>Reason:</strong> {{ row.Reason || '-' }}</div>
                             <div class="btn-group" role="group" aria-label="Action buttons">
                                 <button type="button" class="btn btn-outline-primary" title="View Risk Deatils"
                                     (click)="onviewRisk(row)">
@@ -170,7 +182,10 @@
                                     title="Reject" (click)="onReject($event, row, rejectBtn)">
                                     <i class="bi bi-x-circle"></i>
                                 </button>
-
+                                <button *ngIf="row.DeletedModifiedFlag =='Rejected'" type="button"
+                                    class="btn btn-outline-primary" title="Modify" (click)="onModify(row)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -414,8 +429,10 @@
                     </td>
 
                     <td *ngIf="mode !='view'" style="text-align: center;">
+                        <!-- <button *ngIf="!editing" pButton icon="pi pi-pencil" class="p-button-text p-button-sm"
+                            (click)="dt1.initRowEdit(cover)" pTooltip="Update this item"></button> -->
                         <button *ngIf="!editing" pButton icon="pi pi-pencil" class="p-button-text p-button-sm"
-                            (click)="dt1.initRowEdit(cover)" pTooltip="Update this item"></button>
+                            (click)="onEditRowInit(cover, dt1)" pTooltip="Update this item"></button>
                         <button *ngIf="!editing && this.userDetails?.UserType=='Issuer'" pButton
                             icon="pi pi-thumbs-down" class="p-button-text p-button-sm text-danger"
                             (click)="onupdateCover($event,cover,'cover-reject')" pTooltip="Reject this item"></button>
@@ -675,7 +692,7 @@
             <h6 *ngIf="Typevalue=='Lost'">Reject Details</h6>
             <h6 *ngIf="Typevalue!='Lost'">Renewal Details</h6>
         </ng-template>
-        <ng-container *ngIf="Typevalue=='Lost'">
+        <ng-container *ngIf="Typevalue=='Lost' && Typevalue !='Modify'">
             <div class="row mt-2">
 
                 <div><label><small>Reason</small><span class="text-danger">*</span></label></div>
@@ -853,10 +870,13 @@
             <div class="mb-2">Policy No: &nbsp;&nbsp;<strong>{{ commissionDetails[0].PolicyNumber }}</strong></div>
             <div class="mb-2">Broker: &nbsp;&nbsp;<strong>{{ commissionDetails[0].BrokerName }}</strong></div>
             <div class="mb-2">Section: &nbsp;&nbsp;<strong>{{ commissionDetails[0].SectionDesc }}</strong></div>
-            <div class="mb-2">Commission Code: &nbsp;&nbsp;<strong>{{ commissionDetails[0].CommissionCode }}</strong></div>
-            <div class="mb-2">Commission Type: &nbsp;&nbsp;<strong>{{ commissionDetails[0].CommissionDesc }}</strong></div>
+            <div class="mb-2">Commission Code: &nbsp;&nbsp;<strong>{{ commissionDetails[0].CommissionCode }}</strong>
+            </div>
+            <div class="mb-2">Commission Type: &nbsp;&nbsp;<strong>{{ commissionDetails[0].CommissionDesc }}</strong>
+            </div>
             <div class="mb-2">Percentage: &nbsp;&nbsp;<strong>{{ commissionDetails[0].Percentage }}%</strong></div>
-            <div class="mb-2">Amount: &nbsp;&nbsp;<strong> {{ commissionDetails[0].Amount | number: '1.2-2' }}</strong></div>
+            <div class="mb-2">Amount: &nbsp;&nbsp;<strong> {{ commissionDetails[0].Amount | number: '1.2-2' }}</strong>
+            </div>
 
             <div class="mt-3 text-end">
                 <button class="btn btn-secondary btn-sm" (click)="showCommissionPopup = false">Close</button>

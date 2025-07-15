@@ -89,8 +89,8 @@ export class ProductGridComponent implements OnInit {
   view(data: any) {
     let value = 'Issuer'
     // this.router.navigate(['/branch-dashboard'], { queryParams: { value } })
-    console.log(data,"kjsdkjfhsdjfhsjkdhfskjfhsfkjgg");
-    
+    console.log(data, "kjsdkjfhsdjfhsjkdhfskjfhsfkjgg");
+
     sessionStorage.setItem('SelecttedProduct', JSON.stringify(data));
     this.visible = true;
     this.getbrokerList();
@@ -120,13 +120,88 @@ export class ProductGridComponent implements OnInit {
     this.saveAsExcelFile(excelBuffer, 'product_report');
   }
 
-  exportPdf() {
-    const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
+  // exportPdf() {
+  //   const doc = new jsPDF('landscape'); // use 'portrait' if you prefer
 
-    // Define table headers (same order as your p-table)
+  //   // Define table headers (same order as your p-table)
+  //   const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
+
+  //   // Prepare data rows from tableList
+  //   const data = this.tableList.map(row => [
+  //     row.ProductCode,
+  //     row.ProductName,
+  //     row.TotalPremium,
+  //     row.Success,
+  //     row.Pending,
+  //     row.Lost,
+  //     row.ProductCount
+  //   ]);
+
+  //   // Generate the table
+  //   autoTable(doc, {
+  //     head: headers,
+  //     body: data,
+  //     styles: { fontSize: 8 },
+  //     headStyles: { fillColor: [40, 40, 40] },
+  //     margin: { top: 20 }
+  //   });
+
+  //   // Save PDF
+  //   doc.save(`product-report-${new Date().getTime()}.pdf`);
+  // }
+
+exportPdf() {
+  const doc = new jsPDF('portrait');
+
+  // Dynamically select image based on InsuranceId
+  let logoPath = '';
+  switch (this.userDetails.InsuranceId) {
+    case '100046':
+      logoPath = 'assets/phoenixAlt.png';
+      break;
+    case '100047':
+      logoPath = 'assets/cropped-botwa.png';
+      break;
+    case '100048':
+      logoPath = 'assets/PhoenixMozambique.png';
+      break;
+    case '100049':
+      logoPath = 'assets/cropped-swaziland.png';
+      break;
+    case '100050':
+      logoPath = 'assets/cropped-NAMIBIA-LOGO-1.png';
+      break;
+    case '100002':
+      logoPath = 'assets/alliance-img-1.png';
+      break;
+    case '100020':
+      logoPath = 'assets/FirstAssurance.png';
+      break;
+    default:
+      logoPath = 'assets/phoneix-logo.png'; 
+  }
+
+  const img = new Image();
+  img.src = logoPath;
+
+  img.onload = () => {
+    // Add logo
+    doc.addImage(img, 'PNG', 10, 10, 30, 15);
+
+    // --- HEADER TEXT ---
+    doc.setFontSize(14);
+    doc.setTextColor(40);
+    doc.text('Product Report', 80, 20);
+
+    // --- DATE & TIME (Top-Right Corner) ---
+    const now = new Date();
+    const dateStr = now.toLocaleString();
+    doc.setFontSize(8);
+    doc.setTextColor(100);
+    doc.text(dateStr, doc.internal.pageSize.getWidth() - 50, 10);
+
+    // --- TABLE ---
     const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
-
-    // Prepare data rows from tableList
     const data = this.tableList.map(row => [
       row.ProductCode,
       row.ProductName,
@@ -137,18 +212,56 @@ export class ProductGridComponent implements OnInit {
       row.ProductCount
     ]);
 
-    // Generate the table
     autoTable(doc, {
       head: headers,
       body: data,
+      startY: 30,
       styles: { fontSize: 8 },
       headStyles: { fillColor: [40, 40, 40] },
-      margin: { top: 20 }
+      margin: { top: 10 }
     });
 
-    // Save PDF
     doc.save(`product-report-${new Date().getTime()}.pdf`);
-  }
+  };
+
+  img.onerror = () => {
+    console.error('Logo image failed to load. Generating PDF without logo.');
+
+    // --- HEADER TEXT ---
+    doc.setFontSize(14);
+    doc.setTextColor(40);
+    doc.text('Product Report', 80, 20);
+
+    const now = new Date();
+    const dateStr = now.toLocaleString();
+    doc.setFontSize(8);
+    doc.setTextColor(100);
+    doc.text(dateStr, doc.internal.pageSize.getWidth() - 50, 10);
+
+    const headers = [['Product Code', 'Product Name', 'Premium', 'Success', 'Pending', 'Lost', 'Total']];
+    const data = this.tableList.map(row => [
+      row.ProductCode,
+      row.ProductName,
+      row.TotalPremium,
+      row.Success,
+      row.Pending,
+      row.Lost,
+      row.ProductCount
+    ]);
+
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      startY: 30,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [40, 40, 40] },
+      margin: { top: 10 }
+    });
+
+    doc.save(`product-report-${new Date().getTime()}.pdf`);
+  };
+}
+
 
 
   saveAsExcelFile(buffer: any, fileName: string): void {
