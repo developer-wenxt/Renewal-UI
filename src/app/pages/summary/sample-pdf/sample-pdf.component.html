@@ -1,0 +1,168 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div #policyContent
+                style="width: 794px; margin: auto; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; overflow-x:worde-wrap;">
+                <h3 style="text-align: center;">YARA Rice Weather Index Insurance - Policy Document</h3>
+                <div class="mt-2"></div>
+                <p><strong>POLICY NUMBER:</strong>
+                    <!-- <input type="text" [(ngModel)]="policyNumber"
+                        style="border:none; border-bottom:1px solid #000;"> -->
+                    <input [(ngModel)]="policyNumber" style="border:none; border-bottom:1px solid #000;"
+                        class="screen-only">
+                    <span class="pdf-only">{{ policyNumber }}</span>
+                </p>
+                <p><strong>THE INSURED:</strong> YARA Rice Farmers</p>
+
+                <strong>DEFINITION:</strong>
+                <div>"The Insured" shall mean Yara Rice Farmers under the proposed programme
+                    from whom a
+                    levy </div>
+                <div>
+                    (including the insurance premium) shall be collected by the Insurer in the proposed crop
+                    season.
+                </div>
+
+                <p><strong>THE INSURER:</strong> Alliance Insurance Company Limited (hereinafter referred to as the
+                    ‘Insurer’)</p>
+                <p><strong>COVERAGE:</strong> Rice Crop</p>
+
+                <div><strong>WHAT IS COVERED:</strong> Weather Index Insurance – Crop failure due to lack of adequate or
+                    excess
+                    moisture after planting as defined under this</div>
+                <div>policy and attached term sheet (Annex 1).</div>
+
+                <p><strong>SITUATION:</strong> Morgoro, Iringinga & Mbeya farm locations</p>
+
+                <div><strong>CONDITION PRECEDENT:</strong> Cover will only incept after receipt of farmer schedule
+                    before
+                    the
+                    effective planting date with name, location,</div>
+                <div>and Total Sum Insured.</div>
+
+                <p><strong>PERIOD OF INSURANCE:</strong> 1st Nov 2025 to 30th Apr 2026</p>
+                <p><strong>BASIS OF INDEMNITY:</strong> Calculated loss using the parameters defined under WII</p>
+
+                <p><strong>SUMS INSURED:</strong> TZS <input type="text"  class="screen-only" [(ngModel)]="sumInsured"
+                        style="border:none; border-bottom:1px solid #000;">  <span class="pdf-only">{{ sumInsured }}</span> (100% of the limit of liability)</p>
+
+                <p><strong>LIMITS OF LIABILITY:</strong> This is the total value of the crop TZS <input type="text" class="screen-only"
+                        [(ngModel)]="limitOfLiability" style="border:none; border-bottom:1px solid #000;">
+                    <span class="pdf-only">{{ limitOfLiability }}</span></p>
+
+                <p><strong>PREMIUM RATE:</strong> 5% (Gross Premium)</p>
+                <p><strong>PREMIUM AMOUNT:</strong> TZS <input type="text" [(ngModel)]="premiumAmount" class="screen-only"
+                        style="border:none; border-bottom:1px solid #000;">
+                        <span class="pdf-only">{{ premiumAmount }}</span> (Inc. levies)</p>
+
+                <p><strong>PREMIUM PAYMENT:</strong> To be paid within 30 days of cover inception.</p>
+
+                <p><strong>LIEN CLAUSE:</strong> Loss is payable to YARA. YARA will deduct any outstanding charges and
+                    forward the
+                    balance to farmers.</p>
+
+                <p><strong>EXCLUSIONS:</strong> The insurer shall not be liable for any benefit outside the defined
+                    insured perils
+                    (see full document).</p>
+
+                <p><strong>PAYMENT CURRENCY:</strong> Tanzania Shillings</p>
+                <p><strong>JURISDICTION:</strong> Tanzania</p>
+
+                <h4>WEATHER INDEX INSURANCE</h4>
+
+                <ul>
+                    <li>Germination failure due to deficit rainfall at germination stage</li>
+                    <li>Growth failure due to deficit rainfall at vegetative stage</li>
+                    <li>Flowering failure due to deficit rainfall at flowering stage</li>
+                    <li>Pre-harvest damage due to excessive rainfall</li>
+                </ul>
+
+                <p>As defined in Annex 1. Insurer shall not pay for any event outside these definitions.</p>
+
+                <p><strong>INSURED PERILS:</strong> Deficit/excess rainfall based on satellite index data</p>
+                <p><strong>EFFECTIVE COVER INCEPTION DATE:</strong> As defined in Annex 1</p>
+                <p><strong>FARM LOCATION:</strong> GPS coordinates of farmer locations</p>
+                <p><strong>EARLIEST POSSIBLE CONTRACT START:</strong> 1st November, 2025</p>
+
+                <h4>WEATHER DATA SOURCE</h4>
+                <p>ARC2 by NOAA (USA). Free at: <a href="ftp://ftp.cpc.ncep.noaa.gov/fews/AFR_CLIM/ARC2/">ftp://ftp.cpc.ncep.noaa.gov/fews/AFR_CLIM/ARC2/</a></p>
+                <p>Missing data will be filled using historical averages.</p>
+
+                <h4>CLAIMS & CONDITIONS</h4>
+                <p><strong>Payment of Claims:</strong> Due at season’s end</p>
+                <p><strong>Insurance of All Lands:</strong> Insured must include all planted farms under this crop</p>
+                <p><strong>Last Date for Proposal:</strong> 15th November, 2025</p>
+                <p><strong>Minimum Area:</strong> N/A</p>
+
+                <h4>GENERAL EXCLUSIONS</h4>
+                <ul>
+                    <li>Loss not due to drought/excess rain via satellite</li>
+                    <li>Pests, disease, theft, fermentation, mould, etc.</li>
+                    <li>Political risks (war, riots, strikes, confiscation, etc.)</li>
+                    <li>Nuclear risk, volcanic activity, natural convulsions</li>
+                    <li>Other detailed exclusions (see full document)</li>
+                </ul>
+
+                <h4>GENERAL CONDITIONS</h4>
+
+                <p><strong>Interested Parties:</strong> Losses payable to valid charge holders</p>
+                <p><strong>Other Insurance:</strong> Rateable contribution if other coverage exists</p>
+
+                <h3>ARBITRATION</h3>
+                <p>Disputes shall be referred to arbitrators as agreed or per Arbitration Act of Tanzania</p>
+
+                <h3>SUBROGATION</h3>
+                <p>Insurers may recover from third parties in the insured’s name</p>
+
+                <h3>CANCELLATION</h3>
+                <ul>
+                    <li>Insured: Min. 30 days notice</li>
+                    <li>Insurer: Min. 14 days notice</li>
+                    <li>25% of premium is fully earned after inception</li>
+                    <li>Pro-rata refund for balance if no claim occurred</li>
+                </ul>
+
+                <h3>CONDITIONS PRECEDENT</h3>
+                <p>Observance of policy terms is mandatory for any claim</p>
+
+                <h3>PREVENTION OF LOSS</h3>
+                <p>The Insured must take all reasonable precautions to prevent loss</p>
+
+                <h3>CURRENCY & JURISDICTION</h3>
+                <p>All values are in Tanzanian Shillings and subject to Tanzanian jurisdiction</p>
+
+                <br>
+
+                <p>Signed for and on behalf of Alliance Insurance Company Limited in Tanzania on this
+                    <input type="text" [(ngModel)]="signDay" class="screen-only"
+                        style="width: 40px; border:none; border-bottom:1px solid #000;">
+                        <span class="pdf-only">{{ signDay }}</span> day of
+                    <input type="text" [(ngModel)]="signMonth" class="screen-only"
+                        style="width: 100px; border:none; border-bottom:1px solid #000;">
+                        <span class="pdf-only">{{ signMonth }}</span>
+                         20
+                    <input type="text" [(ngModel)]="signYear" class="screen-only"
+                        style="width: 40px; border:none; border-bottom:1px solid #000;">
+                        <span class="pdf-only">{{ signYear }}</span>
+                </p>
+                <div style="display: flex; justify-content: flex-end; margin-top: 40px; margin-right: 145px;">
+                    <div style="text-align: right; width: 300px;">
+                        <p style="margin: 0;">
+                            <input type="text" readonly [(ngModel)]="authorisedSignatory"
+                                style="width: 100%; border: none; border-bottom: 1px solid #000; text-align: right;">
+                        </p>
+                        <p style="margin: 5px 0 0 0;">(Authorised Signatory)</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button style="max-width: 200px !important;" (click)="generatePdf()">Download Policy PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

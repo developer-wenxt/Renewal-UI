@@ -1,0 +1,79 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="row">
+                <div class="col-md-4">
+
+                    <b><i class="bi bi-boxes"></i>&nbsp;{{selectedData?.product}} -
+                        {{selectedData?.branch?selectedData?.branch:'All'}} -
+                        {{selectedData?.source?selectedData?.source:'All'}}-
+                        {{selectedData?.customerType?selectedData?.customerType:'All'}}</b>
+                </div>
+                <div class="col-md-5 text-start">
+
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-1 text-end">
+                    <p-button styleClass="view-cutomer-btn" (click)="navigateProd()" label="Back"
+                        severity="info"></p-button>
+
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <p-table [value]="tableData" [paginator]="true" [rows]="10"
+                        [globalFilterFields]="['CompanyName', 'Branch', 'ClassOfBusiness', 'SourceOfBusiness']"
+                        [rowsPerPageOptions]="[5,10,20]" [responsiveLayout]="'scroll'" [showCurrentPageReport]="true">
+                        <ng-template pTemplate="caption">
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3 text-end">
+                                    <input pInputText type="text"
+                                        (input)="table.filterGlobal($event.target.value, 'contains')"
+                                        placeholder="Search" />
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Company Name</th>
+                                <th>Branch</th>
+                                <th>Product</th>
+                                <th>Source</th>
+                                <th>Customer Type</th>
+                                <th>Daily</th>
+                                <th>As On Date</th>
+                                <th>Previous Count</th>
+                                <th>Actual Count</th>
+                                <th style="text-align: right;">Previous Premium</th>
+                                <th style="text-align: right;">Actual Premium</th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-row>
+                            <tr>
+                                <td>{{ row.TransactionId }}</td>
+                                <td>{{ row.CompanyName }}</td>
+                                <td>{{ row.Branch }}</td>
+                                <td>{{ row.ClassOfBusiness }}</td>
+                                <td>{{ row.SourceOfBusiness }}</td>
+                                <td>{{ row.CustomerType }}</td>
+                                <td>{{ row.Daily | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ row.AsOnDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ row.PolicyCountPrev }}</td>
+                                <td>{{ row.PolicyCount }}</td>
+                                <td style="text-align: right;">{{ row.PolicyPremiumPrev | number:'1.2-2' }}</td>
+                                <td style="text-align: right;">{{ row.PolicyPremium | number:'1.2-2' }}</td>
+
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

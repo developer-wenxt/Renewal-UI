@@ -1,0 +1,82 @@
+.custome-card-style {
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.icon-color {
+  color: #0c72e6;
+}
+
+.table-icon-btn {
+  cursor: pointer;
+  color: #0c72e6;
+  transition: transform 0.2s;
+}
+
+.table-icon-btn:hover {
+  transform: scale(1.2);
+  color: #084298;
+}
+
+.dashboard-header h6 {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+::ng-deep .no-wrap-tabs .p-tabview-nav li {
+  white-space: nowrap;
+}
+
+
+.tab-scroll-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    padding: 4px 8px;
+  }
+
+  .tab-wrapper {
+    flex: 1;
+    overflow: hidden;
+  }
+
+}
+
+.tab-header {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.chart {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.custom-calendar p-calendar {
+  width: 100%;
+  display: block;
+}
+
+.custom-calendar ::ng-deep .p-inputtext {
+  height: 36px;
+
+  font-size: 14px;
+
+}
+
+.custom-calendar ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+.p-field-radiobutton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

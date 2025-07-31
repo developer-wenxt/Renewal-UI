@@ -38,6 +38,8 @@ const routes: Routes = [
   { path: 'transaction-sms-list', component: SmsCountDetailsComponent },
   { path: 'products-list', component: ProductGridComponent },
   { path: 'new-business-products-list', component: NewBusinessProductsGridComponent },
+  // { path: 'claim', loadChildren: () => import('./pages/claim/claim.module').then(m => m.ClaimModule) },
+  { path: 'summary', loadChildren: () => import('./pages/summary/summary.module').then(m => m.SummaryModule) },
   { path: '**', component: PageNotFoundComponent },
 
 ];

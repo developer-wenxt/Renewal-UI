@@ -487,7 +487,26 @@ body {
     font-weight: bold;
     font-size: 1.6rem;
 }
+// .dashboard-header h5 {
+//     font-weight: bold;
+//     font-size: 2rem;
+//        font-family: 'Poppins', sans-serif !important;
+// }
 
-.exportbtn{
+.exportbtn {
     margin-top: -5px !important;
+}
+
+
+.custom-calendar {
+    height: 36px !important;
+}
+
+.custom-grid .p-datatable-thead>tr>th,
+.custom-grid .p-datatable-tbody>tr>td {
+    border: 1px solid #ccc;
+}
+
+.custom-grid .p-datatable-tbody>tr {
+    border-bottom: 1px solid #ccc;
 }

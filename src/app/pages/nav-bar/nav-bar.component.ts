@@ -174,6 +174,9 @@ export class NavBarComponent {
       case 'Claim':
         this.onClaimClick();
         break;
+      case 'DashBoard Summary':
+        this.onSummaryClick();
+        break;
       case 'Budjet':
         this.onBudgetClick();
         break;
@@ -290,7 +293,32 @@ export class NavBarComponent {
       }
     ];
     this.sidebarService.updateItems(sidebarItems);
-    this.router.navigate(['/new-bussiness'])
+    // this.router.navigate(['/claim/dashboard'])
+    this.router.navigate(['/new-business'])
+
+
+  }
+  onSummaryClick() {
+    const sidebarItems: MenuItem[] = [
+      {
+        label: 'Dashboard',
+        icon: 'pi pi-chart-bar',
+        command: () => {
+          this.onDashboardClick();
+          this.setActiveItem('Dashboard');
+        }
+      },
+      {
+        label: 'Products',
+        icon: 'pi pi-shopping-bag',
+        command: () => {
+          this.onProductClick();
+          this.setActiveItem('Products');
+        }
+      }
+    ];
+    this.sidebarService.updateItems(sidebarItems);
+    this.router.navigate(['/summary/dashboard'])
 
 
   }
@@ -358,25 +386,25 @@ export class NavBarComponent {
         sessionStorage.clear();
         localStorage.clear();
         this.authService.logout();
-        location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
+        // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
         // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
-        // location.href = `http://192.168.1.42:4600/#/auth/login`;
+        location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
       (err: any) => {
         console.log(err);
         sessionStorage.clear();
         localStorage.clear();
         this.authService.logout();
-        location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
+        // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
         // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
-        // location.href = `http://192.168.1.42:4600/#/auth/login`;
+        location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
     );
   }
 
   navigateHome() {
-    // location.href = `http://192.168.1.42:4600/#/auth/login/product`;
-    location.href = `http://193.203.162.152:8085/Eway/#/auth/login/product`;
+    location.href = `http://192.168.1.48:4600/#/auth/login/product`;
+    // location.href = `http://193.203.162.152:8085/Eway/#/auth/login/product`;
     // location.href = `http://147.93.108.104:8085/Eway/#/auth/login/product`;
   }
 }

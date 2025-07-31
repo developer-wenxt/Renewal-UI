@@ -1,0 +1,8 @@
+@media screen {
+  .pdf-only { display: none; }
+}
+
+@media print {
+  .screen-only { display: none; }
+  .pdf-only { display: inline; }
+}
