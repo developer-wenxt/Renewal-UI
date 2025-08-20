@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
+import { SharedService } from '../../../services/shareService';
 @Component({
   selector: 'app-sample-pdf',
   standalone: false,
@@ -9,6 +10,15 @@ import html2pdf from 'html2pdf.js';
   styleUrl: './sample-pdf.component.scss'
 })
 export class SamplePdfComponent {
+  PremiumCurrency: any;
+  PolicyStartDate: any;
+  PolicyEndDate: any;
+  CompanyName: any;
+  FirstName: any;
+  constructor(private shared: SharedService) {
+    let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
+
+  }
   @ViewChild('policyContent', { static: false }) policyContent!: ElementRef;
   policyNumber: string = '';
   sumInsured: string = '';
@@ -89,5 +99,36 @@ export class SamplePdfComponent {
 
     html2pdf().set(options).from(element).save();
   }
+  getPolSumCumulative() {
 
+    let ReqObj = {
+      "QuoteNo": "AICQ15991"
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getCumulativePolicyList`;
+    let urlLink = `http://192.168.1.42:8086/api/yara/document/details`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          this.policyNumber = data.Result.PolicyNo
+          this.sumInsured = data.Result.SumInsured
+          this.limitOfLiability = data.Result.LimitsOfLiability
+          this.premiumAmount = data.Result.PremiumAmount
+          // this.signDay=data.Result.PolicyNo
+          // this.signMonth=data.Result.PolicyNo
+          // this.signYear=data.Result.PolicyNo
+          // this.signYear=data.Result.PolicyNoF
+          this.PremiumCurrency = data.Result.PremiumCurrency
+          this.PolicyStartDate = data.Result.PolicyStartDate
+          this.PolicyEndDate = data.Result.PolicyEndDate
+          this.CompanyName = data.Result.CompanyName
+          this.FirstName = data.Result.FirstName
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
 }

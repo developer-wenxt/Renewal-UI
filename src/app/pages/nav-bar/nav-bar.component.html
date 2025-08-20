@@ -56,6 +56,11 @@
               <img src="./assets/cropped-NAMIBIA-LOGO-1.png" class="imgwid me-2" />
             </a>
           </ng-container>
+          <ng-container *ngIf="InsuranceId==='100052'">
+            <a class="logo" href="#" (click)="navigateHome()">
+              <img src="./assets/aic_logo.jpg" class="imgwid me-2" />
+            </a>
+          </ng-container>
           <a class="logo" href="#" (click)="navigateHome()" *ngIf="InsuranceId=='100002'">
             <img src="./assets/alliance-img-1.png" class="imgwid me-2" />
           </a>

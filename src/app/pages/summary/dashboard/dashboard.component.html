@@ -1,14 +1,14 @@
 <div class="container-fluid">
     <!-- <div class="container-fluid">
         <div class="card overall-card mt-3 p-3"> -->
-
+<!-- 
     <div class="row mt-2 mb-2 ms-2 dashboard-header">
         <h6>Summary</h6>
     </div>
     <div class="flex justify-content-center mt-3 mb-5">
         <p-selectButton [options]="stateOptions" [(ngModel)]="selectvalue" (onChange)="onSelectValueChange($event)"
             optionLabel="label" optionValue="value" />
-    </div>
+    </div> -->
     <div class="card">
         <p-tabView *ngIf="selectvalue=='policy'" styleClass="tabview-custom" [scrollable]="true"
             (onChange)="onTabChange($event)">
@@ -62,9 +62,9 @@
                             New
 
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumNew()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumNew()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumNew()"></i>
+                                (click)="show = false;getPolSumNew()" pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-start">
@@ -193,32 +193,32 @@
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Renewal
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()"pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumRenewal()"></i>
+                                (click)="show = false;getPolSumRenewal()" pTooltip="Chart"></i>
                         </h3>
                         <h3 *ngIf="selectedRenewalType=='RENEWAL_IN_PERSON'" class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Renewal InPerson
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumRenewal()"></i>
+                                (click)="show = false;getPolSumRenewal()" pTooltip="Chart"></i>
                         </h3>
                         <h3 *ngIf="selectedRenewalType=='RENEWAL_IN_PORTAL'" class="tab-header">
                             Renewal InPortal
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumRenewal()"></i>
+                                (click)="show = false;getPolSumRenewal()" pTooltip="Chart"></i>
                         </h3>
                         <h3 *ngIf="selectedRenewalType=='RENEWAL_POST_LAPSE'" class="tab-header">
 
                             Renewal PostLapse
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()"pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumRenewal()"></i>
+                                (click)="show = false;getPolSumRenewal()"pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-start">
@@ -345,9 +345,9 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Lapsed &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumLapsed()"></i> &nbsp; <i
+                                (click)="show = true;getPolSumLapsed()"pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumLapsed()"></i>
+                                (click)="show = false;getPolSumLapsed()"pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -445,7 +445,7 @@
                         </tr>
                     </ng-template>
                 </p-table>
-                <div *ngIf="!show" #chartContainer2 style="width: 100%; height: 500px;"></div>
+                <div *ngIf="!show" #chartContainerLapsed style="width: 100%; height: 500px;"></div>
 
             </p-tabPanel>
             <p-tabPanel header="Header V">
@@ -461,9 +461,9 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Cancelled &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getPolSumCancelled()"></i> &nbsp; <i
+                                class="fas fa-th" (click)="show = true;getPolSumCancelled()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumCancelled()"></i>
+                                (click)="show = false;getPolSumCancelled()"pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -561,7 +561,7 @@
                         </tr>
                     </ng-template>
                 </p-table>
-                <div *ngIf="!show" #chartContainer2 style="width: 100%; height: 500px;"></div>
+                <div *ngIf="!show" #chartContainerCancel style="width: 100%; height: 500px;"></div>
 
             </p-tabPanel>
             <!-- <p-tabPanel header="Header VI">
@@ -602,9 +602,9 @@
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Monthly
                             Summary &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getMohtDate()"></i> &nbsp; <i
+                                class="fas fa-th" (click)="show = true;getMohtDate()"pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getMohtDate()"></i>
+                                (click)="show = false;getMohtDate()"pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -833,9 +833,9 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Cumulative &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getPolSumCumulative()"></i> &nbsp; <i
+                                class="fas fa-th" (click)="show = true;getPolSumCumulative()"pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumCumulative()"></i>
+                                (click)="show = false;getPolSumCumulative()"pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">

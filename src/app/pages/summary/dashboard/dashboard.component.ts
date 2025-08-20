@@ -25,6 +25,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('chartContainer2', { static: false }) chartContainer2!: ElementRef;
   @ViewChild('chartContainer3', { static: false }) chartContainer3!: ElementRef;
   @ViewChild('chartContainer4', { static: false }) chartContainer4!: ElementRef;
+  @ViewChild('chartContainerLapsed', { static: false }) chartContainerLapsed!: ElementRef;
+  @ViewChild('chartContainerCancel', { static: false }) chartContainerCancel!: ElementRef;
   @ViewChild('dt2') dt2!: Table;
   @ViewChild('tabWrapper', { static: false }) tabWrapper!: ElementRef;
   public RenewalApiUrl: any = config.RenewalApiUrl;
@@ -656,6 +658,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       case '100048': logoPath = 'assets/PhoenixMozambique.png'; break;
       case '100049': logoPath = 'assets/cropped-swaziland.png'; break;
       case '100050': logoPath = 'assets/cropped-NAMIBIA-LOGO-1.png'; break;
+      case '100052': logoPath = 'assets/aic_logo.jpg'; break;
       case '100002': logoPath = 'assets/alliance-img-1.png'; break;
       case '100020': logoPath = 'assets/FirstAssurance.png'; break;
       default: logoPath = 'assets/phoneix-logo.png';
@@ -1110,7 +1113,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             this.barchartData = this.polSumCancelledList
             this.cdRef.detectChanges();
             setTimeout(() => {
-              this.barchart2();
+              this.barchartCancelled();
 
             }, 200);
           }
@@ -1149,7 +1152,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             this.barchartData = this.polSumLapsedList
             this.cdRef.detectChanges();
             setTimeout(() => {
-              this.barchart2();
+              this.barchartLapsed();
 
             }, 200);
           }
@@ -1436,6 +1439,178 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   barchart4() {
     const dom = this.chartContainer4?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.PolicyCount) || 0);
+      premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchartLapsed() {
+    const dom = this.chartContainerLapsed?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.PolicyCount) || 0);
+      premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchartCancelled() {
+    const dom = this.chartContainerCancel?.nativeElement;
     echarts.dispose(dom);
     const chart = echarts.init(dom);
     chart.clear();

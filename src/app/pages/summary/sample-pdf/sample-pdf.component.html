@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="card overall-card mt-3 p-3">
             <div #policyContent
-                style="width: 794px; margin: auto; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; overflow-x:worde-wrap;">
+                style="width: 794px; max-width: 794px;; margin: auto; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6; overflow-x:worde-wrap; border:solid 1px #000;padding: 1rem;">
                 <h3 style="text-align: center;">YARA Rice Weather Index Insurance - Policy Document</h3>
                 <div class="mt-2"></div>
                 <p><strong>POLICY NUMBER:</strong>
@@ -12,10 +12,10 @@
                         class="screen-only">
                     <span class="pdf-only">{{ policyNumber }}</span>
                 </p>
-                <p><strong>THE INSURED:</strong> YARA Rice Farmers</p>
+                <p><strong>THE INSURED:</strong> {{FirstName}}</p>
 
                 <strong>DEFINITION:</strong>
-                <div>"The Insured" shall mean Yara Rice Farmers under the proposed programme
+                <div>"The Insured" shall mean {{FirstName}} under the proposed programme
                     from whom a
                     levy </div>
                 <div>
@@ -23,7 +23,7 @@
                     season.
                 </div>
 
-                <p><strong>THE INSURER:</strong> Alliance Insurance Company Limited (hereinafter referred to as the
+                <p><strong>THE INSURER:</strong>{{CompanyName}} (hereinafter referred to as the
                     ‘Insurer’)</p>
                 <p><strong>COVERAGE:</strong> Rice Crop</p>
 
@@ -40,10 +40,10 @@
                     effective planting date with name, location,</div>
                 <div>and Total Sum Insured.</div>
 
-                <p><strong>PERIOD OF INSURANCE:</strong> 1st Nov 2025 to 30th Apr 2026</p>
+                <p><strong>PERIOD OF INSURANCE:</strong> {{PolicyStartDate}} to {{PolicyEndDate}}</p>
                 <p><strong>BASIS OF INDEMNITY:</strong> Calculated loss using the parameters defined under WII</p>
 
-                <p><strong>SUMS INSURED:</strong> TZS <input type="text"  class="screen-only" [(ngModel)]="sumInsured"
+                <p><strong>SUMS INSURED:</strong> {{PremiumCurrency}} <input type="text"  class="screen-only" [(ngModel)]="sumInsured"
                         style="border:none; border-bottom:1px solid #000;">  <span class="pdf-only">{{ sumInsured }}</span> (100% of the limit of liability)</p>
 
                 <p><strong>LIMITS OF LIABILITY:</strong> This is the total value of the crop TZS <input type="text" class="screen-only"
@@ -68,7 +68,7 @@
                 <p><strong>PAYMENT CURRENCY:</strong> Tanzania Shillings</p>
                 <p><strong>JURISDICTION:</strong> Tanzania</p>
 
-                <h4>WEATHER INDEX INSURANCE</h4>
+                <h5>WEATHER INDEX INSURANCE</h5>
 
                 <ul>
                     <li>Germination failure due to deficit rainfall at germination stage</li>
@@ -84,17 +84,17 @@
                 <p><strong>FARM LOCATION:</strong> GPS coordinates of farmer locations</p>
                 <p><strong>EARLIEST POSSIBLE CONTRACT START:</strong> 1st November, 2025</p>
 
-                <h4>WEATHER DATA SOURCE</h4>
+                <h5>WEATHER DATA SOURCE</h5>
                 <p>ARC2 by NOAA (USA). Free at: <a href="ftp://ftp.cpc.ncep.noaa.gov/fews/AFR_CLIM/ARC2/">ftp://ftp.cpc.ncep.noaa.gov/fews/AFR_CLIM/ARC2/</a></p>
                 <p>Missing data will be filled using historical averages.</p>
 
-                <h4>CLAIMS & CONDITIONS</h4>
+                <h5>CLAIMS & CONDITIONS</h5>
                 <p><strong>Payment of Claims:</strong> Due at season’s end</p>
                 <p><strong>Insurance of All Lands:</strong> Insured must include all planted farms under this crop</p>
                 <p><strong>Last Date for Proposal:</strong> 15th November, 2025</p>
                 <p><strong>Minimum Area:</strong> N/A</p>
 
-                <h4>GENERAL EXCLUSIONS</h4>
+                <h5>GENERAL EXCLUSIONS</h5>
                 <ul>
                     <li>Loss not due to drought/excess rain via satellite</li>
                     <li>Pests, disease, theft, fermentation, mould, etc.</li>
@@ -103,18 +103,18 @@
                     <li>Other detailed exclusions (see full document)</li>
                 </ul>
 
-                <h4>GENERAL CONDITIONS</h4>
+                <h5>GENERAL CONDITIONS</h5>
 
                 <p><strong>Interested Parties:</strong> Losses payable to valid charge holders</p>
                 <p><strong>Other Insurance:</strong> Rateable contribution if other coverage exists</p>
 
-                <h3>ARBITRATION</h3>
+                <h5>ARBITRATION</h5>
                 <p>Disputes shall be referred to arbitrators as agreed or per Arbitration Act of Tanzania</p>
 
-                <h3>SUBROGATION</h3>
+                <h5>SUBROGATION</h5>
                 <p>Insurers may recover from third parties in the insured’s name</p>
 
-                <h3>CANCELLATION</h3>
+                <h5>CANCELLATION</h5>
                 <ul>
                     <li>Insured: Min. 30 days notice</li>
                     <li>Insurer: Min. 14 days notice</li>
@@ -122,13 +122,13 @@
                     <li>Pro-rata refund for balance if no claim occurred</li>
                 </ul>
 
-                <h3>CONDITIONS PRECEDENT</h3>
+                <h5>CONDITIONS PRECEDENT</h5>
                 <p>Observance of policy terms is mandatory for any claim</p>
 
-                <h3>PREVENTION OF LOSS</h3>
+                <h5>PREVENTION OF LOSS</h5>
                 <p>The Insured must take all reasonable precautions to prevent loss</p>
 
-                <h3>CURRENCY & JURISDICTION</h3>
+                <h5>CURRENCY & JURISDICTION</h5>
                 <p>All values are in Tanzanian Shillings and subject to Tanzanian jurisdiction</p>
 
                 <br>

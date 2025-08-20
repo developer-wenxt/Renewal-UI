@@ -174,7 +174,7 @@ export class NavBarComponent {
       case 'Claim':
         this.onClaimClick();
         break;
-      case 'DashBoard Summary':
+      case 'Policy Summary':
         this.onSummaryClick();
         break;
       case 'Budjet':
@@ -387,8 +387,8 @@ export class NavBarComponent {
         localStorage.clear();
         this.authService.logout();
         // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
-        // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
-        location.href = `http://192.168.1.48:4600/#/auth/login`;
+        location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
+        // location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
       (err: any) => {
         console.log(err);
@@ -397,14 +397,16 @@ export class NavBarComponent {
         this.authService.logout();
         // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
         // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
-        location.href = `http://192.168.1.48:4600/#/auth/login`;
+        location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
+        // location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
     );
   }
 
   navigateHome() {
-    location.href = `http://192.168.1.48:4600/#/auth/login/product`;
+    // location.href = `http://192.168.1.48:4600/#/auth/login/product`;
     // location.href = `http://193.203.162.152:8085/Eway/#/auth/login/product`;
+    location.href = `http://157.173.220.92:8085/Eway/#/auth/login/product`;
     // location.href = `http://147.93.108.104:8085/Eway/#/auth/login/product`;
   }
 }

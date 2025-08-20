@@ -140,6 +140,9 @@ export class ProductGridComponent implements OnInit {
       case '100050':
         logoPath = 'assets/cropped-NAMIBIA-LOGO-1.png';
         break;
+      case '100052':
+        logoPath = 'assets/aic_logo.jpg';
+        break;
       case '100002':
         logoPath = 'assets/alliance-img-1.png';
         break;
