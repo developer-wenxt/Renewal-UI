@@ -33,6 +33,11 @@ import { TagModule } from 'primeng/tag';
 import { ProductWiseCountComponent } from './product-wise-count/product-wise-count.component';
 import { DateWiseCountComponent } from './date-wise-count/date-wise-count.component';
 import { SamplePdfComponent } from './sample-pdf/sample-pdf.component';
+import { ClaimSummaryDashboardComponent } from './claim-summary-dashboard/claim-summary-dashboard.component';
+import { ClaimProductWiseCountComponent } from './claim-product-wise-count/claim-product-wise-count.component';
+import { ClaimDateWiseCountComponent } from './claim-date-wise-count/claim-date-wise-count.component';
+import { ClaimSummaryMonthlypaidProductWiseCountComponent } from './claim-summary-monthlypaid-product-wise-count/claim-summary-monthlypaid-product-wise-count.component';
+import { ClaimSummaryMonthlypaidDateWiseCountComponent } from './claim-summary-monthlypaid-date-wise-count/claim-summary-monthlypaid-date-wise-count.component';
 // import { NumberCommaPipe } from '../pipes/number-comma.pipe';
 
 
@@ -44,7 +49,12 @@ import { SamplePdfComponent } from './sample-pdf/sample-pdf.component';
     DashboardComponent,
     ProductWiseCountComponent,
     DateWiseCountComponent,
-    SamplePdfComponent
+    SamplePdfComponent,
+    ClaimSummaryDashboardComponent,
+    ClaimProductWiseCountComponent,
+    ClaimDateWiseCountComponent,
+    ClaimSummaryMonthlypaidProductWiseCountComponent,
+    ClaimSummaryMonthlypaidDateWiseCountComponent
   ],
   imports: [
     CommonModule,

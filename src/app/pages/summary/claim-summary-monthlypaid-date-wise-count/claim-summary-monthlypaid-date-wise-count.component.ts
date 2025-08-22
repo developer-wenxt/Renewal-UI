@@ -6,13 +6,14 @@ import { DatePipe } from '@angular/common';
 import { SidebarService } from '../../../services/sidebar.service';
 import { AuthService } from '../../../helpers/auth/Auth/auth.service';
 import { config } from '../../../helpers/appconfig';
+
 @Component({
-  selector: 'app-product-wise-count',
+  selector: 'app-claim-summary-monthlypaid-date-wise-count',
   standalone: false,
-  templateUrl: './product-wise-count.component.html',
-  styleUrl: './product-wise-count.component.scss'
+  templateUrl: './claim-summary-monthlypaid-date-wise-count.component.html',
+  styleUrl: './claim-summary-monthlypaid-date-wise-count.component.scss'
 })
-export class ProductWiseCountComponent implements OnInit, AfterViewInit {
+export class ClaimSummaryMonthlypaidDateWiseCountComponent {
   tableData: any[] = [];
   public RenewalApiUrl: any = config.RenewalApiUrl;
   selectedData: any;
@@ -77,6 +78,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
   //     (err: any) => { },
   //   );
   // }
+
   getBranchDropdown() {
     // let ReqObj = {
     //   // "CompanyId": '100046',
@@ -107,21 +109,20 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
             list.push(e.DivisionName)
           });
           setTimeout(() => {
-            console.log(list,"listlistlist");
-            
-                  this.BranchList = list;
-               this.AllBranchList = list;
-          this.BranchList = ["All", ...this.BranchList];
-          console.log(this.BranchList,"this.BranchList");
-          
-          this.selectedBranch = this.BranchList[0]
+            this.BranchList = list;
+            this.AllBranchList = list;
+            this.BranchList = ["All", ...this.BranchList];
+            console.log(this.BranchList, "this.BranchList");
+
+            this.selectedBranch = this.BranchList[0]
           }, 100);
-       
+
         }
       },
       (err: any) => { },
     );
   }
+
   getCustomerTypeDropdown() {
     let ReqObj = {
       // "CompanyId": '100046',
@@ -174,96 +175,59 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
       const dateObj = new Date(this.selectedMonth);
       formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     }
-
+    let d = [];
+    d.push(this.selectedData?.branch)
     this.month = formatted
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
-      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
-      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+      "CustomerType": this.selectedData?.customerType,
+      "Source": this.selectedData?.source,
       "Product": this.selectedData?.product
 
     }
 
-    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyData`;
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getDailyByWeeksClaimPaid`;
 
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
 
-        // if (data.Result) {
-        //   const salesMap: any = {};
-        //   data.Result.forEach(entry => {
-        //     const product = entry.Product;
-        //     const branch = entry.Branch;
-        //     const source = entry.Source;
-        //     const cusotmerType = entry.CustomerType;
-        //     const week = entry.Week.toLowerCase().replace(" ", "");
-
-        //     if (!salesMap[product]) {
-        //       salesMap[product] = {
-        //         product: product,
-        //         totalCount: 0,
-        //         customerType: cusotmerType,
-        //         branch: branch,
-        //         source: source,
-        //         week1: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-        //         week2: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-        //         week3: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-        //         week4: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } }
-        //       };
-        //     }
-
-
-        //     salesMap[product][week].actual.count += parseInt(entry.PolicyCount || '0', 10);
-        //     salesMap[product][week].actual.premium += parseFloat(entry.TotalPolicyPremium || '0');
-        //     salesMap[product][week].previous.count += parseInt(entry.PolicyCountPrev || '0', 10);
-        //     salesMap[product][week].previous.premium += parseFloat(entry.TotalPolicyPremiumPrev || '0');
-        //     salesMap[product].totalCount += parseInt(entry.PolicyCount || '0', 10);
-        //   });
-
-        //   this.tableData = Object.values(salesMap);
-        //   console.log(this.tableData);
-
-        // }
-
         if (data.Result) {
-          const salesMap: any = {};
+          this.tableData = data.Result
+          // const salesMap: any = {};
+          // data.Result.forEach(entry => {
+          //   const product = entry.Product;
+          //   const branch = entry.Branch;
+          //   const source = entry.Source;
+          //   const cusotmerType = entry.CustomerType;
+          //   const week = entry.Week.toLowerCase().replace(" ", "");
 
-          data.Result.forEach(entry => {
-            const product = entry.Product;
-            const branch = entry.Branch;
-            const source = entry.Source;
-            const customerType = entry.CustomerType;
-            const week = entry.Week.toLowerCase().replace(" ", "");
+          //   if (!salesMap[product]) {
+          //     salesMap[product] = {
+          //       product: product,
+          //       totalCount: 0,
+          //       customerType: cusotmerType,
+          //       branch: branch,
+          //       source: source,
+          //       week1: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+          //       week2: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+          //       week3: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+          //       week4: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } }
+          //     };
+          //   }
 
-            // Composite key including Product, Source, Branch, CustomerType
-            const key = `${product}_${source}_${branch}_${customerType}`;
 
-            if (!salesMap[key]) {
-              salesMap[key] = {
-                product: product,
-                source: source,
-                branch: branch,
-                customerType: customerType,
-                totalCount: 0,
-                week1: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-                week2: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-                week3: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
-                week4: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } }
-              };
-            }
+          //   salesMap[product][week].actual.count += parseInt(entry.PolicyCount || '0', 10);
+          //   salesMap[product][week].actual.premium += parseFloat(entry.TotalPolicyPremium || '0');
+          //   salesMap[product][week].previous.count += parseInt(entry.PolicyCountPrev || '0', 10);
+          //   salesMap[product][week].previous.premium += parseFloat(entry.TotalPolicyPremiumPrev || '0');
+          //   salesMap[product].totalCount += parseInt(entry.PolicyCount || '0', 10);
+          // });
 
-            // Accumulate values
-            salesMap[key][week].actual.count += parseInt(entry.PolicyCount || '0', 10);
-            salesMap[key][week].actual.premium += parseFloat(entry.TotalPolicyPremium || '0');
-            salesMap[key][week].previous.count += parseInt(entry.PolicyCountPrev || '0', 10);
-            salesMap[key][week].previous.premium += parseFloat(entry.TotalPolicyPremiumPrev || '0');
-            salesMap[key].totalCount += parseInt(entry.PolicyCount || '0', 10);
-          });
+          // this.tableData = Object.values(salesMap);
+          console.log(data.Result, "data.Resultdata.Result");
 
-          this.tableData = Object.values(salesMap);
-          console.log(this.tableData);
         }
       },
       (err: any) => { },
@@ -280,16 +244,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
   getTotalCount() {
     return this.tableData.reduce((sum, sale) => sum + (sale.totalCount ?? 0), 0);
   }
-
   navigateProd() {
-    this.router.navigate(['/summary/dashboard'])
-  }
-
-  viewDetails(detatils) {
-    console.log(detatils);
-
-    sessionStorage.setItem('month', this.month);
-    sessionStorage.setItem('selectedData', JSON.stringify(detatils));
-    this.router.navigate(['/summary/date-wise-count'])
+    this.router.navigate(['/summary/monthly-paid-product-wise-count'])
   }
 }

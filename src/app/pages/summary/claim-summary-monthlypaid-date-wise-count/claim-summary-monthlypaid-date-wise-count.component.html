@@ -6,7 +6,7 @@
 
                     <b><i class="bi bi-boxes"></i>&nbsp;{{selectedData?.product}} -
                         {{selectedData?.branch?selectedData?.branch:'All'}} -
-                        {{selectedData?.source?selectedData?.source:'All'}}-
+                        <!-- {{selectedData?.source?selectedData?.source:'All'}}- -->
                         {{selectedData?.customerType?selectedData?.customerType:'All'}}</b>
                 </div>
                 <div class="col-md-5 text-start">
@@ -43,14 +43,14 @@
                                 <th>Company Name</th>
                                 <th>Branch</th>
                                 <th>Product</th>
-                                <th>Source</th>
+                                <!-- <th>Source</th> -->
                                 <th>Customer Type</th>
                                 <th>Daily</th>
                                 <th>As On Date</th>
                                 <th>Previous Count</th>
                                 <th>Actual Count</th>
-                                <th style="text-align: right;">Previous Premium</th>
-                                <th style="text-align: right;">Actual Premium</th>
+                                <th style="text-align: right;">Previous Amount</th>
+                                <th style="text-align: right;">Actual Amount</th>
                             </tr>
                         </ng-template>
 
@@ -61,14 +61,14 @@
                                 <td>{{ row.CompanyName }}</td>
                                 <td>{{ row.Branch }}</td>
                                 <td>{{ row.ClassOfBusiness }}</td>
-                                <td>{{ row.SourceOfBusiness }}</td>
+                                <!-- <td>{{ row.SourceOfBusiness }}</td> -->
                                 <td>{{ row.CustomerType }}</td>
                                 <td>{{ row.Daily | date: 'dd/MM/yyyy' }}</td>
                                 <td>{{ row.AsOnDate | date: 'dd/MM/yyyy' }}</td>
-                                <td>{{ row.PolicyCountPrev }}</td>
-                                <td>{{ row.PolicyCount }}</td>
-                                <td style="text-align: right;">{{ row.PolicyPremiumPrev | number:'1.2-2' }}</td>
-                                <td style="text-align: right;">{{ row.PolicyPremium | number:'1.2-2' }}</td>
+                                <td>{{ row.ClaimCountPrev ||0 }}</td>
+                                <td>{{ row.ClaimCount ||0 }}</td>
+                                <td style="text-align: right;">{{ row.ClaimAmountPrev | number:'1.2-2' }}</td>
+                                <td style="text-align: right;">{{ row.ClaimAmount | number:'1.2-2' }}</td>
 
                             </tr>
                         </ng-template>

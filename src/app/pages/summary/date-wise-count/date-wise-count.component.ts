@@ -26,6 +26,7 @@ export class DateWiseCountComponent {
   selectedSource: any;
   month: string;
   selectedMonth: any
+  AllBranchList: any[];
   constructor(private shared: SharedService, private router: Router, private sessionStorageService: SessionStorageService,
     private route: ActivatedRoute, private sidebarService: SidebarService, private authService: AuthService, private datePipe: DatePipe,) {
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
@@ -58,26 +59,68 @@ export class DateWiseCountComponent {
     this.getCustomerTypeDropdown();
   }
 
-  getBranchDropdown() {
-    let ReqObj = {
-      // "CompanyId": '100046',
-      "CompanyId": this.userDetails.InsuranceId,
-    }
-    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
+  // getBranchDropdown() {
+  //   let ReqObj = {
+  //     // "CompanyId": '100046',
+  //     "CompanyId": this.userDetails.InsuranceId,
+  //   }
+  //   let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
 
+  //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+  //     (data: any) => {
+
+  //       if (data) {
+  //         this.BranchList = data?.Result[0].DataList
+  //         // this.BranchList = ["All", ...this.BranchList];
+  //         // this.selectedBranch = 'All'
+  //       }
+  //     },
+  //     (err: any) => { },
+  //   );
+  // }
+  getBranchDropdown() {
+    // let ReqObj = {
+    //   // "CompanyId": '100046',
+    //   "CompanyId": this.userDetails.InsuranceId,
+    // }
+    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
+
+    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+    //   (data: any) => {
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "DivisionCodelist": branchList,
+      // "DivisionCodelist":["101"],
+
+    }
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getdivisionbycompany`;
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
-
         if (data) {
-          this.BranchList = data?.Result[0].DataList
-          // this.BranchList = ["All", ...this.BranchList];
-          // this.selectedBranch = 'All'
+          let list = [];
+          // this.BranchList = data?.Result[0].DataList
+          let loginBrachList = data?.divisionDetails
+          loginBrachList.forEach(e => {
+            list.push(e.DivisionName)
+          });
+          setTimeout(() => {
+                  this.BranchList = list;
+               this.AllBranchList = list;
+          this.BranchList = ["All", ...this.BranchList];
+          console.log(this.BranchList,"this.BranchList");
+          
+          this.selectedBranch = this.BranchList[0]
+          }, 100);
+       
         }
       },
       (err: any) => { },
     );
   }
-
   getCustomerTypeDropdown() {
     let ReqObj = {
       // "CompanyId": '100046',
@@ -133,11 +176,17 @@ export class DateWiseCountComponent {
 
     this.month = formatted
     let ReqObj = {
-      "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? null : this.selectedBranch,
+      // "CompanyId": this.userDetails.InsuranceId,
+      // "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      // "Date": formatted,
+      // "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      // "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+      // "Product": this.selectedData?.product
+            "CompanyId": this.userDetails.InsuranceId,
+      "Branch": this.selectedData?.branch,
       "Date": formatted,
-      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
-      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+      "CustomerType": this.selectedData?.customerType,
+      "Source": this.selectedData?.source,
       "Product": this.selectedData?.product
 
     }

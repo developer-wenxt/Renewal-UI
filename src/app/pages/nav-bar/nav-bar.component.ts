@@ -177,6 +177,9 @@ export class NavBarComponent {
       case 'Policy Summary':
         this.onSummaryClick();
         break;
+      case 'Claim Summary':
+        this.onClaimSummaryClick();
+        break;
       case 'Budjet':
         this.onBudgetClick();
         break;
@@ -319,6 +322,30 @@ export class NavBarComponent {
     ];
     this.sidebarService.updateItems(sidebarItems);
     this.router.navigate(['/summary/dashboard'])
+
+
+  }
+  onClaimSummaryClick() {
+    const sidebarItems: MenuItem[] = [
+      {
+        label: 'Dashboard',
+        icon: 'pi pi-chart-bar',
+        command: () => {
+          this.onDashboardClick();
+          this.setActiveItem('Dashboard');
+        }
+      },
+      {
+        label: 'Products',
+        icon: 'pi pi-shopping-bag',
+        command: () => {
+          this.onProductClick();
+          this.setActiveItem('Products');
+        }
+      }
+    ];
+    this.sidebarService.updateItems(sidebarItems);
+    this.router.navigate(['/summary/claim-summary-dashboard'])
 
 
   }

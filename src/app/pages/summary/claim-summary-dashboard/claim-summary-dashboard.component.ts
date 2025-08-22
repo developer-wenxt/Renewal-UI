@@ -14,17 +14,21 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-claim-summary-dashboard',
   standalone: false,
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  templateUrl: './claim-summary-dashboard.component.html',
+  styleUrl: './claim-summary-dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class ClaimSummaryDashboardComponent {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
+  @ViewChild('chartContainerPaid') chartContainerPaid!: ElementRef;
   @ViewChild('chartContainer2', { static: false }) chartContainer2!: ElementRef;
   @ViewChild('chartContainer3', { static: false }) chartContainer3!: ElementRef;
   @ViewChild('chartContainer4', { static: false }) chartContainer4!: ElementRef;
+  @ViewChild('chartContainer5', { static: false }) chartContainer5!: ElementRef;
+  @ViewChild('chartContainer6', { static: false }) chartContainer6!: ElementRef;
   @ViewChild('chartContainerLapsed', { static: false }) chartContainerLapsed!: ElementRef;
   @ViewChild('chartContainerCancel', { static: false }) chartContainerCancel!: ElementRef;
   @ViewChild('dt2') dt2!: Table;
@@ -49,6 +53,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   CustomerTypeList: any[] = [];
   tableData: any[] = [];
   polSumCumulativeList: any[] = [];
+  ClaimSumCumulativePaidList: any[] = [];
+  getClaimRatioList: any[] = [];
   polSumCancelledList: any[] = [];
   polSumLapsedList: any[] = [];
   polSumRenewalList: any[] = [];
@@ -127,7 +133,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     }
     sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
-    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyData`;
+    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyData`;
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyClaimData`;
 
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
@@ -178,9 +185,95 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (err: any) => { },
     );
   }
+  getMohtDatePaid() {
+    this.tableData = [];
+    const dateObj = new Date(this.selectedMonth);
 
+    const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
+    this.month = formatted
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Date": formatted,
+      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+      "Product": null
 
-  getBranchDropdown() {
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyData`;
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyClaimPaidData`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          const salesMap: any = {};
+
+          data.Result.forEach(entry => {
+            const product = entry.Product;
+            const branch = entry.Branch;
+            const source = entry.Source;
+            const customerType = entry.CustomerType;
+            const week = entry.Week.toLowerCase().replace(" ", "");
+
+            // Composite key including Product, Source, Branch, CustomerType
+            const key = `${product}_${source}_${branch}_${customerType}`;
+
+            if (!salesMap[key]) {
+              salesMap[key] = {
+                product: product,
+                source: source,
+                branch: branch,
+                customerType: customerType,
+                totalCount: 0,
+                week1: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+                week2: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+                week3: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },
+                week4: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } }
+              };
+            }
+
+            // Accumulate values
+            salesMap[key][week].actual.count += parseInt(entry.PolicyCount || '0', 10);
+            salesMap[key][week].actual.premium += parseFloat(entry.TotalPolicyPremium || '0');
+            salesMap[key][week].previous.count += parseInt(entry.PolicyCountPrev || '0', 10);
+            salesMap[key][week].previous.premium += parseFloat(entry.TotalPolicyPremiumPrev || '0');
+            salesMap[key].totalCount += parseInt(entry.PolicyCount || '0', 10);
+          });
+
+          this.tableData = Object.values(salesMap);
+          setTimeout(() => {
+            this.barchartPaid();
+
+          }, 200);
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
+
+  // getBranchDropdown() {
+  //   let ReqObj = {
+  //     // "CompanyId": '100046',
+  //     "CompanyId": this.userDetails.InsuranceId,
+  //   }
+  //   let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
+
+  //   this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+  //     (data: any) => {
+
+  //       if (data) {
+  //         this.BranchList = data?.Result[0].DataList
+  //         // this.BranchList = ["All", ...this.BranchList];
+  //         this.selectedBranch = this.BranchList[0]
+  //       }
+  //     },
+  //     (err: any) => { },
+  //   );
+  // }
+    getBranchDropdown() {
     // let ReqObj = {
     //   // "CompanyId": '100046',
     //   "CompanyId": this.userDetails.InsuranceId,
@@ -212,7 +305,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           setTimeout(() => {
                   this.BranchList = list;
                this.AllBranchList = list;
-                 console.log(list,"listlistlist");
           this.BranchList = ["All", ...this.BranchList];
           console.log(this.BranchList,"this.BranchList");
           
@@ -351,23 +443,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.TabIndex = event.index;
     if (event.index == 0) {
       // this.getDueRenewPolicyList();
+        this.getMohtDate();
     } else if (event.index == 1) {
+  this.getMohtDatePaid();
+     
+   
 
-      this.getPolSumRenewal();
     }
     else if (event.index == 2) {
-
-      this.getPolSumLapsed();
+   this.getClaimSumCumulative();
+      
     }
     else if (event.index == 3) {
-
-      this.getPolSumCancelled();
+this.getClaimSumCumulativePaid();
     }
     else if (event.index == 4) {
-      this.getMohtDate();
+      // this.getMohtDate();
+      this.getClaimRatio();
     }
     else if (event.index == 5) {
-      this.getPolSumCumulative();
+      // this.getClaimSumCumulative();
     }
   }
 
@@ -662,7 +757,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     sessionStorage.setItem('month', this.month);
     sessionStorage.setItem('selectedData', JSON.stringify(detatils));
-    this.router.navigate(['/summary/product-wise-count'])
+    this.router.navigate(['/summary/claim-product-wise-count'])
+  }
+  viewDetails1(detatils: any) {
+    console.log(detatils);
+
+    sessionStorage.setItem('month', this.month);
+    sessionStorage.setItem('selectedData', JSON.stringify(detatils));
+    this.router.navigate(['/summary/monthly-paid-product-wise-count'])
   }
   getTotal(week: 'week1' | 'week2' | 'week3' | 'week4', type: 'previous' | 'actual', field: 'count' | 'premium' | 'sumInsured' | 'prevSumInsured') {
     return this.tableData.reduce((sum, sale) => {
@@ -700,7 +802,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       doc.setFontSize(14);
       doc.setFont(undefined, 'bold');
-      doc.text('Policy Summary Report', doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
+      doc.text('Claim Summary Report', doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
 
       const now = new Date();
       const dateStr = now.toLocaleString('en-IN', {
@@ -716,7 +818,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         [
           { content: 'Product', rowSpan: 4 },
           { content: 'Branch', rowSpan: 4 },
-          { content: 'Source', rowSpan: 4 },
+          // { content: 'Source', rowSpan: 4 },
           { content: 'Customer Type', rowSpan: 4 },
           { content: 'Weeks', colSpan: 16, styles: { halign: 'center' } },
           { content: 'Total Count', rowSpan: 4 }
@@ -738,21 +840,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           { content: 'Actual', colSpan: 2 }
         ],
         [
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium',
-          'Count', 'Premium'
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount',
+          'Count', 'Claim Amount'
         ]
       ];
 
       const body = this.tableData.map(item => [
         item.product,
         item.branch,
-        item.source,
+        // item.source,
         item.cusotmerType || '',
         item.week1?.previous?.count ?? '',
         item.week1?.previous?.premium ?? '',
@@ -772,28 +874,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         item.week4?.actual?.premium ?? '',
         item.totalCount
       ]);
-
-      // const footer = [
-      //   'Total', '', '', '',
-      //   this.getTotal('week1', 'previous', 'count'),
-      //   this.getTotal('week1', 'previous', 'premium'),
-      //   this.getTotal('week1', 'actual', 'count'),
-      //   this.getTotal('week1', 'actual', 'premium'),
-      //   this.getTotal('week2', 'previous', 'count'),
-      //   this.getTotal('week2', 'previous', 'premium'),
-      //   this.getTotal('week2', 'actual', 'count'),
-      //   this.getTotal('week2', 'actual', 'premium'),
-      //   this.getTotal('week3', 'previous', 'count'),
-      //   this.getTotal('week3', 'previous', 'premium'),
-      //   this.getTotal('week3', 'actual', 'count'),
-      //   this.getTotal('week3', 'actual', 'premium'),
-      //   this.getTotal('week4', 'previous', 'count'),
-      //   this.getTotal('week4', 'previous', 'premium'),
-      //   this.getTotal('week4', 'actual', 'count'),
-      //   this.getTotal('week4', 'actual', 'premium'),
-      //   this.getTotalCount()
-      // ];
-      const footer = [
+  const footer = [
         'Total', '', '', '',
         this.getTotal('week1', 'previous', 'count'),
         this.getTotal('week1', 'previous', 'premium'),
@@ -849,7 +930,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         margin: { top: 20 },
       });
 
-      doc.save('Policy_Summary_Report.pdf');
+      doc.save('Claim_Summary_Report.pdf');
     };
   }
 
@@ -860,21 +941,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       'Source': item.source,
       'Customer Type': item.cusotmerType || '',
       'W1 Prev Count': item.week1?.previous?.count ?? '',
-      'W1 Prev Premium': item.week1?.previous?.premium ?? '',
+      'W1 Prev Claim Amount': item.week1?.previous?.premium ?? '',
       'W1 Actual Count': item.week1?.actual?.count ?? '',
-      'W1 Actual Premium': item.week1?.actual?.premium ?? '',
+      'W1 Actual Claim Amount': item.week1?.actual?.premium ?? '',
       'W2 Prev Count': item.week2?.previous?.count ?? '',
-      'W2 Prev Premium': item.week2?.previous?.premium ?? '',
+      'W2 Prev Claim Amount': item.week2?.previous?.premium ?? '',
       'W2 Actual Count': item.week2?.actual?.count ?? '',
-      'W2 Actual Premium': item.week2?.actual?.premium ?? '',
+      'W2 Actual Claim Amount': item.week2?.actual?.premium ?? '',
       'W3 Prev Count': item.week3?.previous?.count ?? '',
-      'W3 Prev Premium': item.week3?.previous?.premium ?? '',
+      'W3 Prev Claim Amount': item.week3?.previous?.premium ?? '',
       'W3 Actual Count': item.week3?.actual?.count ?? '',
-      'W3 Actual Premium': item.week3?.actual?.premium ?? '',
+      'W3 Actual Claim Amount': item.week3?.actual?.premium ?? '',
       'W4 Prev Count': item.week4?.previous?.count ?? '',
-      'W4 Prev Premium': item.week4?.previous?.premium ?? '',
+      'W4 Prev Claim Amount': item.week4?.previous?.premium ?? '',
       'W4 Actual Count': item.week4?.actual?.count ?? '',
-      'W4 Actual Premium': item.week4?.actual?.premium ?? '',
+      'W4 Actual Claim Amount': item.week4?.actual?.premium ?? '',
       'Total Count': item.totalCount
     }));
 
@@ -882,21 +963,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     worksheetData.push({
       'Product': 'Total',
       'W1 Prev Count': this.getTotal('week1', 'previous', 'count'),
-      'W1 Prev Premium': this.getTotal('week1', 'previous', 'premium'),
+      'W1 Prev Claim Amount': this.getTotal('week1', 'previous', 'premium'),
       'W1 Actual Count': this.getTotal('week1', 'actual', 'count'),
-      'W1 Actual Premium': this.getTotal('week1', 'actual', 'premium'),
+      'W1 Actual Claim Amount': this.getTotal('week1', 'actual', 'premium'),
       'W2 Prev Count': this.getTotal('week2', 'previous', 'count'),
-      'W2 Prev Premium': this.getTotal('week2', 'previous', 'premium'),
+      'W2 Prev Claim Amount': this.getTotal('week2', 'previous', 'premium'),
       'W2 Actual Count': this.getTotal('week2', 'actual', 'count'),
-      'W2 Actual Premium': this.getTotal('week2', 'actual', 'premium'),
+      'W2 Actual Claim Amount': this.getTotal('week2', 'actual', 'premium'),
       'W3 Prev Count': this.getTotal('week3', 'previous', 'count'),
-      'W3 Prev Premium': this.getTotal('week3', 'previous', 'premium'),
+      'W3 Prev Claim Amount': this.getTotal('week3', 'previous', 'premium'),
       'W3 Actual Count': this.getTotal('week3', 'actual', 'count'),
-      'W3 Actual Premium': this.getTotal('week3', 'actual', 'premium'),
+      'W3 Actual Claim Amount': this.getTotal('week3', 'actual', 'premium'),
       'W4 Prev Count': this.getTotal('week4', 'previous', 'count'),
-      'W4 Prev Premium': this.getTotal('week4', 'previous', 'premium'),
+      'W4 Prev Claim Amount': this.getTotal('week4', 'previous', 'premium'),
       'W4 Actual Count': this.getTotal('week4', 'actual', 'count'),
-      'W4 Actual Premium': this.getTotal('week4', 'actual', 'premium'),
+      'W4 Actual Claim Amount': this.getTotal('week4', 'actual', 'premium'),
       'Total Count': this.getTotalCount()
     });
 
@@ -944,7 +1025,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
       data.forEach(item => {
-        const label = `${item.product} - ${item.source}`;
+        const label = `${item.product}`;
         categories.push(label);
 
         const counts: number[] = [];
@@ -982,7 +1063,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
 
       series.push({
-        name: `Week ${i + 1} - Premium`,
+        name: `Week ${i + 1} - Claim Amount`,
         type: 'line',
         yAxisIndex: 1,
         smooth: true,
@@ -1061,7 +1142,176 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         },
         {
           type: 'value',
-          name: 'Premium',
+          name: 'Claim Amount',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false },
+          axisLine: {
+            lineStyle: { color: '#888' }
+          }
+        }
+      ],
+      series: series
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchartPaid() {
+    const dom = this.chartContainerPaid?.nativeElement;
+    const chart = echarts.init(dom);
+    chart.clear();
+    const weeks = ['week1', 'week2', 'week3', 'week4'];
+
+    const categories: string[] = [];
+    const countSeriesData: number[][] = [];
+    const premiumSeriesData: number[][] = [];
+    let data = []
+    if (this.tableData?.length != 0 && this.tableData != null) {
+      if (this.tableData.length < 5) {
+        data = [...this.tableData];
+        const EMPTY_ROW = {
+          product: '',
+          source: '',
+          week1: { actual: { count: 0, premium: 0 } },
+          week2: { actual: { count: 0, premium: 0 } },
+          week3: { actual: { count: 0, premium: 0 } },
+          week4: { actual: { count: 0, premium: 0 } }
+        };
+
+        if (data.length < 5) {
+          const rowsToAdd = 7;
+          for (let i = 0; i < rowsToAdd; i++) {
+            data.push(EMPTY_ROW);
+          }
+        }
+      }
+      else {
+        data = this.tableData
+      }
+
+
+
+      data.forEach(item => {
+        const label = `${item.product}`;
+        categories.push(label);
+
+        const counts: number[] = [];
+        const premiums: number[] = [];
+
+        weeks.forEach(week => {
+          const actual = item[week]?.actual || { count: 0, premium: 0 };
+          counts.push(actual.count);
+          premiums.push(actual.premium);
+        });
+
+        countSeriesData.push(counts);
+        premiumSeriesData.push(premiums);
+      });
+    }
+    else {
+      data = []
+      chart.clear();
+    }
+    const series: echarts.SeriesOption[] = [];
+
+    weeks.forEach((week, i) => {
+
+      series.push({
+        name: `Week ${i + 1} - Count`,
+        type: 'bar',
+        stack: 'count',
+        barMaxWidth: '25',
+        emphasis: { focus: 'series' },
+        itemStyle: {
+          borderRadius: [0, 0, 0, 0]
+        },
+        data: countSeriesData.map(row => row[i]),
+        label: { show: false }
+      });
+
+      series.push({
+        name: `Week ${i + 1} - Claim Amount`,
+        type: 'line',
+        yAxisIndex: 1,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        showSymbol: false,
+        emphasis: {
+          focus: 'series',
+          scale: true,
+          itemStyle: {
+            opacity: 1
+          },
+          label: {
+            show: false
+          }
+        },
+        lineStyle: {
+          width: 3
+        },
+        itemStyle: {
+          opacity: 1
+        },
+        data: premiumSeriesData.map(row => row[i])
+      });
+    });
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'none'
+        }
+      },
+      legend: {
+        type: 'scroll',
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 14,
+        itemGap: 10,
+        textStyle: {
+          fontSize: 12,
+          color: '#333'
+        }
+      },
+
+      color: ['#4F81BD', '#9BBB59', '#8064A2', '#F79646', '#2C97DE', '#00B894', '#D63031', '#6C5CE7'],
+
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          axisLine: {
+            lineStyle: { color: '#888' }
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Count',
+          splitLine: { show: false },
+          axisLine: {
+            lineStyle: { color: '#888' }
+          }
+        },
+        {
+          type: 'value',
+          name: 'Claim Amount',
           axisLabel: {
             formatter: '{value}'
           },
@@ -1078,7 +1328,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     window.addEventListener('resize', () => chart.resize());
   }
 
-  getPolSumCumulative() {
+  getClaimSumCumulative() {
     this.polSumCumulativeList = [];
     // const dateObj = new Date(this.selectedMonth);
 
@@ -1092,7 +1342,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     }
     sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
-    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getCumulativePolicyList`;
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getCumulativeClaimList`;
 
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
@@ -1104,6 +1354,74 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
           setTimeout(() => {
             this.barchart4();
+
+          }, 200);
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
+  getClaimSumCumulativePaid() {
+    this.ClaimSumCumulativePaidList = [];
+    // const dateObj = new Date(this.selectedMonth);
+
+    // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
+    // this.month = formatted
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getCumulativePaidClaimList`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          this.ClaimSumCumulativePaidList = data.Result
+          this.barchartData = this.ClaimSumCumulativePaidList;
+          this.cdRef.detectChanges();
+
+          setTimeout(() => {
+            this.barchart5();
+
+          }, 200);
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
+  getClaimRatio() {
+    this.getClaimRatioList = [];
+    // const dateObj = new Date(this.selectedMonth);
+
+    // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
+    // this.month = formatted
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getClaimRatioList`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          this.getClaimRatioList = data.Result
+          this.barchartData = this.getClaimRatioList;
+          this.cdRef.detectChanges();
+
+          setTimeout(() => {
+            this.barchart6();
 
           }, 200);
         }
@@ -1478,10 +1796,186 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const premiumSeriesData: any[] = [];
 
     data.forEach(item => {
-      const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      // const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      // categories.push(label);
+      // countSeriesData.push(Number(item.PolicyCount) || 0);
+      // premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+       const label = `${item.ClassOfBusiness}`;
       categories.push(label);
-      countSeriesData.push(Number(item.PolicyCount) || 0);
-      premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+      countSeriesData.push(Number(item.ClaimCount) || 0);
+      premiumSeriesData.push(Number(item.ClaimAmount) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchart5() {
+    const dom = this.chartContainer5?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.ClaimCount) || 0);
+      premiumSeriesData.push(Number(item.ClaimAmount) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchart6() {
+    const dom = this.chartContainer6?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.ClaimCount) || 0);
+      premiumSeriesData.push(Number(item.ClaimAmount) || 0);
     });
     console.log(countSeriesData, "premiumSeriesData");
     console.log(premiumSeriesData, "premiumSeriesData");

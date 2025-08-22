@@ -5,15 +5,16 @@ import { SessionStorageService } from '../../../storage/session-storage.service'
 import { DatePipe } from '@angular/common';
 import { SidebarService } from '../../../services/sidebar.service';
 import { AuthService } from '../../../helpers/auth/Auth/auth.service';
-import { config } from '../../../helpers/appconfig';
+import { config } from '../../../helpers/appconfig'
+
 @Component({
-  selector: 'app-product-wise-count',
+  selector: 'app-claim-summary-monthlypaid-product-wise-count',
   standalone: false,
-  templateUrl: './product-wise-count.component.html',
-  styleUrl: './product-wise-count.component.scss'
+  templateUrl: './claim-summary-monthlypaid-product-wise-count.component.html',
+  styleUrl: './claim-summary-monthlypaid-product-wise-count.component.scss'
 })
-export class ProductWiseCountComponent implements OnInit, AfterViewInit {
-  tableData: any[] = [];
+export class ClaimSummaryMonthlypaidProductWiseCountComponent {
+tableData: any[] = [];
   public RenewalApiUrl: any = config.RenewalApiUrl;
   selectedData: any;
   userDetails: any;
@@ -77,7 +78,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
   //     (err: any) => { },
   //   );
   // }
-  getBranchDropdown() {
+    getBranchDropdown() {
     // let ReqObj = {
     //   // "CompanyId": '100046',
     //   "CompanyId": this.userDetails.InsuranceId,
@@ -107,8 +108,6 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
             list.push(e.DivisionName)
           });
           setTimeout(() => {
-            console.log(list,"listlistlist");
-            
                   this.BranchList = list;
                this.AllBranchList = list;
           this.BranchList = ["All", ...this.BranchList];
@@ -122,6 +121,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
       (err: any) => { },
     );
   }
+
   getCustomerTypeDropdown() {
     let ReqObj = {
       // "CompanyId": '100046',
@@ -186,7 +186,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
 
     }
 
-    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyData`;
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getWeeklyClaimPaidData`;
 
     this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
       (data: any) => {
@@ -282,7 +282,7 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
   }
 
   navigateProd() {
-    this.router.navigate(['/summary/dashboard'])
+    this.router.navigate(['/summary/claim-summary-dashboard'])
   }
 
   viewDetails(detatils) {
@@ -290,6 +290,6 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
 
     sessionStorage.setItem('month', this.month);
     sessionStorage.setItem('selectedData', JSON.stringify(detatils));
-    this.router.navigate(['/summary/date-wise-count'])
+    this.router.navigate(['/summary/monthly-paid-date-wise-count'])
   }
 }

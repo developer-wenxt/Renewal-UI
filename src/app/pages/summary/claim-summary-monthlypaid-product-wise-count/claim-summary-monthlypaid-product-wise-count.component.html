@@ -1,0 +1,207 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3">
+            <div class="row">
+                <div class="col-md-4">
+
+                    <b><i class="bi bi-boxes"></i>&nbsp;{{selectedData?.product}}</b>
+                </div>
+                <div class="col-md-5 text-start">
+
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-1 text-end">
+                    <p-button styleClass="view-cutomer-btn" (click)="navigateProd()" label="Back"
+                        severity="info"></p-button>
+
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4 mt-5">
+                    <h6><i style="font-size: 1.5rem;" class="fas fa-search fa-flip-horizontal"></i> &nbsp;{{month}}
+                        /
+                        {{selectedBranch?selectedBranch:'All'}} / {{selectedCutomerType?selectedCutomerType:'All'}}
+                    </h6>
+                </div>
+                    <div class="col-md-2"></div>
+                <div class="col-md-2">
+                    <!-- <div class="">Monthly / Weekly</div> -->
+                    <div class="">Month</div>
+                    <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                        inputStyleClass="w-100" styleClass="w-100 custom-calendar" (onSelect)="getMohtDate()"
+                        dateFormat="mm/yy" [readonlyInput]="true"></p-calendar>
+
+                </div>
+                <div class="col-md-2">
+                    <div class="">Branch</div>
+                    <p-dropdown [options]="BranchList" [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true"
+                        [showClear]="true" (onChange)="getMohtDate()" placeholder="Select a Branch"
+                        styleClass="w-100" />
+
+                </div>
+                <!-- <div class="col-md-2">
+                    <div class="">Source</div>
+                    <p-dropdown [options]="SourceList" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                        [showClear]="true" (onChange)="getMohtDate()" placeholder="Select a Source"
+                        styleClass="w-100" />
+
+                </div> -->
+                <div class="col-md-2">
+                    <div class="">Customer Type</div>
+                    <p-dropdown [options]="CustomerTypeList" [(ngModel)]="selectedCutomerType" [filter]="true"
+                        [checkmark]="true" [showClear]="true" (onChange)="getMohtDate()" placeholder="Select a Source"
+                        styleClass="w-100" />
+
+                </div>
+
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card">
+                        <p-table [value]="tableData" [tableStyle]="{ 'min-width': '100%' }"
+                            tableStyleClass="custom-grid" [rows]="5" [rowsPerPageOptions]="[5,10]" [paginator]="true">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th rowspan="4">Product</th>
+                                    <th rowspan="4">Branch</th>
+                                    <!-- <th rowspan="4">Source</th> -->
+                                    <th rowspan="4">Customer Type</th>
+                                    <th colspan="16" class="text-center">Weeks</th>
+                                    <th rowspan="4">Total Count</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" class="text-center">Week 1</th>
+                                    <th colspan="4" class="text-center">Week 2</th>
+                                    <th colspan="4" class="text-center">Week 3</th>
+                                    <th colspan="4" class="text-center">Week 4</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" class="text-center">Previous</th>
+                                    <th colspan="2" class="text-center">Actual</th>
+                                    <th colspan="2" class="text-center">Previous</th>
+                                    <th colspan="2" class="text-center">Actual</th>
+                                    <th colspan="2" class="text-center">Previous</th>
+                                    <th colspan="2" class="text-center">Actual</th>
+                                    <th colspan="2" class="text-center">Previous</th>
+                                    <th colspan="2" class="text-center">Actual</th>
+                                </tr>
+                                <tr>
+                                    <th>Count</th>
+                                    <th>Amount</th>
+                                    <th>Count</th>
+                                    <th>Amount</th>
+
+                                    <th>Count</th>
+                                    <th>Amount</th>
+                                    <th>Count</th>
+                                    <th>Amount</th>
+
+                                    <th>Count</th>
+                                    <th>Amount</th>
+                                    <th>Count</th>
+                                    <th>Amount</th>
+
+                                    <th>Count</th>
+                                    <th>Amount</th>
+                                    <th>Count</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-sale>
+                                <tr>
+                                    <td style="width: 20rem;">
+
+                                        {{ sale.product }}
+
+                                    </td>
+                                    <td>
+                                        {{ sale.branch }}
+                                    </td>
+                                    <!-- <td>
+                                        {{ sale.source}}
+                                    </td> -->
+                                    <td>
+                                        {{ sale.customerType}}
+                                    </td>
+
+                                    <td>{{ sale.week1.previous.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week1.previous.premium | number:'1.0-0'}}
+                                    </td>
+                                    <td>{{ sale.week1.actual.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week1.actual.premium | number:'1.0-0' }}
+                                    </td>
+
+
+                                    <td>{{ sale.week2.previous.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week2.previous.premium | number:'1.0-0'
+                                        }}</td>
+                                    <td>{{ sale.week2.actual.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week2.actual.premium | number:'1.0-0' }}
+                                    </td>
+
+                                    <td>{{ sale.week3.previous.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week3.previous.premium | number:'1.0-0'
+                                        }}</td>
+                                    <td>{{ sale.week3.actual.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week3.actual.premium | number:'1.0-0' }}
+                                    </td>
+
+
+                                    <td>{{ sale.week4.previous.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week4.previous.premium | number:'1.0-0'
+                                        }}</td>
+                                    <td>{{ sale.week4.actual.count }}</td>
+                                    <td style="text-align: right;">{{ sale.week4.actual.premium | number:'1.0-0' }}
+                                    </td>
+
+
+                                    <td (click)="viewDetails(sale)"
+                                        style="width: 3rem;text-decoration: underline;color: #2b5ae2; cursor: pointer;">
+                                        <span>
+                                            {{ sale.totalCount }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="footer">
+                                <tr>
+                                    <td colspan="3" class="font-bold">Total</td>
+
+                                    <!-- Week 1 -->
+                                    <td>{{ getTotal('week1', 'previous', 'count') }}</td>
+                                    <td>{{ getTotal('week1', 'previous', 'premium') | number:'1.0-0' }}</td>
+                                    <td>{{ getTotal('week1', 'actual', 'count') }}</td>
+                                    <td>{{ getTotal('week1', 'actual', 'premium') | number:'1.0-0' }}</td>
+
+                                    <!-- Week 2 -->
+                                    <td>{{ getTotal('week2', 'previous', 'count') }}</td>
+                                    <td>{{ getTotal('week2', 'previous', 'premium') | number:'1.0-0' }}</td>
+                                    <td>{{ getTotal('week2', 'actual', 'count') }}</td>
+                                    <td>{{ getTotal('week2', 'actual', 'premium') | number:'1.0-0' }}</td>
+
+                                    <!-- Week 3 -->
+                                    <td>{{ getTotal('week3', 'previous', 'count') }}</td>
+                                    <td>{{ getTotal('week3', 'previous', 'premium') | number:'1.0-0' }}</td>
+                                    <td>{{ getTotal('week3', 'actual', 'count') }}</td>
+                                    <td>{{ getTotal('week3', 'actual', 'premium') | number:'1.0-0' }}</td>
+
+                                    <!-- Week 4 -->
+                                    <td>{{ getTotal('week4', 'previous', 'count') }}</td>
+                                    <td>{{ getTotal('week4', 'previous', 'premium') | number:'1.0-0' }}</td>
+                                    <td>{{ getTotal('week4', 'actual', 'count') }}</td>
+                                    <td>{{ getTotal('week4', 'actual', 'premium') | number:'1.0-0' }}</td>
+
+                                    <td class="font-bold">{{ getTotalCount() }}</td>
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

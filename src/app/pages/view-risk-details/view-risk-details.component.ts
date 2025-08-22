@@ -29,6 +29,7 @@ export class ViewRiskDetailsComponent implements OnInit {
   userDetails: any;
   coverList: any[] = [];
   sectionList: any[] = [];
+  DeductibleList: any[] = [];
   SumInsuredModified: any;
   riks_list: any[] = [];
   RateModified: any;
@@ -64,7 +65,11 @@ export class ViewRiskDetailsComponent implements OnInit {
   updateRenewal_dialog: boolean = false;
   RenewalYesNo: any;
   editedCoverData: any = null;
-
+  otherTabReqData: any
+  ConditionList: any;
+  DiscountList: any;
+  LoaingList: any;
+  LoadingList: any;
   constructor(private shared: SharedService, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private messageService: MessageService) {
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
     this.userDetails = d.Result;
@@ -137,7 +142,65 @@ export class ViewRiskDetailsComponent implements OnInit {
 
       })
   }
+  getOtherTabList() {
+    let ReqObj1 = {
+      "PolicyNumber": this.otherTabReqData?.PolicyNumber,
+      "SectionCode": this.otherTabReqData?.SectionCode,
+      "RiskId": this.otherTabReqData?.RiskId,
+    }
+    let urlLink1 = `${this.RenewalApiUrl}renewaltrack/getDueRenewDeductible`;
+   this.shared.onPostMethodSync(urlLink1, ReqObj1).subscribe(
+      (data: any) => {
+        if (data.Result) {
+          this.DeductibleList = data.Result;
+        }
+
+      })
+    let ReqObj2 = {
+      "PolicyNumber": this.otherTabReqData?.PolicyNumber,
+      "SectionCode": this.otherTabReqData?.SectionCode,
+      "RiskId": this.otherTabReqData?.RiskId,
+    }
+    let urlLink2 = `${this.RenewalApiUrl}renewaltrack/getDueRenewCondition`;
+   this.shared.onPostMethodSync(urlLink2, ReqObj2).subscribe(
+      (data: any) => {
+        if (data.Result) {
+          this.ConditionList = data.Result;
+        }
+
+      })
+    let ReqObj3 = {
+      "PolicyNumber": this.otherTabReqData?.PolicyNumber,
+      "SectionCode": this.otherTabReqData?.SectionCode,
+      "RiskId": this.otherTabReqData?.RiskId,
+    }
+    let urlLink3 = `${this.RenewalApiUrl}renewaltrack/getDueRenewDiscount`;
+   this.shared.onPostMethodSync(urlLink3, ReqObj3).subscribe(
+      (data: any) => {
+        if (data.Result) {
+          this.DiscountList = data.Result;
+        }
+
+      })
+    let ReqObj4 = {
+      "PolicyNumber": this.otherTabReqData?.PolicyNumber,
+      "SectionCode": this.otherTabReqData?.SectionCode,
+      "RiskId": this.otherTabReqData?.RiskId,
+    }
+    let urlLink4 = `${this.RenewalApiUrl}renewaltrack/getDueRenewLoading`;
+   this.shared.onPostMethodSync(urlLink4, ReqObj4).subscribe(
+      (data: any) => {
+        if (data.Result) {
+          this.LoadingList = data.Result;
+        }
+
+      })
+  }
   onViewCover(item: any) {
+
+    
+    this.otherTabReqData = item
+    this.getOtherTabList()
     this.IsView = 'cover'
     this.selectedCovers = [];
     let ReqObj = {
@@ -182,6 +245,9 @@ export class ViewRiskDetailsComponent implements OnInit {
       })
   }
   onViewSection(item: any) {
+    this.otherTabReqData = item
+    this.getOtherTabList();
+    console.log(this.otherTabReqData, "otherTabReqDataotherTabReqDataotherTabReqDataotherTabReqData");
     this.IsView = 'section'
     let ReqObj = {
       "PolicyNumber": item.PolicyNumber,
@@ -594,7 +660,7 @@ export class ViewRiskDetailsComponent implements OnInit {
       "PolicyNumber": this.selectedRik?.PolicyNumber,
       "RiskId": this.selectedRik?.RiskId,
       "SectionCode": this.selectedRik?.SectionCode,
-      "Reason": this.reason ?this.reason:null,
+      "Reason": this.reason ? this.reason : null,
       "Remark": this.remarks,
       "Status": sts
     }
@@ -848,7 +914,7 @@ export class ViewRiskDetailsComponent implements OnInit {
   onModify(data: any) {
     this.Typevalue = 'Modify'
     this.updateRiks_dialog = true;
-     this.selectedRik = data;
+    this.selectedRik = data;
   }
 }
 

@@ -1,0 +1,835 @@
+<div class="container-fluid">
+    <!-- <div class="container-fluid">
+        <div class="card overall-card mt-3 p-3"> -->
+<!-- 
+    <div class="row mt-2 mb-2 ms-2 dashboard-header">
+        <h6>Summary</h6>
+    </div>
+    <div class="flex justify-content-center mt-3 mb-5">
+        <p-selectButton [options]="stateOptions" [(ngModel)]="selectvalue" (onChange)="onSelectValueChange($event)"
+            optionLabel="label" optionValue="value" />
+    </div> -->
+    <div class="card">
+        <p-tabView *ngIf="selectvalue=='policy'" styleClass="tabview-custom" [scrollable]="true"
+            (onChange)="onTabChange($event)">
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                            Monthly Claim List
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
+                            Monthly
+                           Claim Summary &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getMohtDate()"pTooltip="Grid"></i> &nbsp; <i
+                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getMohtDate()"pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-5 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Month</div>
+                        <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                            inputStyleClass="w-100" [appendTo]="'body'" styleClass="w-100 custom-calendar"
+                            dateFormat="mm/yy" [readonlyInput]="true"></p-calendar>
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
+                            styleClass="w-100" />
+
+                    </div>
+                    <!-- <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div> -->
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getMohtDate()"></button>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-md-6 mt-3">
+                        <h4><i style="font-size: 1.5rem;" class="fas fa-search fa-flip-horizontal"></i> &nbsp;{{month}}
+                            /
+                            {{selectedBranch}} / {{selectedCutomerType}}
+                        </h4>
+                    </div>
+                    <div *ngIf="show" class="col-md-6 text-end">
+                        <button pButton type="button" styleClass="exportbtn" label="Export PDF" icon="pi pi-file-pdf"
+                            class="p-button-sm p-button-danger" (click)="exportPdf()">
+                        </button>
+                        <button pButton type="button" label="Export Excel" icon="pi pi-file-excel"
+                            class="p-button-sm p-button-success ms-2" (click)="exportExcel()"></button>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-12">
+                        <div class="card">
+                            <p-table *ngIf="show" [value]="tableData" [tableStyle]="{ 'min-width': '100%' }"
+                                tableStyleClass="custom-grid" [rows]="5" [rowsPerPageOptions]="[5,10]"
+                                [paginator]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th rowspan="4">Product</th>
+                                        <th rowspan="4">Branch</th>
+                                        <!-- <th rowspan="4">Source</th> -->
+                                        <th rowspan="4">Customer Type</th>
+                                        <th colspan="16" class="text-center">Weeks</th>
+                                        <th rowspan="4">Total Count</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="4" class="text-center">Week 1</th>
+                                        <th colspan="4" class="text-center">Week 2</th>
+                                        <th colspan="4" class="text-center">Week 3</th>
+                                        <th colspan="4" class="text-center">Week 4</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="body" let-sale>
+                                    <tr>
+                                        <td
+                                            style="width: 20rem; text-decoration: underline;color: #2b5ae2; cursor: pointer;">
+                                            <span (click)="viewDetails(sale)">
+                                                {{ sale.product }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ sale.branch }}
+                                        </td>
+                                        <!-- <td>
+                                            {{ sale.source}}
+                                        </td> -->
+                                        <td>
+                                            {{ sale.customerType}}
+                                        </td>
+
+                                        <td>{{ sale.week1.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week1.previous.premium | number:'1.0-0'}}
+                                        </td>
+                                        <td>{{ sale.week1.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week1.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td>{{ sale.week2.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week2.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week2.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week2.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+                                        <td>{{ sale.week3.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week3.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week3.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week3.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td>{{ sale.week4.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week4.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week4.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week4.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td style="width: 3rem;">{{ sale.totalCount }}</td>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="footer">
+                                    <tr>
+                                        <td colspan="3" class="font-bold">Total</td>
+
+                                        <!-- Week 1 -->
+                                        <td>{{ getTotal('week1', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week1', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week1', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week1', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 2 -->
+                                        <td>{{ getTotal('week2', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week2', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week2', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week2', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 3 -->
+                                        <td>{{ getTotal('week3', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week3', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week3', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week3', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 4 -->
+                                        <td>{{ getTotal('week4', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week4', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week4', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week4', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <td class="font-bold">{{ getTotalCount() }}</td>
+                                    </tr>
+                                </ng-template>
+
+                            </p-table>
+
+                            <div *ngIf="!show" #chartContainer style="width: 100%; height: 500px;"></div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                            Monthly Claim Paid
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
+                            Monthly
+                          Paid Claim Summary &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getMohtDatePaid()"pTooltip="Grid"></i> &nbsp; <i
+                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getMohtDatePaid()"pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-5 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Month</div>
+                        <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                            inputStyleClass="w-100" [appendTo]="'body'" styleClass="w-100 custom-calendar"
+                            dateFormat="mm/yy" [readonlyInput]="true"></p-calendar>
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
+                            styleClass="w-100" />
+
+                    </div>
+                    <!-- <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div> -->
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getMohtDatePaid()"></button>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-md-6 mt-3">
+                        <h4><i style="font-size: 1.5rem;" class="fas fa-search fa-flip-horizontal"></i> &nbsp;{{month}}
+                            /
+                            {{selectedBranch}} / {{selectedCutomerType}}
+                        </h4>
+                    </div>
+                    <div *ngIf="show" class="col-md-6 text-end">
+                        <button pButton type="button" styleClass="exportbtn" label="Export PDF" icon="pi pi-file-pdf"
+                            class="p-button-sm p-button-danger" (click)="exportPdf()">
+                        </button>
+                        <button pButton type="button" label="Export Excel" icon="pi pi-file-excel"
+                            class="p-button-sm p-button-success ms-2" (click)="exportExcel()"></button>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-12">
+                        <div class="card">
+                            <p-table *ngIf="show" [value]="tableData" [tableStyle]="{ 'min-width': '100%' }"
+                                tableStyleClass="custom-grid" [rows]="5" [rowsPerPageOptions]="[5,10]"
+                                [paginator]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th rowspan="4">Product</th>
+                                        <th rowspan="4">Branch</th>
+                                        <!-- <th rowspan="4">Source</th> -->
+                                        <th rowspan="4">Customer Type</th>
+                                        <th colspan="16" class="text-center">Weeks</th>
+                                        <th rowspan="4">Total Count</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="4" class="text-center">Week 1</th>
+                                        <th colspan="4" class="text-center">Week 2</th>
+                                        <th colspan="4" class="text-center">Week 3</th>
+                                        <th colspan="4" class="text-center">Week 4</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                        <th colspan="2" class="text-center">Previous</th>
+                                        <th colspan="2" class="text-center">Actual</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="body" let-sale>
+                                    <tr>
+                                        <td
+                                            style="width: 20rem; text-decoration: underline;color: #2b5ae2; cursor: pointer;">
+                                            <span (click)="viewDetails1(sale)">
+                                                {{ sale.product }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ sale.branch }}
+                                        </td>
+                                        <!-- <td>
+                                            {{ sale.source}}
+                                        </td> -->
+                                        <td>
+                                            {{ sale.customerType}}
+                                        </td>
+
+                                        <td>{{ sale.week1.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week1.previous.premium | number:'1.0-0'}}
+                                        </td>
+                                        <td>{{ sale.week1.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week1.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td>{{ sale.week2.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week2.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week2.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week2.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+                                        <td>{{ sale.week3.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week3.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week3.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week3.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td>{{ sale.week4.previous.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week4.previous.premium | number:'1.0-0'
+                                            }}</td>
+                                        <td>{{ sale.week4.actual.count }}</td>
+                                        <td style="text-align: right;">{{ sale.week4.actual.premium | number:'1.0-0' }}
+                                        </td>
+
+
+                                        <td style="width: 3rem;">{{ sale.totalCount }}</td>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="footer">
+                                    <tr>
+                                        <td colspan="3" class="font-bold">Total</td>
+
+                                        <!-- Week 1 -->
+                                        <td>{{ getTotal('week1', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week1', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week1', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week1', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 2 -->
+                                        <td>{{ getTotal('week2', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week2', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week2', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week2', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 3 -->
+                                        <td>{{ getTotal('week3', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week3', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week3', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week3', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <!-- Week 4 -->
+                                        <td>{{ getTotal('week4', 'previous', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week4', 'previous', 'premium') |
+                                            number:'1.0-0' }}</td>
+                                        <td>{{ getTotal('week4', 'actual', 'count') }}</td>
+                                        <td style="text-align: right;">{{ getTotal('week4', 'actual', 'premium') |
+                                            number:'1.0-0' }}</td>
+
+                                        <td class="font-bold">{{ getTotalCount() }}</td>
+                                    </tr>
+                                </ng-template>
+
+                            </p-table>
+
+                            <div *ngIf="!show" #chartContainerPaid style="width: 100%; height: 500px;"></div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                          Cumulative
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
+                            Cumulative &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getClaimSumCumulative()"pTooltip="Grid"></i> &nbsp; <i
+                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getClaimSumCumulative()"pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                        <!-- <div class="">Month</div>
+                        <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                            inputStyleClass="w-100" [appendTo]="'body'" styleClass="w-100 custom-calendar"
+                            dateFormat="mm/yy" [readonlyInput]="true"></p-calendar> -->
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getClaimSumCumulative()"></button>
+                    </div>
+                </div>
+                <!-- <div class="card"> -->
+                <!-- <h3>Policy Summary</h3> -->
+                <div *ngIf="show" class="row p-3">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3 text-end">
+                        <input pInputText type="text" (input)="table.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search" />
+                    </div>
+                </div>
+
+                <p-table *ngIf="show" [value]="polSumCumulativeList" [paginator]="true" [rows]="5"
+                    [globalFilterFields]="['ClassOfBusiness', 'Branch', 'CustomerType', 'SourceOfBusiness']"
+                    [rowsPerPageOptions]="[5, 10, 20]" class="custom-grid" [filterDelay]="300"
+                    [responsiveLayout]="'scroll'" tableStyleClass="p-datatable-gridlines" [resizableColumns]="true"
+                    [scrollable]="true" [globalFilter]="globalFilter" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2" pSortableColumn="ClassOfBusiness">Product <p-sortIcon
+                                    field="ClassOfBusiness" /></th>
+                            <th rowspan="2" pSortableColumn="Branch">Branch <p-sortIcon field="Branch" /></th>
+                            <th rowspan="2" pSortableColumn="CustomerType">Customer Type <p-sortIcon
+                                    field="CustomerType" /></th>
+                            <!-- <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
+                                    field="SourceOfBusiness" /></th> -->
+                            <th colspan="2" class="text-center">Policy Count</th>
+                            <th colspan="2" class="text-center">Claim Amount</th>
+                        </tr>
+                        <tr>
+                            <th>Previous</th>
+                            <th>Actual </th>
+                            <th>Previous </th>
+                            <th>Actual</th>
+                        </tr>
+                    </ng-template>
+
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td>{{ row.ClassOfBusiness }}</td>
+                            <td>{{ row.Branch }}</td>
+                            <td>{{ row.CustomerType }}</td>
+                            <!-- <td>{{ row.SourceOfBusiness }}</td> -->
+                            <td>{{ row.ClaimCountPrev }}</td>
+                            <td>{{ row.ClaimCount }}</td>
+                            <td>{{ row.ClaimAmountPrev | number: '1.2-2' }}</td>
+                            <td>{{ row.ClaimAmount | number: '1.2-2' }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!show" #chartContainer4 style="width: 100%; height: 500px;"></div>
+                <!-- </div>sa -->
+
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                          Cumulative Paid
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
+                            Cumulative Paid &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getClaimSumCumulativePaid()"pTooltip="Grid"></i> &nbsp; <i
+                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getClaimSumCumulativePaid()"pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                        <!-- <div class="">Month</div>
+                        <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                            inputStyleClass="w-100" [appendTo]="'body'" styleClass="w-100 custom-calendar"
+                            dateFormat="mm/yy" [readonlyInput]="true"></p-calendar> -->
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getClaimSumCumulativePaid()"></button>
+                    </div>
+                </div>
+                <!-- <div class="card"> -->
+                <!-- <h3>Policy Summary</h3> -->
+                <div *ngIf="show" class="row p-3">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3 text-end">
+                        <input pInputText type="text" (input)="table.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search" />
+                    </div>
+                </div>
+
+                <p-table *ngIf="show" [value]="ClaimSumCumulativePaidList" [paginator]="true" [rows]="5"
+                    [globalFilterFields]="['ClassOfBusiness', 'Branch', 'CustomerType', 'SourceOfBusiness']"
+                    [rowsPerPageOptions]="[5, 10, 20]" class="custom-grid" [filterDelay]="300"
+                    [responsiveLayout]="'scroll'" tableStyleClass="p-datatable-gridlines" [resizableColumns]="true"
+                    [scrollable]="true" [globalFilter]="globalFilter" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2" pSortableColumn="ClassOfBusiness">Product <p-sortIcon
+                                    field="ClassOfBusiness" /></th>
+                            <th rowspan="2" pSortableColumn="Branch">Branch <p-sortIcon field="Branch" /></th>
+                            <th rowspan="2" pSortableColumn="CustomerType">Customer Type <p-sortIcon
+                                    field="CustomerType" /></th>
+                            <!-- <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
+                                    field="SourceOfBusiness" /></th> -->
+                            <th colspan="2" class="text-center">Policy Count</th>
+                            <th colspan="2" class="text-center">Claim Amount</th>
+                        </tr>
+                        <tr>
+                            <th>Previous</th>
+                            <th>Actual </th>
+                            <th>Previous </th>
+                            <th>Actual</th>
+                        </tr>
+                    </ng-template>
+
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td>{{ row.ClassOfBusiness }}</td>
+                            <td>{{ row.Branch }}</td>
+                            <td>{{ row.CustomerType }}</td>
+                            <!-- <td>{{ row.SourceOfBusiness }}</td> -->
+                            <td>{{ row.ClaimCountPrev }}</td>
+                            <td>{{ row.ClaimCount }}</td>
+                            <td>{{ row.ClaimAmountPrev | number: '1.2-2' }}</td>
+                            <td>{{ row.ClaimAmount | number: '1.2-2' }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!show" #chartContainer5 style="width: 100%; height: 500px;"></div>
+                <!-- </div>sa -->
+
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                          Claim Ratio
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
+                            Claim Ratio &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getClaimRatio()"pTooltip="Grid"></i> &nbsp; <i
+                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getClaimRatio()"pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                        <!-- <div class="">Month</div>
+                        <p-calendar placeholder="Select a Month" [(ngModel)]="selectedMonth" view="month"
+                            inputStyleClass="w-100" [appendTo]="'body'" styleClass="w-100 custom-calendar"
+                            dateFormat="mm/yy" [readonlyInput]="true"></p-calendar> -->
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
+                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
+                            styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getClaimRatio()"></button>
+                    </div>
+                </div>
+                <!-- <div class="card"> -->
+                <!-- <h3>Policy Summary</h3> -->
+                <div *ngIf="show" class="row p-3">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3 text-end">
+                        <input pInputText type="text" (input)="table.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search" />
+                    </div>
+                </div>
+
+                <p-table *ngIf="show" [value]="getClaimRatioList" [paginator]="true" [rows]="5"
+                    [globalFilterFields]="['ClassOfBusiness', 'Branch', 'CustomerType', 'SourceOfBusiness']"
+                    [rowsPerPageOptions]="[5, 10, 20]" class="custom-grid" [filterDelay]="300"
+                    [responsiveLayout]="'scroll'" tableStyleClass="p-datatable-gridlines" [resizableColumns]="true"
+                    [scrollable]="true" [globalFilter]="globalFilter" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2" pSortableColumn="ClassOfBusiness">Product <p-sortIcon
+                                    field="ClassOfBusiness" /></th>
+                            <th rowspan="2" pSortableColumn="Branch">Branch <p-sortIcon field="Branch" /></th>
+                            <th rowspan="2" pSortableColumn="CustomerType">Customer Type <p-sortIcon
+                                    field="CustomerType" /></th>
+                            <!-- <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
+                                    field="SourceOfBusiness" /></th> -->
+                            <th colspan="2" class="text-center">Policy Count</th>
+                            <th colspan="2" class="text-center">Claim Amount</th>
+                        </tr>
+                        <tr>
+                            <th>Previous</th>
+                            <th>Actual </th>
+                            <th>Previous </th>
+                            <th>Actual</th>
+                        </tr>
+                    </ng-template>
+
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td>{{ row.ClassOfBusiness }}</td>
+                            <td>{{ row.Branch }}</td>
+                            <td>{{ row.CustomerType }}</td>
+                            <!-- <td>{{ row.SourceOfBusiness }}</td> -->
+                            <td>{{ row.ClaimCountPrev }}</td>
+                            <td>{{ row.ClaimCount }}</td>
+                            <td>{{ row.ClaimAmountPrev | number: '1.2-2' }}</td>
+                            <td>{{ row.ClaimAmount | number: '1.2-2' }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!show" #chartContainer6 style="width: 100%; height: 500px;"></div>
+                <!-- </div>sa -->
+
+            </p-tabPanel>
+        </p-tabView>
+
+    </div>
+
+
+
+</div>
+<!-- </div>
+</div> -->

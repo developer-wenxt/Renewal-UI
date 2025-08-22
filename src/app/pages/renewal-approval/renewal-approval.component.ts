@@ -21,6 +21,9 @@ export class RenewalApprovalComponent implements OnInit {
   broker_list: any[] = [];
   from_date: any
   to_date: any
+  selectedBranch: any
+  BranchList: any[] = []
+  AllBranchList: any[] = []
   constructor(
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute,
@@ -31,6 +34,7 @@ export class RenewalApprovalComponent implements OnInit {
     this.userDetails = d.Result;
   }
   ngOnInit() {
+
     const now = new Date();
     now.setMonth(now.getMonth() - 1);
     this.from_date = new Date(now); // Set as Date object
@@ -39,7 +43,11 @@ export class RenewalApprovalComponent implements OnInit {
     this.to_date = new Date(to_now);
     this.activatedRoute.queryParams.subscribe(params => {
       this.status = params['status'];
-      this.getCustomerData();
+      setTimeout(() => {
+        this.getBranchDropdown()
+
+
+      }, 200);
     });
 
   }
@@ -49,6 +57,10 @@ export class RenewalApprovalComponent implements OnInit {
     // const formattedToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
     // const formattedToDate = this.to_date
     // this.getdata(formattedFromDate, formattedToDate)
+    this.getCustomerData();
+  }
+  onChaneBranch() {
+
     this.getCustomerData();
   }
   // getCustomerData() {
@@ -67,7 +79,7 @@ export class RenewalApprovalComponent implements OnInit {
   //   let ReqObj
   //   ReqObj = {
   //     "CompanyId": this.userDetails.InsuranceId,
-  //     "DivisionCode": this.userDetails?.DivisionCode,
+  //    "DivisionCode":  this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
   //     "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
   //     "Status": sts,
   //     "StartDate": FromDate,
@@ -97,11 +109,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'pending') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+        let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -122,11 +140,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'rejected') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -147,11 +171,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'completed') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -175,11 +205,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'pending') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -200,11 +236,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'rejected') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -225,11 +267,17 @@ export class RenewalApprovalComponent implements OnInit {
       if (this.status == 'completed') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
         let ReqObj
         ReqObj = {
           "CompanyId": this.userDetails.InsuranceId,
-          "DivisionCode": this.userDetails?.DivisionCode,
+          "DivisionCode":division,
           "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
           "StartDate": FromDate,
           "EndDate": ToDate
@@ -255,11 +303,17 @@ export class RenewalApprovalComponent implements OnInit {
     if (this.status == 'pending') {
       let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
       let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
       let ReqObj
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails?.DivisionCode,
+        "DivisionCode":division,
         "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
         "StartDate": FromDate,
         "EndDate": ToDate
@@ -280,11 +334,17 @@ export class RenewalApprovalComponent implements OnInit {
     if (this.status == 'rejected') {
       let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
       let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
       let ReqObj
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails?.DivisionCode,
+        "DivisionCode":division,
         "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
         "StartDate": FromDate,
         "EndDate": ToDate
@@ -305,11 +365,17 @@ export class RenewalApprovalComponent implements OnInit {
     if (this.status == 'completed') {
       let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
       let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
-
+      let division
+        if (this.selectedBranch == 'All') {
+          division = this.AllBranchList
+        }
+        else {
+          division = this.AllBranchList.filter(item => item == this.selectedBranch);
+        }
       let ReqObj
       ReqObj = {
         "CompanyId": this.userDetails.InsuranceId,
-        "DivisionCode": this.userDetails?.DivisionCode,
+        "DivisionCode":division,
         "SourceCode": this.userDetails.UserType == 'Broker' ? this.userDetails.SourceCode : null,
         "StartDate": FromDate,
         "EndDate": ToDate
@@ -353,8 +419,53 @@ export class RenewalApprovalComponent implements OnInit {
     sessionStorage.setItem('CustomerDeatils', JSON.stringify(customer))
     this.router.navigate(['/risk-details'], { queryParams: { status: this.status } })
   }
-    onGlobalFilter1(event: Event): void {
+  onGlobalFilter1(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.dt1.filterGlobal(input.value, 'contains');
+  }
+
+  getBranchDropdown() {
+    // let ReqObj = {
+    //   // "CompanyId": '100046',
+    //   "CompanyId": this.userDetails.InsuranceId,
+    // }
+    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
+
+    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+    //   (data: any) => {
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "DivisionCodelist": branchList,
+      // "DivisionCodelist":["101"],
+
+    }
+    let urlLink = `${this.RenewalApiUrl}renewaltrack/getdivisionbycompany`;
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        if (data) {
+          let list = [];
+          // this.BranchList = data?.Result[0].DataList
+          this.BranchList = data?.divisionDetails
+          let loginBrachList: any[] = data?.divisionDetails
+          loginBrachList.forEach(e => {
+            list.push(e.DivisionCode)
+          });
+          setTimeout(() => {
+            // this.BranchList = list;
+            this.AllBranchList = list;
+            // this.BranchList = ["All", ...this.BranchList];
+            this.BranchList = [{ DivisionName: 'All', DivisionCode: 'All' }, ...this.BranchList];
+            this.selectedBranch = this.BranchList[0].DivisionCode
+            this.getCustomerData();
+          }, 100);
+
+        }
+      },
+      (err: any) => { },
+    );
   }
 }

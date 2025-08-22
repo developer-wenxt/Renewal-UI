@@ -3,18 +3,30 @@
     <div class="container-fluid">
         <div class="card overall-card mt-3 p-3">
             <div class="row mt-2 mb-2 ms-2 dashboard-header">
-                <div class="col-md-6 mt-3">
+                <div class="col-md-3 mt-3">
                     <h6 *ngIf="status=='pending'" style="font-weight: bold;font-size: 1.1rem;">Approval Pending</h6>
                     <h6 *ngIf="status=='rejected'" style="font-weight: bold;font-size: 1.1rem;">Approval Rejected</h6>
                     <h6 *ngIf="status=='completed'" style="font-weight: bold;font-size: 1.1rem;">Approval Completed</h6>
                 </div>
+
                 <div class="col-md-6 text-end">
+
                     <p-calendar [(ngModel)]="from_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                         placeholder="From Date" [showIcon]="true" inputId="fromDate"
                         (onSelect)="onDateChange()"></p-calendar> &nbsp; &nbsp;
                     <p-calendar [(ngModel)]="to_date" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                         placeholder="To Date" [showIcon]="true" inputId="toDate"
                         (onSelect)="onDateChange()"></p-calendar>
+                </div>
+                <!-- <div *ngIf="BranchList.length > 1" class="col-md-3 text-start">
+                         <p-dropdown [options]="BranchList" [appendTo]="'body'"  [(ngModel)]="selectedBranch" [filter]="true"
+                        [checkmark]="true" [showClear]="true" placeholder="Select a Branch" [ngStyle]="{'min-width': '100px'}"/>
+                </div> -->
+                <div *ngIf="BranchList.length > 1" class="col-md-3 text-start">
+                    <p-dropdown [options]="BranchList" optionLabel="DivisionName" optionValue="DivisionCode"
+                        [appendTo]="'body'" [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" (onChange)="onChaneBranch()"
+                        [showClear]="true" placeholder="Select a Branch" [ngStyle]="{'min-width': '100px'}">
+                    </p-dropdown>
                 </div>
 
             </div>
@@ -145,7 +157,7 @@
                         <div>
                             <p-table #dt1 [value]="broker_list || []" dataKey="id" [rows]="5"
                                 [rowsPerPageOptions]="[5, 10]" [paginator]="true"
-                               [globalFilterFields]="['CustomerName','PolicyNumber','InsuredMobile','ProductName','PolicyEndDate','TotalPremium','CurrentStatus','CompanyName','ClassName','DivisionName','BusinessName','EndorsementNumber','RenewalDate','CustomerCode','InsuredCivilId','SourceName','AgBrokCommission','Status']"
+                                [globalFilterFields]="['CustomerName','PolicyNumber','InsuredMobile','ProductName','PolicyEndDate','TotalPremium','CurrentStatus','CompanyName','ClassName','DivisionName','BusinessName','EndorsementNumber','RenewalDate','CustomerCode','InsuredCivilId','SourceName','AgBrokCommission','Status']"
                                 [tableStyle]="{ 'min-width': '100%' }">
                                 <ng-template pTemplate="caption">
                                     <div class="row">
