@@ -176,9 +176,16 @@ tableData: any[] = [];
     }
 
     this.month = formatted
+        let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,

@@ -90,28 +90,28 @@
                         <ng-template pTemplate="header">
                             <tr>
                                 <th pSortableColumn="DivisionName"
-                                    style="width:32%;font-size:12px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:32%;font-size:15px; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Division Name <p-sortIcon field="DivisionName"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="Lost"
-                                    style="width:15%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:15%;font-size:15px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Lost <p-sortIcon field="Lost"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="Pending"
-                                    style="width:18%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:18%;font-size:15px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Pending <p-sortIcon field="Pending"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="Success"
-                                    style="width:20%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:20%;font-size:15px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Completed <p-sortIcon field="Success"></p-sortIcon>
                                 </th>
                                 <th pSortableColumn="TotalPolicyCount"
-                                    style="width:18%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:18%;font-size:15px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     Total <p-sortIcon field="TotalPolicyCount"></p-sortIcon>
                                 </th>
 
                                 <th
-                                    style="width:15%;font-size:12px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
+                                    style="width:15%;font-size:15px;text-align: center; background-color: rgb(221 221 221);font-family: 'Poppins', sans-serif !important;">
                                     View
                                 </th>
                             </tr>
@@ -120,17 +120,17 @@
                         <ng-template pTemplate="body" let-customer>
                             <tr
                                 style="border-bottom: 1px solid rgb(172, 172, 172); font-family: 'Poppins', sans-serif !important;">
-                                <td style="font-size: 11px !important;">{{ customer.DivisionName }} {{
+                                <td style="font-size: 14px !important;">{{ customer.DivisionName }} {{
                                     customer.DivisionCode }}</td>
-                                <td style="font-size: 11px !important; text-align: center;">{{ customer.Lost }}</td>
-                                <td style="font-size: 11px !important; text-align: center;">{{ customer.Pending }}
+                                <td style="font-size: 14px !important; text-align: center;">{{ customer.Lost }}</td>
+                                <td style="font-size: 14px !important; text-align: center;">{{ customer.Pending }}
                                 </td>
-                                <td style="font-size: 11px !important; text-align: center;">{{ customer.Success}}
+                                <td style="font-size: 14px !important; text-align: center;">{{ customer.Success}}
                                 </td>
 
-                                <td style="font-size: 11px !important; text-align: center;">{{customer.TotalPolicyCount
+                                <td style="font-size: 14px !important; text-align: center;">{{customer.TotalPolicyCount
                                     }}</td>
-                                <td style="font-size: 11px !important;text-align: center;">
+                                <td style="font-size: 14px !important;text-align: center;">
                                     <i class="bi bi-eye table-icon-btn"
                                         (click)="getSourcebyCompanyandDivision(customer)"></i>
 

@@ -135,7 +135,7 @@ export class HomeComponent {
 
     let urlLink = `${this.CommonApiUrl}authentication/doauth`
     // this.encryptedValue = 'BIxEDbyzljwo1iea31wcJerd+8CHJtGiK5515u9KfTP3UpNpdbuVJD7kmQUmEaWeRJNDJ3S3qqa0Q1q5ccWwzuXidDTUb7eLQNCy8IL3ccyG6R3g13uuQywgCHKF9HcJF+Eil0N7SiyZ6es9cjIdjReiVIqfMWTfcpTZhAe5NwaiEWK3Ue+QrouxeqxfgLijx+BFaT/inhmKteSIavCDr8Wd1WH33SLjFEWCGSnIDSESZZpS5Skx7VS0bsazxg6x+iKM0LFGGwz2Hz3W8IkrCpmj+8G7dCNTbYovkmm3/V0=';
-    let d = 'BIxEDbyzljwo1iea31wcJerd+8CHJtGiK5515u9KfTP3UpNpdbuVJD7kmQUmEaWeRJNDJ3S3qqa0Q1q5ccWwzuXidDTUb7eLQN1mIok/9ruG6R3g13uuQywgCHKF9HcJF+Eil0N7SiyZ6es9cjIdjQZ4SgSolJvUcpTZhAe5NwbDcZkIsjumQouxeqxfgLijx+BFaT/inhmKteSIavCDr8Wd1WH33SLjFEWCGSnIDSESZZpS5Skx7U4la3l7nN+2+iKM0LFGGwz2Hz3W8IkrCpmj+8G7dCNTbYovkmm3/V0=';
+    let d = 'BIxEDbyzljwo1iea31wcJerd+8CHJtGiK5515u9KfTP3UpNpdbuVJD7kmQUmEaWeRJNDJ3S3qqa0Q1q5ccWwzuXidDTUb7eLlrHrPAKjS/2G6R3g13uuQywgCHKF9HcJF+Eil0N7SiyZ6es9cjIdjdsUdwbI2jcmUKmPW7eIhDpzjTFqcqj6jSjEdoDwrOWqGoH9GvnmQQw5QosM8NC6asO40izB/GMs4JlM7vOvIsdl/aES4Ddr1M3EBFxPgy1L0v55deENd0WJrxAdDRyWcVQiBDzd48sBgsptksrcRG4=';
     let ReqObj = {
       "e": d
     };

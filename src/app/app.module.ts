@@ -57,6 +57,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
 import { ProductGridComponent } from './pages/product-grid/product-grid.component';
 import { NewBusinessProductsGridComponent } from './pages/new-business-products-grid/new-business-products-grid.component';
+import { OverallDashboardComponent } from './pages/overall-dashboard/overall-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { NewBusinessProductsGridComponent } from './pages/new-business-products-
     SmsCountDetailsComponent,
     ProductGridComponent,
     NewBusinessProductsGridComponent,
+    OverallDashboardComponent,
 
   ],
   imports: [

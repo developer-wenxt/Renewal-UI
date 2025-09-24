@@ -22,20 +22,38 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('chartContainer') chartContainer!: ElementRef;
+  @ViewChild('chartContainerBranch') chartContainerBranch!: ElementRef;
   @ViewChild('chartContainer2', { static: false }) chartContainer2!: ElementRef;
   @ViewChild('chartContainer3', { static: false }) chartContainer3!: ElementRef;
   @ViewChild('chartContainer4', { static: false }) chartContainer4!: ElementRef;
+  @ViewChild('chartContainer5', { static: false }) chartContainer5!: ElementRef;
+  @ViewChild('chartContainer6', { static: false }) chartContainer6!: ElementRef;
   @ViewChild('chartContainerLapsed', { static: false }) chartContainerLapsed!: ElementRef;
   @ViewChild('chartContainerCancel', { static: false }) chartContainerCancel!: ElementRef;
   @ViewChild('dt2') dt2!: Table;
   @ViewChild('tabWrapper', { static: false }) tabWrapper!: ElementRef;
+  @ViewChild('countPie', { static: false }) countPie!: ElementRef;
+  @ViewChild('premiumPie', { static: false }) premiumPie!: ElementRef;
+  @ViewChild('BranchpieChartContainer', { static: false }) BranchpieChartContainer!: ElementRef;
+  private BranchchartInstance!: echarts.ECharts;
+  @ViewChild('SourcepieChartContainer', { static: false }) SourcepieChartContainer!: ElementRef;
+  private SourcechartInstance!: echarts.ECharts;
+  @ViewChild('CustomerTypepieChartContainer', { static: false }) CustomerTypepieChartContainer!: ElementRef;
+  private CustomerTypeListChartInstance!: echarts.ECharts;
+  @ViewChild('BranchpieChartContainerPolicyCount', { static: false }) BranchpieChartContainerPolicyCount!: ElementRef;
+  private BranchchartInstancePolicyCount!: echarts.ECharts;
+  @ViewChild('SourcepieChartContainerPolicyCount', { static: false }) SourcepieChartContainerPolicyCount!: ElementRef;
+  private SourcechartInstancePolicyCount!: echarts.ECharts;
+  @ViewChild('CustomerTypepieChartContainerPolicyCount', { static: false }) CustomerTypepieChartContainerPolicyCount!: ElementRef;
+  private CustomerTypeListChartInstancePolicyCount!: echarts.ECharts;
   public RenewalApiUrl: any = config.RenewalApiUrl;
   userDetails: any;
   selectedMonth: any;
   selectedBranch: any;
   selectedSource: any;
-  selectedCutomerType: any;
+  selectedCutomerType: any; showTop10 = true;
   DueRenewPolicyList: any[] = [];
+  polSumCommissionList:any[]=[];
   totalPolicyCount: any;
   totalPremium: any;
   selectvalue: any = 'policy'
@@ -59,6 +77,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   month: string;
   from_date: any;
   to_date: any;
+  PichartData: any
+  showPiechart: boolean = false
+  PiechartSourceList: any[] = []
+  piechartCustomerList: any[] = []
+  SourceListPichartData: any[] = []
+  CustomerTypeListPichartData: any[] = []
+  polSumDueRenewList: any[] = []
   renewalOptions = [
     { label: 'Renewal', value: 'RENEWAL' },
     { label: 'Renewal InPerson', value: 'RENEWAL_IN_PERSON' },
@@ -72,6 +97,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let d = JSON.parse(sessionStorage.getItem('Userdetails') as any);
     this.userDetails = d.Result;
     const isoDate = new Date();
+    this.to_date = new Date();
+    const now = new Date();
+    now.setMonth(now.getMonth() - 1);
+    this.from_date = new Date(now);
     this.selectedMonth = isoDate;
   }
   ngAfterViewInit() {
@@ -79,7 +108,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   ngOnInit() {
     this.stateOptions = [{ label: 'Policy Summary', value: 'policy' }, { label: 'Claim Summary', value: 'claim' }];
-    this.getDueRenewPolicyList();
+    // this.getDueRenewPolicyList();
     this.getBranchDropdown();
     this.getSourceDropdown();
     this.getCustomerTypeDropdown();
@@ -102,10 +131,44 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (data: any) => {
 
         if (data) {
-          this.CustomerTypeList = data?.Result[0].DataList;
-          this.CustomerTypeList = ["All", ...this.CustomerTypeList];
+          this.CustomerTypeList = data?.Result;
+          this.piechartCustomerList = data?.Result;
+          // this.CustomerTypeList = ["All", ...this.CustomerTypeList];
+          this.CustomerTypeList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.CustomerTypeList
+          ];
+
+          console.log(this.CustomerTypeList, "this.CustomerTypeList");
+
           this.selectedCutomerType = 'All'
           // this.getMohtDate();
+        }
+      },
+      (err: any) => { },
+    );
+  }
+  getNewPolicyListCount() {
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": branchList,
+    }
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getNewPolicyListCount`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        if (data) {
+          this.PichartData = data?.SingleResult;
+          setTimeout(() => {
+            this.BranchWisePieChart()
+            this.calculatePercentages()
+
+          }, 100);
+
         }
       },
       (err: any) => { },
@@ -117,9 +180,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
@@ -181,14 +251,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
   getBranchDropdown() {
-    // let ReqObj = {
-    //   // "CompanyId": '100046',
-    //   "CompanyId": this.userDetails.InsuranceId,
-    // }
-    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
-
-    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-    //   (data: any) => {
     let branchList: any = [];
     this.userDetails.LoginBranchDetails.forEach((e: any) => {
       branchList.push(e.DivisionCode)
@@ -196,7 +258,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
       "DivisionCodelist": branchList,
-      // "DivisionCodelist":["101"],
 
     }
     let urlLink = `${this.RenewalApiUrl}renewaltrack/getdivisionbycompany`;
@@ -204,21 +265,28 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (data: any) => {
         if (data) {
           let list = [];
-          // this.BranchList = data?.Result[0].DataList
           let loginBrachList = data?.divisionDetails
           loginBrachList.forEach(e => {
-            list.push(e.DivisionName)
+            list.push({
+              CodeDes: e.DivisionName,
+              Code: e.DivisionCode
+            });
           });
           setTimeout(() => {
-                  this.BranchList = list;
-               this.AllBranchList = list;
-                 console.log(list,"listlistlist");
-          this.BranchList = ["All", ...this.BranchList];
-          console.log(this.BranchList,"this.BranchList");
-          
-          this.selectedBranch = this.BranchList[0]
+            let allbr = []
+            this.BranchList = list;
+            list.forEach(e => {
+              allbr.push(e.Code);
+            });
+
+            this.AllBranchList = allbr;
+            this.BranchList = [
+              { CodeDes: "All", Code: "All" },
+              ...this.BranchList
+            ];
+            this.selectedBranch = 'All';
           }, 100);
-       
+
         }
       },
       (err: any) => { },
@@ -226,7 +294,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   getSourceDropdown() {
     let ReqObj = {
-      // "CompanyId": '100046',
       "CompanyId": this.userDetails.InsuranceId,
     }
     let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getSourceDropDown`;
@@ -235,10 +302,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (data: any) => {
 
         if (data) {
-          this.SourceList = data?.Result[0].DataList;
-          this.SourceList = ["All", ...this.SourceList];
+          this.SourceList = data?.Result;
+          this.PiechartSourceList = data?.Result;
+          this.SourceList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.SourceList
+          ];
           this.selectedSource = 'All'
-          // this.getMohtDate();
+
         }
       },
       (err: any) => { },
@@ -368,6 +439,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
     else if (event.index == 5) {
       this.getPolSumCumulative();
+    }
+    else if (event.index == 6) {
+      this.getPolSumDueRenew();
+    }
+    else if (event.index == 7) {
+      this.getPolSumCommission();
     }
   }
 
@@ -1084,9 +1161,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
 
@@ -1112,19 +1196,108 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       (err: any) => { },
     );
   }
+  getPolSumDueRenew() {
+    this.polSumDueRenewList = [];
+    // const dateObj = new Date(this.selectedMonth);
+
+    // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
+    // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": d,
+      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getDueRenewPolicyList`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          this.polSumDueRenewList = data.Result
+          this.barchartData = this.polSumDueRenewList;
+          this.cdRef.detectChanges();
+
+          setTimeout(() => {
+            this.barchart5();
+
+          }, 200);
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
+  getPolSumCommission() {
+    this.polSumCommissionList = [];
+    // const dateObj = new Date(this.selectedMonth);
+
+    // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
+    // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": d,
+      "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
+      "Source": this.selectedSource == 'All' ? null : this.selectedSource,
+
+    }
+    sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getCommPolicyList`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+
+        if (data.Result) {
+          this.polSumCommissionList = data.Result
+          this.barchartData = this.polSumCommissionList;
+          this.cdRef.detectChanges();
+
+          // setTimeout(() => {
+          //   this.barchart6();
+
+          // }, 200);
+        }
+
+      },
+      (err: any) => { },
+    );
+  }
   getPolSumCancelled() {
     this.polSumCancelledList = [];
     // const dateObj = new Date(this.selectedMonth);
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
-      "StartDate": this.formatDate(this.from_date),
-      "EndDate": this.formatDate(this.to_date)
+      // "StartDate": this.formatDate(this.from_date),
+      // "EndDate": this.formatDate(this.to_date)
 
     }
     sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
@@ -1157,13 +1330,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
-      "StartDate": this.formatDate(this.from_date),
-      "EndDate": this.formatDate(this.to_date)
+      // "StartDate": this.formatDate(this.from_date),
+      // "EndDate": this.formatDate(this.to_date)
 
     }
     sessionStorage.setItem('ReqObj', JSON.stringify(ReqObj));
@@ -1195,9 +1375,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1212,12 +1399,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
         if (data.Result) {
           this.polSumNewList = data.Result
+          this.getNewPolicyListCount()
+          if (this.SourceList) {
+            this.getSourceTypeWisePiechartList()
+          }
+          if (this.CustomerTypeList) [
+            this.getCustomerTypeWisePiechartList()
+
+          ]
           if (!this.show) {
             this.barchartData = [];
             this.barchartData = this.polSumNewList
             this.cdRef.detectChanges();
             setTimeout(() => {
               this.barchart2();
+              //  setTimeout(() => {
+
+              // }, 100);
+              // this.piechart(this.polSumNewList)
+
 
             }, 200);
           }
@@ -1237,9 +1437,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1311,9 +1518,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       countSeriesData.push(Number(item.PolicyCount) || 0);
       premiumSeriesData.push(Number(item.PolicyPremium) || 0);
     });
-    console.log(countSeriesData, "premiumSeriesData");
-    console.log(premiumSeriesData, "premiumSeriesData");
-
 
     const option: echarts.EChartsOption = {
       tooltip: {
@@ -1378,6 +1582,96 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     chart.setOption(option);
     window.addEventListener('resize', () => chart.resize());
   }
+  // barchart2() {
+  //   const dom = this.chartContainer2?.nativeElement;
+  //   echarts.dispose(dom);
+  //   const chart = echarts.init(dom);
+  //   chart.clear();
+
+  //   let data = this.barchartData || [];
+
+  //   // Sort by PolicyCount descending
+  //   data.sort((a, b) => b.PolicyCount - a.PolicyCount);
+
+  //   // Slice top 10 or bottom 10
+  //   const slicedData = this.showTop10 ? data.slice(0, 10) : data.slice(-10);
+
+  //   const categories: string[] = [];
+  //   const countSeriesData: any[] = [];
+  //   const premiumSeriesData: any[] = [];
+
+  //   slicedData.forEach(item => {
+  //     const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+  //     categories.push(label);
+  //     countSeriesData.push(Number(item.PolicyCount) || 0);
+  //     premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+  //   });
+
+  //   const option: echarts.EChartsOption = {
+  //     title: {
+  //       text: this.showTop10 ? 'Top 10 Policy Count & Premium (Product Wise)' : 'Bottom 10 Policy Count & Premium (Product Wise)',
+  //       left: 'center'
+  //     },
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       axisPointer: { type: 'shadow' }
+  //     },
+  //     // legend: {
+  //     //   data: ['Policy Count', 'Premium'],
+  //     //   top: '0%',
+  //     //   left: 'center'
+  //     // },
+  //     color: ['#4F81BD', '#F79646'],
+  //     grid: {
+  //       left: '3%',
+  //       right: '4%',
+  //       bottom: '10%',
+  //       containLabel: true
+  //     },
+  //     xAxis: [
+  //       {
+  //         type: 'category',
+  //         data: categories,
+  //         axisLabel: {
+  //           interval: 0,
+  //           rotate: 30
+  //         },
+  //         splitLine: { show: false }
+  //       }
+  //     ],
+  //     yAxis: [
+  //       {
+  //         type: 'value',
+  //         name: 'Policy Count',
+  //         splitLine: { show: false }
+  //       },
+  //       {
+  //         type: 'value',
+  //         name: 'Premium',
+  //         splitLine: { show: false }
+  //       }
+  //     ],
+  //     series: [
+  //       {
+  //         name: 'Policy Count',
+  //         type: 'bar',
+  //         barMaxWidth: 30,
+  //         data: countSeriesData
+  //       },
+  //       {
+  //         name: 'Premium',
+  //         type: 'line',
+  //         yAxisIndex: 1,
+  //         smooth: true,
+  //         data: premiumSeriesData
+  //       }
+  //     ]
+  //   };
+
+  //   chart.setOption(option);
+  //   window.addEventListener('resize', () => chart.resize());
+  // }
+
   barchart3() {
     const dom = this.chartContainer3?.nativeElement;
     echarts.dispose(dom);
@@ -1466,6 +1760,178 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   barchart4() {
     const dom = this.chartContainer4?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.PolicyCount) || 0);
+      premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchart5() {
+    const dom = this.chartContainer5?.nativeElement;
+    echarts.dispose(dom);
+    const chart = echarts.init(dom);
+    chart.clear();
+    let data = [];
+    data = this.barchartData || [];
+    console.log(data, "datadata");
+
+    const categories: string[] = [];
+    const countSeriesData: any[] = [];
+    const premiumSeriesData: any[] = [];
+
+    data.forEach(item => {
+      const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
+      categories.push(label);
+      countSeriesData.push(Number(item.PolicyCount) || 0);
+      premiumSeriesData.push(Number(item.PolicyPremium) || 0);
+    });
+    console.log(countSeriesData, "premiumSeriesData");
+    console.log(premiumSeriesData, "premiumSeriesData");
+
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        data: ['Policy Count', 'Premium'],
+        top: '0%',
+        left: 'center'
+      },
+      color: ['#4F81BD', '#F79646'],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: categories,
+          axisLabel: {
+            interval: 0,
+            rotate: 30
+          },
+          splitLine: { show: false }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Policy Count',
+          splitLine: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'Premium',
+          axisLabel: {
+            formatter: '{value}'
+          },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: 'Policy Count',
+          type: 'bar',
+          barMaxWidth: 30,
+          data: countSeriesData
+        },
+        {
+          name: 'Premium',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: premiumSeriesData
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  }
+  barchart6() {
+    const dom = this.chartContainer6?.nativeElement;
     echarts.dispose(dom);
     const chart = echarts.init(dom);
     chart.clear();
@@ -1723,4 +2189,382 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     window.addEventListener('resize', () => chart.resize());
   }
 
+
+  piechart(data) {
+    const countChart = echarts.init(this.countPie?.nativeElement);
+    const premiumChart = echarts.init(this.premiumPie?.nativeElement);
+
+    const grouped = this.aggregateByBranchSourceCustomer(data);
+
+
+    const countData = Object.entries(grouped).map(([k, v]) => ({
+      name: k,
+      value: v.totalPolicyCount
+    }));
+
+    const premiumData = Object.entries(grouped).map(([k, v]) => ({
+      name: k,
+      value: v.totalPolicyPremium
+    }));
+
+
+    countData.sort((a, b) => b.value - a.value);
+    premiumData.sort((a, b) => b.value - a.value);
+
+
+    const pieDataCount = this.showTop10
+      ? countData.slice(0, 10)
+      : countData.slice(-10);
+
+    const pieDataPremium = this.showTop10
+      ? premiumData.slice(0, 10)
+      : premiumData.slice(-10);
+
+    const countOption: echarts.EChartsOption = {
+      title: { text: this.showTop10 ? 'Top 10 Policy Count (Branch,Source,Cutomer Type wise)' : 'Bottom 10 Policy Count (Branch,Source,Cutomer Type wise)', left: 'center' },
+      tooltip: {
+        trigger: 'item',
+        confine: true,
+        formatter: (params: any) => {
+          const name = params.name.length > 20 ? params.name.replace(/\s*\|\s*/g, '\n') : params.name;
+          return `${name}<br/>Count: ${params.value}<br/>(${params.percent}%)`;
+        }
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: '65%',
+          center: ['40%', '55%'],
+          data: pieDataCount,
+          labelLayout: { hideOverlap: false, draggable: true }
+        }
+      ]
+    };
+
+    const premiumOption: echarts.EChartsOption = {
+      title: { text: this.showTop10 ? 'Top 10 Policy Premium (Branch,Source,Cutomer Type wise)' : 'Bottom 10 Policy Premium (Branch,Source,Cutomer Type wise)', left: 'center' },
+      tooltip: {
+        trigger: 'item',
+        confine: true,
+        formatter: (params: any) => {
+          const name = params.name.length > 20 ? params.name.replace(/\s*\|\s*/g, '\n') : params.name;
+          return `${name}<br/>Premium: ${params.value}<br/>(${params.percent}%)`;
+        }
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: '65%',
+          center: ['40%', '55%'],
+          data: pieDataPremium,
+          labelLayout: { hideOverlap: false, draggable: true }
+        }
+      ]
+    };
+
+    countChart.setOption(countOption);
+    premiumChart.setOption(premiumOption);
+
+    window.addEventListener('resize', () => {
+      countChart.resize();
+      premiumChart.resize();
+    });
+  }
+
+  private aggregateByBranchSourceCustomer(data: any[]) {
+    const map: Record<string, { totalPolicyCount: number; totalPolicyPremium: number }> = {};
+    for (const r of data) {
+      const key = `${r.Branch} | ${r.SourceOfBusiness} | ${r.CustomerType}`;
+      const count = Number(r.PolicyCount) || 0;
+      const premium = Number(r.PolicyPremium) || 0;
+      if (!map[key]) {
+        map[key] = { totalPolicyCount: 0, totalPolicyPremium: 0 };
+      }
+      map[key].totalPolicyCount += count;
+      map[key].totalPolicyPremium += premium;
+    }
+    return map;
+  }
+  toggleChartView() {
+    this.showTop10 = !this.showTop10;
+    this.piechart(this.polSumNewList);
+    this.barchart2();
+  }
+  showPieChart() {
+    this.showPiechart = true
+  }
+
+
+  piechartbranch() {
+    const chartDom = this.chartContainerBranch.nativeElement;
+    const myChart = echarts.init(chartDom);
+
+    const option = {
+      title: {
+        text: 'Policy Data Distribution',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c} ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          name: 'Policy Data',
+          type: 'pie',
+          radius: '60%',
+          data: this.PichartData,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
+    myChart.setOption(option);
+  }
+
+  getSourceTypeWisePiechartList() {
+
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+    let sourcelist: any = [];
+    this.PiechartSourceList.forEach((e: any) => {
+      sourcelist.push(e.CodeDes)
+    });
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": branchList,
+      "Source": sourcelist,
+    }
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getNewPolicyListCount`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        if (data) {
+          this.SourceListPichartData = data?.SingleResult;
+
+          setTimeout(() => {
+            this.SourceWisePieChart();
+            this.calculatePercentages()
+
+          }, 100);
+
+        }
+      },
+      (err: any) => { },
+    );
+  }
+  getCustomerTypeWisePiechartList() {
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+    let sourcelist: any = [];
+    this.PiechartSourceList.forEach((e: any) => {
+      sourcelist.push(e.CodeDes)
+    });
+    let customerlist: any = [];
+    console.log(this.piechartCustomerList, "SourceList");
+
+    this.piechartCustomerList.forEach((e: any) => {
+      customerlist.push(e.CodeDes)
+    });
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": branchList,
+      // "Source": sourcelist,
+      "CustomerType": customerlist
+    }
+    let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getNewPolicyListCount`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        if (data) {
+          this.CustomerTypeListPichartData = data?.SingleResult;
+          setTimeout(() => {
+            this.CustomerTypeWisePieChart()
+            this.calculatePercentages()
+          }, 100);
+
+        }
+      },
+      (err: any) => { },
+    );
+  }
+
+
+  BranchWisePieChart() {
+    this.BranchchartInstance = echarts.init(this.BranchpieChartContainer.nativeElement);
+
+    const option: echarts.EChartsOption = {
+      title: {
+        text: 'Branch Wise',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          const item = params.data;
+          return `
+            <b>${item.BranchName}</b><br/>
+            Policy Premium: ${item.value.toLocaleString()}<br/>
+            Policy Count: ${item.PolicyCount}<br/>
+            Policy Sum Insured: ${item.PolicySumInsured.toLocaleString()}
+          `;
+        }
+      },
+      series: [
+        {
+          name: 'Policy Premium',
+          type: 'pie',
+          radius: '60%',
+          data: this.PichartData.map(item => ({
+            value: item.PolicyPremium,
+            name: item.BranchName,
+            ...item
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
+    this.BranchchartInstance.setOption(option);
+  }
+
+  SourceWisePieChart() {
+    this.SourcechartInstance = echarts.init(this.SourcepieChartContainer.nativeElement);
+
+    const option: echarts.EChartsOption = {
+      title: {
+        text: 'Source Wise',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          const item = params.data;
+          return `
+            <b>${item.Source}</b><br/>
+            Policy Premium: ${item.value.toLocaleString()}<br/>
+            Policy Count: ${item.PolicyCount}<br/>
+            Policy Sum Insured: ${item.PolicySumInsured.toLocaleString()}
+          `;
+        }
+      },
+      series: [
+        {
+          name: 'Policy Premium',
+          type: 'pie',
+          radius: '60%',
+          data: this.SourceListPichartData.map(item => ({
+            value: item.PolicyPremium,
+            name: item.Source,
+            ...item
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
+    this.SourcechartInstance.setOption(option);
+  }
+  CustomerTypeWisePieChart() {
+    this.CustomerTypeListChartInstance = echarts.init(this.CustomerTypepieChartContainer.nativeElement);
+
+    const option: echarts.EChartsOption = {
+      title: {
+        text: 'CustomerType Wise',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          const item = params.data;
+          return `
+            <b>${item.CustomerType}</b><br/>
+            Policy Premium: ${item.value.toLocaleString()}<br/>
+            Policy Count: ${item.PolicyCount}<br/>
+            Policy Sum Insured: ${item.PolicySumInsured.toLocaleString()}
+          `;
+        }
+      },
+
+      series: [
+        {
+          name: 'Policy Premium',
+          type: 'pie',
+          radius: '60%',
+          data: this.CustomerTypeListPichartData.map(item => ({
+            value: item.PolicyPremium,
+            name: item.CustomerType,
+            ...item
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
+    this.CustomerTypeListChartInstance.setOption(option);
+  }
+
+  calculatePercentages() {
+    // Branch Wise
+    const branchTotal = this.PichartData.reduce((sum, item) => sum + item.PolicyPremium, 0);
+    this.PichartData = this.PichartData
+      .map(item => ({
+        ...item,
+        Percentage: ((item.PolicyPremium / branchTotal) * 100)
+      }))
+      .sort((a, b) => b.Percentage - a.Percentage); // sort descending
+
+    // Source Wise
+    const sourceTotal = this.SourceListPichartData.reduce((sum, item) => sum + item.PolicyPremium, 0);
+    this.SourceListPichartData = this.SourceListPichartData
+      .map(item => ({
+        ...item,
+        Percentage: ((item.PolicyPremium / sourceTotal) * 100)
+      }))
+      .sort((a, b) => b.Percentage - a.Percentage);
+
+    // Customer Type Wise
+    const custTotal = this.CustomerTypeListPichartData.reduce((sum, item) => sum + item.PolicyPremium, 0);
+    this.CustomerTypeListPichartData = this.CustomerTypeListPichartData
+      .map(item => ({
+        ...item,
+        Percentage: ((item.PolicyPremium / custTotal) * 100)
+      }))
+      .sort((a, b) => b.Percentage - a.Percentage);
+  }
+
 }
+
+

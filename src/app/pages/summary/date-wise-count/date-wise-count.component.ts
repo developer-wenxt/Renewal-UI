@@ -45,9 +45,32 @@ export class DateWiseCountComponent {
       let sdata = JSON.parse(sessionStorage.getItem('ReqObj') as any);
       this.selectedMonth = sdata?.Date
       this.month = sdata?.Date;
-      this.selectedBranch = sdata?.Branch
-      this.selectedSource = sdata?.Source
-      this.selectedCutomerType = sdata?.CustomerType
+      // this.selectedBranch = sdata?.Branch
+      // this.selectedSource = sdata?.Source
+      // this.selectedCutomerType = sdata?.CustomerType
+      if (Array.isArray(sdata?.Branch)) {
+        this.selectedBranch = sdata.Branch;
+      } else if (sdata?.Branch) {
+        this.selectedBranch = [sdata.Branch];
+      } else {
+        this.selectedBranch = [];
+      }
+      if (sdata?.Source == null) {
+        this.selectedSource = 'All'
+
+      }
+      else {
+        this.selectedSource = sdata?.Source
+
+      }
+      if (sdata?.CustomerType == null) {
+        this.selectedCutomerType = 'All'
+
+      }
+      else {
+        this.selectedCutomerType = sdata?.CustomerType
+
+      }
       this.getMohtDate()
     }, 1000);
   }
@@ -108,14 +131,14 @@ export class DateWiseCountComponent {
             list.push(e.DivisionName)
           });
           setTimeout(() => {
-                  this.BranchList = list;
-               this.AllBranchList = list;
-          this.BranchList = ["All", ...this.BranchList];
-          console.log(this.BranchList,"this.BranchList");
-          
-          this.selectedBranch = this.BranchList[0]
+            this.BranchList = list;
+            this.AllBranchList = list;
+            this.BranchList = ["All", ...this.BranchList];
+            console.log(this.BranchList, "this.BranchList");
+
+            this.selectedBranch = this.BranchList[0]
           }, 100);
-       
+
         }
       },
       (err: any) => { },
@@ -182,12 +205,12 @@ export class DateWiseCountComponent {
       // "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       // "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       // "Product": this.selectedData?.product
-            "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedData?.branch,
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": this.selectedData?.branchCode,
       "Date": formatted,
       "CustomerType": this.selectedData?.customerType,
       "Source": this.selectedData?.source,
-      "Product": this.selectedData?.product
+      "Product": this.selectedData?.productCode
 
     }
 

@@ -44,9 +44,31 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
       let sdata = JSON.parse(sessionStorage.getItem('ReqObj') as any);
       this.selectedMonth = sdata?.Date
       this.month = sdata?.Date;
-      this.selectedBranch = sdata?.Branch
-      this.selectedSource = sdata?.Source
-      this.selectedCutomerType = sdata?.CustomerType
+      if (sdata?.Branch.length > 1) {
+        this.selectedBranch = 'All'
+
+      }
+      else{
+        this.selectedBranch = sdata?.Branch[0]
+
+      }
+      if (sdata?.Source == null) {
+        this.selectedSource = 'All'
+
+      }
+      else {
+        this.selectedSource = sdata?.Source
+
+      }
+      if (sdata?.CustomerType == null) {
+        this.selectedCutomerType = 'All'
+
+      }
+      else {
+       this.selectedCutomerType = sdata?.CustomerType
+
+      }
+      
       this.getMohtDate()
     }, 1000);
   }
@@ -78,14 +100,6 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
   //   );
   // }
   getBranchDropdown() {
-    // let ReqObj = {
-    //   // "CompanyId": '100046',
-    //   "CompanyId": this.userDetails.InsuranceId,
-    // }
-    // let urlLink = `${this.RenewalApiUrl}renewalDashBoard/getBranchDropDown`;
-
-    // this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
-    //   (data: any) => {
     let branchList: any = [];
     this.userDetails.LoginBranchDetails.forEach((e: any) => {
       branchList.push(e.DivisionCode)
@@ -104,19 +118,28 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
           // this.BranchList = data?.Result[0].DataList
           let loginBrachList = data?.divisionDetails
           loginBrachList.forEach(e => {
-            list.push(e.DivisionName)
+            list.push({
+              CodeDes: e.DivisionName,  // what user sees
+              Code: e.DivisionCode   // what you get in selectedBranch
+            });
           });
+
           setTimeout(() => {
-            console.log(list,"listlistlist");
-            
-                  this.BranchList = list;
-               this.AllBranchList = list;
-          this.BranchList = ["All", ...this.BranchList];
-          console.log(this.BranchList,"this.BranchList");
-          
-          this.selectedBranch = this.BranchList[0]
+            let allbr = []
+            this.BranchList = list;
+            list.forEach(e => {
+              allbr.push(e.Code);
+            });
+
+            this.AllBranchList = allbr;
+
+            this.BranchList = [
+              { CodeDes: "All", Code: "All" },
+              ...this.BranchList
+            ];
+            this.selectedBranch = 'All';
           }, 100);
-       
+
         }
       },
       (err: any) => { },
@@ -133,8 +156,11 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
       (data: any) => {
 
         if (data) {
-          this.CustomerTypeList = data?.Result[0].DataList;
-          this.CustomerTypeList = ["All", ...this.CustomerTypeList];
+          this.CustomerTypeList = data?.Result;
+          this.CustomerTypeList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.CustomerTypeList
+          ];
           this.selectedCutomerType = 'All'
           // this.getMohtDate();
         }
@@ -153,8 +179,11 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
       (data: any) => {
 
         if (data) {
-          this.SourceList = data?.Result[0].DataList;
-          this.SourceList = ["All", ...this.SourceList];
+          this.SourceList = data?.Result;
+          this.SourceList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.SourceList
+          ];
           this.selectedSource = 'All'
           // this.getMohtDate();
         }
@@ -176,13 +205,20 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
     }
 
     this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All' || this.selectedBranch.length != 0) {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
-      "Product": this.selectedData?.product
+      "Product": this.selectedData?.productCode
 
     }
 
@@ -232,7 +268,9 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
 
           data.Result.forEach(entry => {
             const product = entry.Product;
+            const productCode = entry.ProductCode;
             const branch = entry.Branch;
+            const branchCode = entry.BranchCode;
             const source = entry.Source;
             const customerType = entry.CustomerType;
             const week = entry.Week.toLowerCase().replace(" ", "");
@@ -245,6 +283,8 @@ export class ProductWiseCountComponent implements OnInit, AfterViewInit {
                 product: product,
                 source: source,
                 branch: branch,
+                branchCode: branchCode,
+                productCode: productCode,
                 customerType: customerType,
                 totalCount: 0,
                 week1: { previous: { count: 0, premium: 0 }, actual: { count: 0, premium: 0 } },

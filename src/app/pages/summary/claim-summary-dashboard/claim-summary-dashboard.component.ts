@@ -108,8 +108,11 @@ export class ClaimSummaryDashboardComponent {
       (data: any) => {
 
         if (data) {
-          this.CustomerTypeList = data?.Result[0].DataList;
-          this.CustomerTypeList = ["All", ...this.CustomerTypeList];
+          this.CustomerTypeList = data?.Result;
+          this.CustomerTypeList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.CustomerTypeList
+          ];
           this.selectedCutomerType = 'All'
           // this.getMohtDate();
         }
@@ -123,9 +126,16 @@ export class ClaimSummaryDashboardComponent {
 
     const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
@@ -191,9 +201,16 @@ export class ClaimSummaryDashboardComponent {
 
     const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "Date": formatted,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
@@ -273,7 +290,7 @@ export class ClaimSummaryDashboardComponent {
   //     (err: any) => { },
   //   );
   // }
-    getBranchDropdown() {
+  getBranchDropdown() {
     // let ReqObj = {
     //   // "CompanyId": '100046',
     //   "CompanyId": this.userDetails.InsuranceId,
@@ -300,17 +317,28 @@ export class ClaimSummaryDashboardComponent {
           // this.BranchList = data?.Result[0].DataList
           let loginBrachList = data?.divisionDetails
           loginBrachList.forEach(e => {
-            list.push(e.DivisionName)
+            list.push({
+              CodeDes: e.DivisionName,  // what user sees
+              Code: e.DivisionCode   // what you get in selectedBranch
+            });
           });
+
           setTimeout(() => {
-                  this.BranchList = list;
-               this.AllBranchList = list;
-          this.BranchList = ["All", ...this.BranchList];
-          console.log(this.BranchList,"this.BranchList");
-          
-          this.selectedBranch = this.BranchList[0]
+            let allbr = []
+            this.BranchList = list;
+            list.forEach(e => {
+              allbr.push(e.Code);
+            });
+
+            this.AllBranchList = allbr;
+
+            this.BranchList = [
+              { CodeDes: "All", Code: "All" },
+              ...this.BranchList
+            ];
+            this.selectedBranch = 'All';
           }, 100);
-       
+
         }
       },
       (err: any) => { },
@@ -327,8 +355,11 @@ export class ClaimSummaryDashboardComponent {
       (data: any) => {
 
         if (data) {
-          this.SourceList = data?.Result[0].DataList;
-          this.SourceList = ["All", ...this.SourceList];
+          this.SourceList = data?.Result;
+           this.SourceList = [
+            { CodeDes: "All", Code: "All" },
+            ...this.SourceList
+          ];
           this.selectedSource = 'All'
           // this.getMohtDate();
         }
@@ -443,19 +474,19 @@ export class ClaimSummaryDashboardComponent {
     this.TabIndex = event.index;
     if (event.index == 0) {
       // this.getDueRenewPolicyList();
-        this.getMohtDate();
+      this.getMohtDate();
     } else if (event.index == 1) {
-  this.getMohtDatePaid();
-     
-   
+      this.getMohtDatePaid();
+
+
 
     }
     else if (event.index == 2) {
-   this.getClaimSumCumulative();
-      
+      this.getClaimSumCumulative();
+
     }
     else if (event.index == 3) {
-this.getClaimSumCumulativePaid();
+      this.getClaimSumCumulativePaid();
     }
     else if (event.index == 4) {
       // this.getMohtDate();
@@ -874,7 +905,7 @@ this.getClaimSumCumulativePaid();
         item.week4?.actual?.premium ?? '',
         item.totalCount
       ]);
-  const footer = [
+      const footer = [
         'Total', '', '', '',
         this.getTotal('week1', 'previous', 'count'),
         this.getTotal('week1', 'previous', 'premium'),
@@ -1334,9 +1365,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
 
@@ -1368,9 +1406,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
 
@@ -1402,9 +1447,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
 
@@ -1436,9 +1488,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1475,9 +1534,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1513,9 +1579,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1555,9 +1628,16 @@ this.getClaimSumCumulativePaid();
 
     // const formatted = ('0' + (dateObj.getMonth() + 1)).slice(-2) + '/' + dateObj.getFullYear();
     // this.month = formatted
+    let d: any[] = [];
+    if (this.selectedBranch == 'All') {
+      d = this.AllBranchList
+    }
+    else {
+      d.push(this.selectedBranch)
+    }
     let ReqObj = {
       "CompanyId": this.userDetails.InsuranceId,
-      "Branch": this.selectedBranch == 'All' ? this.AllBranchList : this.selectedBranch,
+      "Branch": d,
       "CustomerType": this.selectedCutomerType == 'All' ? null : this.selectedCutomerType,
       "Source": this.selectedSource == 'All' ? null : this.selectedSource,
       "StartDate": this.formatDate(this.from_date),
@@ -1800,7 +1880,7 @@ this.getClaimSumCumulativePaid();
       // categories.push(label);
       // countSeriesData.push(Number(item.PolicyCount) || 0);
       // premiumSeriesData.push(Number(item.PolicyPremium) || 0);
-       const label = `${item.ClassOfBusiness}`;
+      const label = `${item.ClassOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.ClaimCount) || 0);
       premiumSeriesData.push(Number(item.ClaimAmount) || 0);

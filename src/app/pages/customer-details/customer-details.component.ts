@@ -888,8 +888,15 @@ export class CustomerDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSelectProduct() {
+    // if (this.userType == 'Issuer') {
+    //   this.router.navigate([`${this.routerBaseLink}/dashboard`]);
+    // }
+    // else {
+
+    //   this.router.navigate([`${this.routerBaseLink}/broker`]);
+    // }
     if (this.userType == 'Issuer') {
-      this.router.navigate([`${this.routerBaseLink}/dashboard`]);
+      this.router.navigate([`${this.routerBaseLink}/overview-dashboard`]);
     }
     else {
 

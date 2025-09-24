@@ -200,7 +200,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
         padding: 10,
         textStyle: {
           color: '#000',
-          fontSize: 12,
+          fontSize: 14,
           fontFamily: 'Arial'
         },
         extraCssText: `
@@ -219,7 +219,7 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
           axisTick: { show: false },
           axisLabel: {
             rotate: 0,
-            fontSize: 10,
+            fontSize: 13,
             fontFamily: 'Arial',
             color: '#333',
             lineHeight: 14,

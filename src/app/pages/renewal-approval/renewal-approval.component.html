@@ -152,7 +152,7 @@
             </div>
 
             <div *ngIf="userDetails.UserType != 'Broker'" class="card">
-                <p-tabView (onChange)="onTabChange($event)">
+                <p-tabView (onChange)="onTabChange($event.index)">
                     <p-tabPanel header="Broker">
                         <div>
                             <p-table #dt1 [value]="broker_list || []" dataKey="id" [rows]="5"

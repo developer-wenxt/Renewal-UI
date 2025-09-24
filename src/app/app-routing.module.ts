@@ -18,12 +18,14 @@ import { CustomerViewPolicyDetailsComponent } from './pages/customer-view-policy
 import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-details.component';
 import { ProductGridComponent } from './pages/product-grid/product-grid.component';
 import { NewBusinessProductsGridComponent } from './pages/new-business-products-grid/new-business-products-grid.component';
+import { OverallDashboardComponent } from './pages/overall-dashboard/overall-dashboard.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '', component: PageNotFoundComponent },
   { path: 'dashboard', component: OprationHeaderDashboardComponent },
   { path: 'branch-dashboard', component: CustomerDetailsComponent },
+  { path: 'overview-dashboard', component: OverallDashboardComponent },
   { path: 'broker', component: BrokerComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'risk-details', component: ViewRiskDetailsComponent },

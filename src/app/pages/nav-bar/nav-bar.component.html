@@ -3,32 +3,7 @@
   </a>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
-      <!-- <li class="nav-item active">
-        <ng-container *ngIf="InsuranceId==='100046'">
-          <a class="logo" href="#" (click)="navigateHome()"><img src="./assets/phoenixAlt.png" class="imgwid"></a>
-        </ng-container>
-        <ng-container *ngIf="InsuranceId==='100047'">
-          <a class="logo" href="#" (click)="navigateHome()"><img src="./assets/cropped-botwa.png" class="imgwid"></a>
-        </ng-container>
-        <ng-container *ngIf="InsuranceId==='100048'">
-          <a class="logo" href="#" (click)="navigateHome()"><img src="./assets/PhoenixMozambique.png"
-              class="imgwid"></a>
-        </ng-container>
-        <ng-container *ngIf="InsuranceId==='100049'">
-          <a class="logo" href="#" (click)="navigateHome()"><img src="./assets/cropped-swaziland.png"
-              class="imgwid"></a>
-        </ng-container>
-        <ng-container *ngIf="InsuranceId==='100050'">
-          <a class="logo" href="#" (click)="navigateHome()"><img src="./assets/cropped-NAMIBIA-LOGO-1.png"
-              class="imgwid"></a>
-        </ng-container>
-        <a class="logo" href="#" (click)="navigateHome()" *ngIf="InsuranceId=='100002'"><img
-            src="./assets/alliance-img-1.png" class="imgwid"></a>
-        <a href="#" (click)="navigateHome()" *ngIf="InsuranceId=='100020'"><img src="./assets/FirstAssurance.png"
-            class="imgwid"></a>
-        <span>
-          &nbsp;&nbsp;<h5>INSURANCE RENEWAL</h5></span>
-      </li> -->
+
       <li class="nav-item active">
         <div class="d-flex align-items-center">
           <ng-container *ngIf="InsuranceId==='100046'">
@@ -74,7 +49,10 @@
       </li>
 
     </ul>
-    <ul class="navbar-nav ms-auto" style="margin-right:7px;gap: 2rem;">
+    <ul class="navbar-nav ms-auto" style="margin-right:7px;gap: 2rem; margin-top: -4px;">
+      <li class="nav-item">
+        <i (click)="navigateDashboard()" pTooltip="Dashboard" class="pi pi-chart-pie" style="font-size: 2rem;color: #fff;margin-top: 6px !important; cursor: pointer;"></i>
+      </li>
       <li class="nav-item">
         <i (click)="navigateHome()" class="pi pi-home" style="font-size: 2rem;color: #fff;margin-top: 6px !important; cursor: pointer;"></i>
       </li>

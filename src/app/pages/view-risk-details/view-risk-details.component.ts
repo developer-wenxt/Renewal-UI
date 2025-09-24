@@ -91,6 +91,9 @@ export class ViewRiskDetailsComponent implements OnInit {
     //   this.getRiskDetailsList();
 
     // }
+
+    console.log(this.userDetails,"this.userDetailsthis.userDetailsthis.userDetails");
+    
   }
 
   getRiskDetailsList() {

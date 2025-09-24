@@ -413,8 +413,9 @@ export class NavBarComponent {
         sessionStorage.clear();
         localStorage.clear();
         this.authService.logout();
+        location.href = `http://65.0.113.151:8085/Eway/#/auth/login`;
         // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
-        location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
+        // location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
         // location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
       (err: any) => {
@@ -422,9 +423,10 @@ export class NavBarComponent {
         sessionStorage.clear();
         localStorage.clear();
         this.authService.logout();
+        location.href = `http://65.0.113.151:8085/Eway/#/auth/login`;
         // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
         // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
-        location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
+        // location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
         // location.href = `http://192.168.1.48:4600/#/auth/login`;
       },
     );
@@ -432,9 +434,14 @@ export class NavBarComponent {
 
   navigateHome() {
     // location.href = `http://192.168.1.48:4600/#/auth/login/product`;
+    location.href = `http://65.0.113.151:8085/Eway/#/auth/login/product`;
     // location.href = `http://193.203.162.152:8085/Eway/#/auth/login/product`;
-    location.href = `http://157.173.220.92:8085/Eway/#/auth/login/product`;
+    // location.href = `http://157.173.220.92:8085/Eway/#/auth/login/product`;
     // location.href = `http://147.93.108.104:8085/Eway/#/auth/login/product`;
+  }
+  navigateDashboard() {
+    this.router.navigate(['/overview-dashboard'])
+   
   }
 }
 

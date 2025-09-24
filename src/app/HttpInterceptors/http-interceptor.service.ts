@@ -29,8 +29,8 @@ export class HttpInterceptorService implements HttpInterceptor {
     public router: Router,
     private loader: CustomLoadingService,
     private sharedService: SharedService
-  ) { 
-    
+  ) {
+
   }
 
   intercept(
@@ -54,7 +54,6 @@ export class HttpInterceptorService implements HttpInterceptor {
             this.totalRequests = 0;
           }, 300);
         }
-
       }),
       catchError((err) => {
         if (err instanceof HttpErrorResponse) {

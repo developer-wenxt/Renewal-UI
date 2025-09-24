@@ -24,6 +24,7 @@ export class RenewalApprovalComponent implements OnInit {
   selectedBranch: any
   BranchList: any[] = []
   AllBranchList: any[] = []
+  tabIndex:any=0
   constructor(
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute,
@@ -57,11 +58,14 @@ export class RenewalApprovalComponent implements OnInit {
     // const formattedToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
     // const formattedToDate = this.to_date
     // this.getdata(formattedFromDate, formattedToDate)
-    this.getCustomerData();
+    // this.getCustomerData();
+    this.onTabChange(this.tabIndex)
   }
   onChaneBranch() {
 
-    this.getCustomerData();
+    // this.getCustomerData();
+        this.onTabChange(this.tabIndex)
+
   }
   // getCustomerData() {
   //   let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
@@ -100,12 +104,12 @@ export class RenewalApprovalComponent implements OnInit {
   // }
 
   onTabChange(event: any) {
-    const selectedIndex = event.index;
-    const selectedTabLabel = event.originalEvent.target.innerText;
+    this.tabIndex = event;
+    // const selectedTabLabel = event.originalEvent.target.innerText;
 
-    console.log('Tab Changed:', selectedIndex, selectedTabLabel);
+    // console.log('Tab Changed:', this.tabIndex, selectedTabLabel);
 
-    if (selectedIndex === 0) {
+    if (this.tabIndex === 0) {
       if (this.status == 'pending') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');
@@ -201,7 +205,7 @@ export class RenewalApprovalComponent implements OnInit {
       }
 
     }
-    else if (selectedIndex === 1) {
+    else if (this.tabIndex === 1) {
       if (this.status == 'pending') {
         let FromDate = this.datePipe.transform(this.from_date, 'yyyy-MM-dd');
         let ToDate = this.datePipe.transform(this.to_date, 'yyyy-MM-dd');

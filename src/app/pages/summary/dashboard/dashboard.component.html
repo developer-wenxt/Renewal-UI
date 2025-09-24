@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <!-- <div class="container-fluid">
         <div class="card overall-card mt-3 p-3"> -->
-<!-- 
+    <!-- 
     <div class="row mt-2 mb-2 ms-2 dashboard-header">
         <h6>Summary</h6>
     </div>
@@ -58,15 +58,14 @@
                 <div class="row mt-2 mb-2 ms-2 dashboard-header">
                     <div class="col-md-4">
                         <h3 class="tab-header">
-                            <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             New
-
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
                                 (click)="show = true;getPolSumNew()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
                                 (click)="show = false;getPolSumNew()" pTooltip="Chart"></i>
                         </h3>
                     </div>
+
                     <div class="col-md-6 text-start">
                         <!-- <div class="d-flex flex-wrap align-items-center gap-3">
                             <div class="p-field-radiobutton" *ngFor="let option of renewalOptions">
@@ -92,23 +91,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -116,8 +115,6 @@
                             (click)="getPolSumNew()"></button>
                     </div>
                 </div>
-                <!-- <div class="card"> -->
-                <!-- <h3>Policy Summary</h3> -->
                 <div *ngIf="show" class="row p-3">
                     <div class="col-md-9"></div>
                     <div class="col-md-3 text-end">
@@ -144,15 +141,15 @@
                                     field="CustomerPercentage" /></th> -->
                             <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
                                     field="SourceOfBusiness" /></th>
-                            <th colspan="2" class="text-center">Policy Count</th>
-                            <th colspan="2" class="text-center">Premium</th>
+                            <th rowspan="2" class="text-center">Policy Count</th>
+                            <th rowspan="2" class="text-center">Premium</th>
                         </tr>
-                        <tr>
-                            <th>Previous</th>
-                            <th>Actual </th>
-                            <th>Previous </th>
-                            <th>Actual</th>
-                        </tr>
+                        <!-- <tr> -->
+                        <!-- <th>Previous</th> -->
+                        <!-- <th>Actual </th> -->
+                        <!-- <th>Previous </th> -->
+                        <!-- <th>Actual</th> -->
+                        <!-- </tr> -->
                     </ng-template>
 
 
@@ -162,11 +159,8 @@
                             <td>{{ row.Branch }}</td>
                             <td>{{ row.CustomerType }}</td>
                             <td>{{ row.CustomerCount }}</td>
-                            <!-- <td>{{ row.CustomerPercentage }}</td> -->
                             <td>{{ row.SourceOfBusiness }}</td>
-                            <td>{{ row.PolicyCountPrev }}</td>
                             <td>{{ row.PolicyCount }}</td>
-                            <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td>
                             <td>{{ row.PolicyPremium | number: '1.2-2' }}</td>
                         </tr>
                     </ng-template>
@@ -176,8 +170,93 @@
                         </tr>
                     </ng-template>
                 </p-table>
-
+                <div *ngIf="!show" class="d-flex justify-content-end">
+                    <!-- <button (click)="toggleChartView()" class="btn btn-primary" style="align-self:flex-end;">
+                        {{ showTop10 ? 'Show Bottom 10' : 'Show Top 10' }}
+                    </button> -->
+                </div>
                 <div *ngIf="!show" #chartContainer2 style="width: 100%; height: 500px;"></div>
+                <div *ngIf="!show" class="row mb-4">
+                    <div class="col-md-4">
+                        <div #BranchpieChartContainer style="width: 100%; height: 280px;"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div #SourcepieChartContainer style="width: 100%; height: 280px;"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div #CustomerTypepieChartContainer style="width: 100%; height: 280px;"></div>
+                    </div>
+                </div>
+                <p-tabView *ngIf="!show">
+                    <p-tabPanel header="Branch Wise">
+                        <table class="table table-sm table-bordered text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Branch</th>
+                                    <th>Policy Count</th>
+                                    <th>Sum Insured</th>
+                                    <th>Premium</th>
+                                    <th>% of Total Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of PichartData">
+                                    <td>{{ row.BranchName }}</td>
+                                    <td>{{ row.PolicyCount }}</td>
+                                    <td class="text-end">{{ row.PolicySumInsured | number }}</td>
+                                    <td class="text-end">{{ row.PolicyPremium | number }}</td>
+                                    <td>{{ row.Percentage | number:'1.2-2' }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Source Wise">
+                        <table class="table table-sm table-bordered text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Policy Count</th>
+                                    <th>Sum Insured</th>
+                                    <th>Premium</th>
+                                    <th>% of Total Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of SourceListPichartData">
+                                    <td>{{ row.Source }}</td>
+                                    <td>{{ row.PolicyCount }}</td>
+                                    <td class="text-end">{{ row.PolicySumInsured | number }}</td>
+                                    <td class="text-end">{{ row.PolicyPremium | number }}</td>
+                                    <td>{{ row.Percentage | number:'1.2-2' }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Customer Type Wise">
+                        <table class="table table-sm table-bordered text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Customer Type</th>
+                                    <th>Policy Count</th>
+                                    <th>Sum Insured</th>
+                                    <th>Premium</th>
+                                    <th>% of Total Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of CustomerTypeListPichartData">
+                                    <td>{{ row.CustomerType }}</td>
+                                    <td>{{ row.PolicyCount }}</td>
+                                    <td class="text-end">{{ row.PolicySumInsured | number }}</td>
+                                    <td class="text-end">{{ row.PolicyPremium | number }}</td>
+                                    <td>{{ row.Percentage | number:'1.2-2' }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p-tabPanel>
+                </p-tabView>
+
+
             </p-tabPanel>
             <p-tabPanel header="Header III">
                 <ng-template pTemplate="header">
@@ -193,7 +272,7 @@
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Renewal
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"pTooltip="Grid"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
                                 (click)="show = false;getPolSumRenewal()" pTooltip="Chart"></i>
                         </h3>
@@ -216,9 +295,9 @@
 
                             Renewal PostLapse
                             &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumRenewal()"pTooltip="Grid"></i> &nbsp; <i
+                                (click)="show = true;getPolSumRenewal()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumRenewal()"pTooltip="Chart"></i>
+                                (click)="show = false;getPolSumRenewal()" pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-start">
@@ -246,23 +325,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" [appendTo]="'body'" optionLabel="CodeDes" optionValue="Code"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" optionLabel="CodeDes"
+                            optionValue="CodeDes" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -298,15 +377,15 @@
                                     field="CustomerPercentage" /></th>
                             <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
                                     field="SourceOfBusiness" /></th>
-                            <th colspan="2" class="text-center">Policy Count</th>
-                            <th colspan="2" class="text-center">Premium</th>
+                            <th rowspan="2" class="text-center">Policy Count</th>
+                            <th rowspan="2" class="text-center">Premium</th>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <th>Previous</th>
                             <th>Actual </th>
                             <th>Previous </th>
                             <th>Actual</th>
-                        </tr>
+                        </tr> -->
                     </ng-template>
 
 
@@ -318,9 +397,9 @@
                             <td>{{ row.CustomerCount }}</td>
                             <td>{{ row.CustomerPercentage }}</td>
                             <td>{{ row.SourceOfBusiness }}</td>
-                            <td>{{ row.PolicyCountPrev }}</td>
+                            <!-- <td>{{ row.PolicyCountPrev }}</td> -->
                             <td>{{ row.PolicyCount }}</td>
-                            <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td>
+                            <!-- <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td> -->
                             <td>{{ row.PolicyPremium | number: '1.2-2' }}</td>
                         </tr>
                     </ng-template>
@@ -345,9 +424,9 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Lapsed &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;" class="fas fa-th"
-                                (click)="show = true;getPolSumLapsed()"pTooltip="Grid"></i> &nbsp; <i
+                                (click)="show = true;getPolSumLapsed()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumLapsed()"pTooltip="Chart"></i>
+                                (click)="show = false;getPolSumLapsed()" pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -367,23 +446,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" [appendTo]="'body'" optionLabel="CodeDes"
+                            optionValue="CodeDes" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -415,15 +494,15 @@
                                     field="CustomerType" /></th>
                             <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
                                     field="SourceOfBusiness" /></th>
-                            <th colspan="2" class="text-center">Policy Count</th>
-                            <th colspan="2" class="text-center">Premium</th>
+                            <th rowspan="2" class="text-center">Policy Count</th>
+                            <th rowspan="2" class="text-center">Premium</th>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <th>Previous</th>
                             <th>Actual </th>
                             <th>Previous </th>
                             <th>Actual</th>
-                        </tr>
+                        </tr> -->
                     </ng-template>
 
 
@@ -433,9 +512,9 @@
                             <td>{{ row.Branch }}</td>
                             <td>{{ row.CustomerType }}</td>
                             <td>{{ row.SourceOfBusiness }}</td>
-                            <td>{{ row.PolicyCountPrev }}</td>
+                            <!-- <td>{{ row.PolicyCountPrev }}</td> -->
                             <td>{{ row.PolicyCount }}</td>
-                            <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td>
+                            <!-- <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td> -->
                             <td>{{ row.PolicyPremium | number: '1.2-2' }}</td>
                         </tr>
                     </ng-template>
@@ -461,9 +540,9 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Cancelled &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getPolSumCancelled()" pTooltip="Grid"></i> &nbsp; <i
-                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumCancelled()"pTooltip="Chart"></i>
+                                class="fas fa-th" (click)="show = true;getPolSumCancelled()" pTooltip="Grid"></i> &nbsp;
+                            <i style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
+                                (click)="show = false;getPolSumCancelled()" pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -483,23 +562,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -531,15 +610,15 @@
                                     field="CustomerType" /></th>
                             <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
                                     field="SourceOfBusiness" /></th>
-                            <th colspan="2" class="text-center">Policy Count</th>
-                            <th colspan="2" class="text-center">Premium</th>
+                            <th rowspan="2" class="text-center">Policy Count</th>
+                            <th rowspan="2" class="text-center">Premium</th>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <th>Previous</th>
                             <th>Actual </th>
                             <th>Previous </th>
                             <th>Actual</th>
-                        </tr>
+                        </tr> -->
                     </ng-template>
 
 
@@ -549,9 +628,9 @@
                             <td>{{ row.Branch }}</td>
                             <td>{{ row.CustomerType }}</td>
                             <td>{{ row.SourceOfBusiness }}</td>
-                            <td>{{ row.PolicyCountPrev }}</td>
+                            <!-- <td>{{ row.PolicyCountPrev }}</td> -->
                             <td>{{ row.PolicyCount }}</td>
-                            <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td>
+                            <!-- <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td> -->
                             <td>{{ row.PolicyPremium | number: '1.2-2' }}</td>
                         </tr>
                     </ng-template>
@@ -602,9 +681,9 @@
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Monthly
                             Summary &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getMohtDate()"pTooltip="Grid"></i> &nbsp; <i
+                                class="fas fa-th" (click)="show = true;getMohtDate()" pTooltip="Grid"></i> &nbsp; <i
                                 style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getMohtDate()"pTooltip="Chart"></i>
+                                (click)="show = false;getMohtDate()" pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -624,23 +703,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -833,9 +912,10 @@
                         <h3 class="tab-header">
                             <!-- <i style="font-size: 2rem; color: #2b5ae2;" class="fas fa-briefcase"></i> &nbsp; -->
                             Cumulative &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
-                                class="fas fa-th" (click)="show = true;getPolSumCumulative()"pTooltip="Grid"></i> &nbsp; <i
-                                style="font-size: 2rem; color: #2b5ae2;cursor: pointer;" class="fas fa-chart-column"
-                                (click)="show = false;getPolSumCumulative()"pTooltip="Chart"></i>
+                                class="fas fa-th" (click)="show = true;getPolSumCumulative()" pTooltip="Grid"></i>
+                            &nbsp; <i style="font-size: 2rem; color: #2b5ae2;cursor: pointer;"
+                                class="fas fa-chart-column" (click)="show = false;getPolSumCumulative()"
+                                pTooltip="Chart"></i>
                         </h3>
                     </div>
                     <div class="col-md-6 text-end">
@@ -854,23 +934,23 @@
                     </div>
                     <div class="col-md-2">
                         <div class="">Branch</div>
-                        <p-dropdown [options]="BranchList" [appendTo]="'body'" [(ngModel)]="selectedBranch"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Branch"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Source</div>
-                        <p-dropdown [options]="SourceList" [appendTo]="'body'" [(ngModel)]="selectedSource"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-2">
                         <div class="">Customer Type</div>
-                        <p-dropdown [options]="CustomerTypeList" [appendTo]="'body'" [(ngModel)]="selectedCutomerType"
-                            [filter]="true" [checkmark]="true" [showClear]="true" placeholder="Select a Source"
-                            styleClass="w-100" />
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
 
                     </div>
                     <div class="col-md-1 mt-4">
@@ -934,6 +1014,226 @@
                 </p-table>
                 <div *ngIf="!show" #chartContainer4 style="width: 100%; height: 500px;"></div>
                 <!-- </div>sa -->
+
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                            DueRenew
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            DueRenew &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getPolSumDueRenew()" pTooltip="Grid"></i>
+                            &nbsp; <i style="font-size: 2rem; color: #2b5ae2;cursor: pointer;"
+                                class="fas fa-chart-column" (click)="show = false;getPolSumDueRenew()"
+                                pTooltip="Chart"></i>
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                    
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getPolSumDueRenew()"></button>
+                    </div>
+                </div>
+                <div *ngIf="show" class="row p-3">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3 text-end">
+                        <input pInputText type="text" (input)="table.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search" />
+                    </div>
+                </div>
+
+                <p-table *ngIf="show" [value]="polSumDueRenewList" [paginator]="true" [rows]="5"
+                    [globalFilterFields]="['ClassOfBusiness', 'Branch', 'CustomerType', 'SourceOfBusiness']"
+                    [rowsPerPageOptions]="[5, 10, 20]" class="custom-grid" [filterDelay]="300"
+                    [responsiveLayout]="'scroll'" tableStyleClass="p-datatable-gridlines" [resizableColumns]="true"
+                    [scrollable]="true" [globalFilter]="globalFilter" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2" pSortableColumn="ClassOfBusiness">Product <p-sortIcon
+                                    field="ClassOfBusiness" /></th>
+                            <th rowspan="2" pSortableColumn="Branch">Branch <p-sortIcon field="Branch" /></th>
+                            <th rowspan="2" pSortableColumn="CustomerType">Customer Type <p-sortIcon
+                                    field="CustomerType" /></th>
+                            <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
+                                    field="SourceOfBusiness" /></th>
+                            <th colspan="2" class="text-center">Policy Count</th>
+                            <th colspan="2" class="text-center">Premium</th>
+                        </tr>
+                        <tr>
+                            <th>Previous</th>
+                            <th>Actual </th>
+                            <th>Previous </th>
+                            <th>Actual</th>
+                        </tr>
+                    </ng-template>
+
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td>{{ row.ClassOfBusiness }}</td>
+                            <td>{{ row.Branch }}</td>
+                            <td>{{ row.CustomerType }}</td>
+                            <td>{{ row.SourceOfBusiness }}</td>
+                            <td>{{ row.PolicyCountPrev }}</td>
+                            <td>{{ row.PolicyCount }}</td>
+                            <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td>
+                            <td>{{ row.PolicyPremium | number: '1.2-2' }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!show" #chartContainer5 style="width: 100%; height: 500px;"></div>
+
+
+            </p-tabPanel>
+            <p-tabPanel header="Header VIII">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-2">
+                        <span class="font-bold white-space-nowrap m-0">
+                            Commission
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="row mt-2 mb-2 ms-2 dashboard-header">
+                    <div class="col-md-6">
+                        <h3 class="tab-header">
+                            Commission &nbsp; <i style="font-size: 2rem; color: #2b5ae2; cursor: pointer;"
+                                class="fas fa-th" (click)="show = true;getPolSumCommission()" pTooltip="Grid"></i>
+                            <!-- &nbsp; <i style="font-size: 2rem; color: #2b5ae2;cursor: pointer;"
+                                class="fas fa-chart-column" (click)="show = false;getPolSumCommission()"
+                                pTooltip="Chart"></i> -->
+                        </h3>
+                    </div>
+                    <div class="col-md-6 text-end">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 mt-5">
+
+                    </div>
+                    <div class="col-md-2">
+                    
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Branch</div>
+                        <p-dropdown [options]="BranchList" optionLabel="CodeDes" optionValue="Code" [appendTo]="'body'"
+                            [(ngModel)]="selectedBranch" [filter]="true" [checkmark]="true" [showClear]="true"
+                            placeholder="Select a Branch" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Source</div>
+                        <p-dropdown [options]="SourceList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedSource" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-2">
+                        <div class="">Customer Type</div>
+                        <p-dropdown [options]="CustomerTypeList" optionLabel="CodeDes" optionValue="CodeDes"
+                            [appendTo]="'body'" [(ngModel)]="selectedCutomerType" [filter]="true" [checkmark]="true"
+                            [showClear]="true" placeholder="Select a Source" styleClass="w-100" />
+
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button pButton type="button" label="Get Data" class="p-button-sm p-button-primary ms-2"
+                            (click)="getPolSumCommission()"></button>
+                    </div>
+                </div>
+                <div *ngIf="show" class="row p-3">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3 text-end">
+                        <input pInputText type="text" (input)="table.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search" />
+                    </div>
+                </div>
+
+                <p-table *ngIf="show" [value]="polSumCommissionList" [paginator]="true" [rows]="5"
+                    [globalFilterFields]="['ClassOfBusiness', 'Branch', 'CustomerType', 'SourceOfBusiness']"
+                    [rowsPerPageOptions]="[5, 10, 20]" class="custom-grid" [filterDelay]="300"
+                    [responsiveLayout]="'scroll'" tableStyleClass="p-datatable-gridlines" [resizableColumns]="true"
+                    [scrollable]="true" [globalFilter]="globalFilter" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2" pSortableColumn="ClassOfBusiness">Product <p-sortIcon
+                                    field="ClassOfBusiness" /></th>
+                            <th rowspan="2" pSortableColumn="Branch">Branch <p-sortIcon field="Branch" /></th>
+                            <th rowspan="2" pSortableColumn="CustomerType">Customer Type <p-sortIcon
+                                    field="CustomerType" /></th>
+                            <th rowspan="2" pSortableColumn="SourceOfBusiness">Source <p-sortIcon
+                                    field="SourceOfBusiness" /></th>
+                            <th rowspan="2" class="text-center">Policy Count</th>
+                            <th rowspan="2" class="text-center">Commission Amount</th>
+                        </tr>
+                        <!-- <tr>
+                            <th>Previous</th>
+                            <th>Actual </th>
+                            <th>Previous </th>
+                            <th>Actual</th>
+                        </tr> -->
+                    </ng-template>
+
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td>{{ row.ClassOfBusiness }}</td>
+                            <td>{{ row.Branch }}</td>
+                            <td>{{ row.CustomerType }}</td>
+                            <td>{{ row.SourceOfBusiness }}</td>
+                            <!-- <td>{{ row.PolicyCountPrev }}</td> -->
+                            <td>{{ row.PolicyCount }}</td>
+                            <!-- <td>{{ row.PolicyPremiumPrev | number: '1.2-2' }}</td> -->
+                            <td class="text-end">{{ row.CommissionAmount | number: '1.2-2' }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">No records found</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!show" #chartContainer6 style="width: 100%; height: 500px;"></div>
+
 
             </p-tabPanel>
         </p-tabView>

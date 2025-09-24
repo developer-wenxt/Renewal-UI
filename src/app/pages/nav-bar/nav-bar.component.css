@@ -80,7 +80,8 @@
 }
 
 ::ng-deep .p-menubar .p-submenu-list {
-    min-width: 240px !important;
+    /* min-width: 240px !important; */
+    min-width: 300px !important;
     padding: 0.5rem 0 !important;
     border-radius: 8px !important;
     background-color: #ffffff !important;
@@ -135,12 +136,12 @@
 .imgwid {
     width: 118px !important;
     height: 43px !important;
-    margin-top: -14px;
+        margin-top: -24px;
 }
 h5 {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  margin-top: -12px;
+  margin-top:  -18px;
 }
 
 .text-white {
