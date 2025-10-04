@@ -56,14 +56,15 @@
                 <div class="col-md-4 col-lg-4">
                     <div class="card shadow-sm text-center p-3 position-relative">
                         <span class="badge bg-primary position-absolute" style="top:10px; right:10px;">
-                            {{ claimsDetails?.policyCount || 0 }}
+                            {{ claimsDetails?.ClaimPaidCount || 0 }}
                         </span>
 
                         <h6 class="text-muted">Claims Paid</h6>
-                        <h4>{{ claimsDetails?.currentMonthPremium || 0 | number }}</h4>
+                        <h4>{{ claimsDetails?.ClaimPaidAmount
+                            || 0 | number }}</h4>
 
                         <small class="text-success">
-                            ▲ {{ claimsDetails?.percentageChange || 0 | number:'1.2-2' }}% vs last month
+                            ▲ {{ claimsDetails?.Precentage || 0 | number:'1.2-2' }}% vs last month
                         </small>
 
                         <i [class]="'pi ' + 'pi-money-bill' + ' position-absolute'"
@@ -100,7 +101,7 @@
                         <h6 class="text-muted">Retention Rate</h6>
                         <h4>{{RetentionRatePrecent?.PolicySumInsured}} %</h4>
                         <small class="text-success">▲ 0% vs last quarter</small>
-                         <i [class]="'pi ' + 'pi-wave-pulse' + ' position-absolute'"
+                        <i [class]="'pi ' + 'pi-wave-pulse' + ' position-absolute'"
                             style="bottom:10px; right:10px; font-size: 1.5rem; color:#2d5dfd;">
                         </i>
                     </div>

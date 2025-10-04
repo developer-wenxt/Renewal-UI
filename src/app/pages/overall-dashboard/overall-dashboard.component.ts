@@ -78,6 +78,7 @@ export class OverallDashboardComponent implements OnInit, AfterViewInit {
     this.getMonthlyPolicyDBCountDaily();
     this.getRenewPolicyMonthlyPolicyDBCount();
     this.getRetentionRateCount();
+    this.getClaimCount();
   }
 
   ngAfterViewInit(): void {
@@ -610,6 +611,30 @@ export class OverallDashboardComponent implements OnInit, AfterViewInit {
       (data: any) => {
         if (data) {
           this.RetentionRatePrecent = data?.SingleResult
+          // this.initChart();
+        }
+      },
+      (err: any) => { },
+    );
+  }
+  getClaimCount() {
+    this.claimsDetails = []
+    let branchList: any = [];
+    this.userDetails.LoginBranchDetails.forEach((e: any) => {
+      branchList.push(e.DivisionCode)
+    });
+
+    let ReqObj = {
+      "CompanyId": this.userDetails.InsuranceId,
+      "Branch": branchList,
+      // "Date": "11/2025"
+    }
+    let urlLink = `${this.RenewalApiUrl}renewalDBSummary/getTotalClaimPaid`;
+
+    this.shared.onPostMethodSync(urlLink, ReqObj).subscribe(
+      (data: any) => {
+        if (data) {
+          this.claimsDetails = data?.SingleResult
           // this.initChart();
         }
       },
