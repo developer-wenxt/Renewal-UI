@@ -226,7 +226,8 @@
                                         [severity]="getSeverity(customer.CurrentStatus)"></p-tag>
                                 </td>
                                 <td *ngIf="userDetails.UserType !== 'Opration-Head'">
-                                    <i class="bi bi-pencil table-icon-btn me-2" (click)="editClick(customer)"></i>
+                                    <i *ngIf="customer.CurrentStatus !='RC'" class="bi bi-pencil table-icon-btn me-2"
+                                        (click)="editClick(customer)"></i>
                                     <i *ngIf="customer.ProductCode =='10'" class="bi bi-plus-circle table-icon-btn me-2"
                                         (click)="addClick(customer)"></i>
                                     <i class="bi bi-eye table-icon-btn" (click)="ViewRisk(customer)"></i>

@@ -53,7 +53,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   selectedSource: any;
   selectedCutomerType: any; showTop10 = true;
   DueRenewPolicyList: any[] = [];
-  polSumCommissionList:any[]=[];
+  polSumCommissionList: any[] = [];
   totalPolicyCount: any;
   totalPremium: any;
   selectvalue: any = 'policy'
@@ -1015,7 +1015,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
       }
       else {
-        data = this.tableData
+        const top10Data = [...this.tableData]
+         .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+          .slice(0, 10); 
+        data = top10Data
       }
 
 
@@ -1507,12 +1510,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let data = [];
     data = this.barchartData || [];
     console.log(data, "datadata");
+    const top10Data = [...data]
+      .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+      .slice(0, 10);
 
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.PolicyCount) || 0);
@@ -1680,12 +1686,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let data = [];
     data = this.barchartData || [];
     console.log(data, "datadata");
-
+    const top10Data = [...data]
+      .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+      .slice(0, 10);
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.PolicyCount) || 0);
@@ -1766,12 +1774,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let data = [];
     data = this.barchartData || [];
     console.log(data, "datadata");
-
+     const top10Data = [...this.barchartData]
+         .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+          .slice(0, 10); 
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.PolicyCount) || 0);

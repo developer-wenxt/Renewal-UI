@@ -356,7 +356,7 @@ export class ClaimSummaryDashboardComponent {
 
         if (data) {
           this.SourceList = data?.Result;
-           this.SourceList = [
+          this.SourceList = [
             { CodeDes: "All", Code: "All" },
             ...this.SourceList
           ];
@@ -1050,7 +1050,10 @@ export class ClaimSummaryDashboardComponent {
         }
       }
       else {
-        data = this.tableData
+        const top10Data = [...this.tableData]
+          .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+          .slice(0, 10);
+        data = top10Data
       }
 
 
@@ -1219,7 +1222,11 @@ export class ClaimSummaryDashboardComponent {
         }
       }
       else {
-        data = this.tableData
+
+        const top10Data = [...this.tableData]
+          .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+          .slice(0, 10);
+        data = top10Data
       }
 
 
@@ -1869,13 +1876,16 @@ export class ClaimSummaryDashboardComponent {
     chart.clear();
     let data = [];
     data = this.barchartData || [];
+    const top10Data = [...data]
+      .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+      .slice(0, 10);
     console.log(data, "datadata");
 
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       // const label = `${item.ClassOfBusiness} - ${item.SourceOfBusiness}`;
       // categories.push(label);
       // countSeriesData.push(Number(item.PolicyCount) || 0);
@@ -1959,13 +1969,16 @@ export class ClaimSummaryDashboardComponent {
     chart.clear();
     let data = [];
     data = this.barchartData || [];
+    const top10Data = [...data]
+      .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+      .slice(0, 10);
     console.log(data, "datadata");
 
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       const label = `${item.ClassOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.ClaimCount) || 0);
@@ -2046,12 +2059,14 @@ export class ClaimSummaryDashboardComponent {
     let data = [];
     data = this.barchartData || [];
     console.log(data, "datadata");
-
+    const top10Data = [...data]
+      .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+      .slice(0, 10);
     const categories: string[] = [];
     const countSeriesData: any[] = [];
     const premiumSeriesData: any[] = [];
 
-    data.forEach(item => {
+    top10Data.forEach(item => {
       const label = `${item.ClassOfBusiness}`;
       categories.push(label);
       countSeriesData.push(Number(item.ClaimCount) || 0);

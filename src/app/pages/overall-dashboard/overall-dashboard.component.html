@@ -40,6 +40,9 @@
                         <h6 class="text-muted">Renewals</h6>
                         <h4>{{ renewalDetails?.currentMonthPremium || 0 | number }}</h4>
 
+                        <small class="text-success" *ngIf="renewalDetails?.status == 'No Previous Data'">
+                            ▲ {{ renewalDetails?.percentageChange || 0 | number:'1.2-2' }}% vs last month
+                        </small>
                         <small class="text-success" *ngIf="renewalDetails?.status == 'High'">
                             ▲ {{ renewalDetails?.percentageChange || 0 | number:'1.2-2' }}% vs last month
                         </small>

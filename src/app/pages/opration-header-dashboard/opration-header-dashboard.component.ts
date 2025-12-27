@@ -146,21 +146,23 @@ export class OprationHeaderDashboardComponent implements AfterViewInit, OnInit {
     let completedData: any = 0;
 
     if (this.ResponseData.length != 0) {
-
-      xAxisData = this.ResponseData.map((item: { DivisionName: any; DivisionCode: any; }) => {
+      const top10Data = [...this.ResponseData]
+        .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+        .slice(0, 5);
+      xAxisData = top10Data.map((item: { DivisionName: any; DivisionCode: any; }) => {
         const name = item.DivisionName || `Division ${item.DivisionCode}`;
         return name.replace(/\s+/g, '\n');
       });
-      totalData = this.ResponseData.map((item: { TotalPolicyCount: any; }) =>
+      totalData = top10Data.map((item: { TotalPolicyCount: any; }) =>
         parseInt(item.TotalPolicyCount, 10)
       );
-      pendingData = this.ResponseData.map((item: { Pending: any; }) =>
+      pendingData = top10Data.map((item: { Pending: any; }) =>
         parseInt(item.Pending, 10)
       );
-      lossData = this.ResponseData.map((item: { Lost: any; }) =>
+      lossData = top10Data.map((item: { Lost: any; }) =>
         parseInt(item.Lost, 10)
       );
-      completedData = this.ResponseData.map((item: { Success: any; }) =>
+      completedData = top10Data.map((item: { Success: any; }) =>
         parseInt(item.Success, 10)
       );
     }

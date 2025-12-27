@@ -360,11 +360,14 @@ export class NewBusinessDashboardComponent {
     let premiumData: number[] = [];
 
     if (this.ResponseData.length !== 0) {
-      xAxisData = this.ResponseData.map((item: { DivisionName: any; DivisionCode: any; }) =>
+      const top10Data = [...this.ResponseData]
+        .sort((a, b) => parseFloat(b.TotalPremium) - parseFloat(a.TotalPremium))
+        .slice(0, 5);
+      xAxisData = top10Data.map((item: { DivisionName: any; DivisionCode: any; }) =>
         (item.DivisionName || `Division ${item.DivisionCode}`).replace(/\s+/g, '\n')
       );
-      policyCountData = this.ResponseData.map((item: { TotalPolicyCount: string; }) => parseInt(item.TotalPolicyCount, 10));
-      premiumData = this.ResponseData.map((item: { TotalPremium: string; }) => parseFloat(item.TotalPremium));
+      policyCountData = top10Data.map((item: { TotalPolicyCount: string; }) => parseInt(item.TotalPolicyCount, 10));
+      premiumData = top10Data.map((item: { TotalPremium: string; }) => parseFloat(item.TotalPremium));
     }
 
     const option: echarts.EChartsOption = {

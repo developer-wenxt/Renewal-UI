@@ -98,7 +98,10 @@ export class ViewRiskDetailsComponent implements OnInit {
 
   getRiskDetailsList() {
     let ReqObj = {
-      "PolicyNumber": this.PolicyNumber
+      "PolicyNumber": this.PolicyNumber,
+       "RiskId":this.riskId
+
+
     }
     // let urlLink = `${this.RenewalApiUrl}renewaltrack/getRiskIdWithPolicyNo`;
     let urlLink
