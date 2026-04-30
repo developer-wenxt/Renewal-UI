@@ -58,7 +58,8 @@ import { SmsCountDetailsComponent } from './pages/sms-count-details/sms-count-de
 import { ProductGridComponent } from './pages/product-grid/product-grid.component';
 import { NewBusinessProductsGridComponent } from './pages/new-business-products-grid/new-business-products-grid.component';
 import { OverallDashboardComponent } from './pages/overall-dashboard/overall-dashboard.component';
-
+import Lara from '@primeng/themes/lara';
+import { providePrimeNG } from 'primeng/config';
 @NgModule({
   declarations: [
     AppComponent,
@@ -119,6 +120,14 @@ import { OverallDashboardComponent } from './pages/overall-dashboard/overall-das
     AppRoutingModule
   ],
   providers: [
+     providePrimeNG({
+      theme: {
+        preset: Lara,
+        options: {
+        darkModeSelector: 'false'   // 👈 THIS LINE FIXES IT
+      }
+      }
+    }),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,
