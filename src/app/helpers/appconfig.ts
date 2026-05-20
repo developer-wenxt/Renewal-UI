@@ -6,6 +6,6 @@ export enum config {
       //  "CommonApiUrl" = "http://193.203.162.152:8085/EwayCommonApi/"
        // "RenewalApiUrl" = "http://147.93.108.104:8085/EwayRenewalApi/",
        // "CommonApiUrl" = "http://147.93.108.104:8085/EwayCommonApi/"
-        "RenewalApiUrl" = "http://65.0.113.151:8085/EwayRenewalApi/",
-       "CommonApiUrl" = "http://65.0.113.151:8085/EwayCommonApi/"
+        "RenewalApiUrl" = "https://wecoreuat.wecorephoenixgroup.com/EwayRenewalApi/",
+       "CommonApiUrl" = "https://wecoreuat.wecorephoenixgroup.com/EwayCommonApi/"
 }
