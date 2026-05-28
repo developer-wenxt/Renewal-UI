@@ -424,7 +424,7 @@ export class NavBarComponent {
         sessionStorage.clear();
         localStorage.clear();
         this.authService.logout();
-        location.href = `http://65.0.113.151:8085/Eway/#/auth/login`;
+        location.href = `https://wecoreuat1.wecorephoenixgroup.com/Eway/#/auth/login`;
         // location.href = `http://193.203.162.152:8085/Eway/#/auth/login`;
         // location.href = `http://147.93.108.104:8085/Eway/#/auth/login`;
         // location.href = `http://157.173.220.92:8085/Eway/#/auth/login`;
